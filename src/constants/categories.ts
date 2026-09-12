@@ -1,0 +1,68 @@
+import type { CategoryType, CategoryDefinition } from '../types';
+
+export const CATEGORIES: Record<CategoryType, CategoryDefinition> = {
+  foundation: {
+    id: 'foundation',
+    label: 'Foundation',
+    badgeDefault: 'Paradigm Shift',
+    accentHue: '#38BDF8',
+    iconType: 'foundation',
+    neutralTag: 'Shift',
+  },
+  psychology: {
+    id: 'psychology',
+    label: 'Psychology',
+    badgeDefault: 'Value Delivery',
+    accentHue: '#C084FC',
+    iconType: 'psychology',
+    neutralTag: 'Value',
+  },
+  hardware: {
+    id: 'hardware',
+    label: 'Hardware Engine',
+    badgeDefault: 'Retention Tool',
+    accentHue: '#FBBF24',
+    iconType: 'hardware',
+    neutralTag: 'Signal',
+  },
+  retention: {
+    id: 'retention',
+    label: 'Retention Mechanism',
+    badgeDefault: 'Habit Loop',
+    accentHue: '#34D399',
+    iconType: 'retention',
+    neutralTag: 'Habit',
+  },
+  event: {
+    id: 'event',
+    label: 'Event Architecture',
+    badgeDefault: 'Execution',
+    accentHue: '#60A5FA',
+    iconType: 'event',
+    neutralTag: 'Scale',
+  },
+  lifecycle: {
+    id: 'lifecycle',
+    label: 'Lifecycle & Churn',
+    badgeDefault: 'Relevance Engine',
+    accentHue: '#FB7185',
+    iconType: 'lifecycle',
+    neutralTag: 'Cycle',
+  },
+  outcome: {
+    id: 'outcome',
+    label: 'Strategic Outcome',
+    badgeDefault: 'End Result',
+    accentHue: '#FACC15',
+    iconType: 'outcome',
+    neutralTag: 'Apex',
+  },
+  custom: {
+    id: 'custom',
+    label: 'Custom Strategy',
+    badgeDefault: 'Custom Block',
+    accentHue: '#94A3B8',
+    iconType: 'custom',
+    neutralTag: 'Custom',
+  },
+};
