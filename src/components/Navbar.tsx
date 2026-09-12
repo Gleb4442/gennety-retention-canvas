@@ -391,7 +391,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* MCP Bridge Button */}
           <button
             onClick={() => setIsAiBridgeModalOpen(true)}
-            className="px-3.5 py-1.5 rounded-xl liquid-pill font-mono font-bold text-xs sm:text-sm tracking-wider text-indigo-500 dark:text-indigo-300 hover:text-indigo-600 dark:hover:text-white border border-indigo-500/25 hover:border-indigo-500/50 hover:bg-indigo-500/10 transition-all shadow-xs active:scale-95"
+            className="px-3 py-1.5 rounded-xl liquid-pill font-mono font-bold text-xs tracking-wider opacity-85 hover:opacity-100 transition-all active:scale-95"
             title="MCP & AI-Агент: системный промпт со всеми адресами, MCP-сервер и API (⌘J)"
           >
             MCP

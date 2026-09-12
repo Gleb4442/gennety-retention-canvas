@@ -199,7 +199,7 @@ export const PersonalCabinetModal: React.FC<PersonalCabinetModalProps> = ({
                 onClose();
                 setIsAiBridgeModalOpen(true);
               }}
-              className="px-3.5 py-1.5 rounded-xl bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 flex items-center gap-1.5 transition-colors border border-indigo-500/20 text-xs font-mono font-bold shadow-sm"
+              className="px-3 py-1.5 rounded-xl bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 text-zinc-700 dark:text-zinc-200 flex items-center gap-1.5 transition-colors border border-black/5 dark:border-white/5 text-xs font-mono font-bold shadow-xs"
               title="MCP & AI-Агент: системный промпт, MCP-сервер и API"
             >
               <span>MCP</span>
