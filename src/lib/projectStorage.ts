@@ -58,26 +58,52 @@ export function createBlankProject(title = 'Новый Canvas проект', des
 }
 
 /**
- * Check for legacy local data from genity_blueprint_state_v2 and migrate if available.
+ * Determines whether an access key belongs to the verified owner of the Retention Blueprint.
  */
-function tryMigrateLegacyData(): CanvasProject | null {
+export function isOwnerAccessKey(accessKey: string): boolean {
+  if (!accessKey) return false;
+  const clean = accessKey.trim().toUpperCase();
+  if (
+    clean === 'GNTY-PRO-MASTER-2026' ||
+    clean === 'GNTY-DEMO-2026-CORE' ||
+    clean.startsWith('GNTY-OWNER-') ||
+    clean.startsWith('GNTY-MASTER-')
+  ) {
+    return true;
+  }
+
+  if (typeof window !== 'undefined' && localStorage.getItem('gnty_owner_account_verified') === accessKey) {
+    return true;
+  }
+
+  return false;
+}
+
+/**
+ * Check for legacy local data from genity_blueprint_state_v2 and migrate only once to the owner.
+ */
+function tryMigrateLegacyData(targetAccessKey: string): CanvasProject | null {
   try {
     const raw = localStorage.getItem(LEGACY_STORAGE_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw);
     if (Array.isArray(parsed.nodes) && Array.isArray(parsed.edges)) {
       const now = Date.now();
+      // Remove legacy storage so no subsequent key ever picks it up
+      localStorage.removeItem(LEGACY_STORAGE_KEY);
+      localStorage.setItem('gnty_owner_account_verified', targetAccessKey);
+
       return {
         id: `proj_${now}_migrated`,
-        title: 'Retention Canvas (Сохранённая схема)',
-        description: 'Схема, автоматически перенесённая из предыдущей локальной сессии.',
+        title: 'Retention Canvas (Основная стратегия)',
+        description: 'Ваша мастер-стратегия удержания пользователей Gennety.',
         nodes: parsed.nodes,
         edges: parsed.edges,
         layoutMode: parsed.layoutMode || 'freeform',
         theme: parsed.theme || 'dark',
         createdAt: parsed.updatedAt || now,
         updatedAt: parsed.updatedAt || now,
-        tags: ['Миграция'],
+        tags: ['Основной'],
         isFavorite: true,
       };
     }
@@ -112,9 +138,24 @@ export function loadProjectsForUser(accessKey: string): { projects: CanvasProjec
     console.error('Failed to load projects from localStorage:', e);
   }
 
-  // If no projects found for this key, check legacy data migration
-  const migrated = tryMigrateLegacyData();
-  const initialProject = migrated || createDefaultBlueprintProject();
+  // If no projects found for this key:
+  const isOwner = isOwnerAccessKey(accessKey);
+  const migrated = tryMigrateLegacyData(accessKey);
+
+  let initialProject: CanvasProject;
+
+  if (migrated) {
+    // 1. Owner's migrated personal project
+    initialProject = migrated;
+  } else if (isOwner) {
+    // 2. Owner's master key gets the proprietary Retention Blueprint
+    initialProject = createDefaultBlueprintProject();
+  } else {
+    // 3. ANY OTHER / NEW / PUBLIC ACCOUNT:
+    // Starts with a 100% clean, blank canvas. Confidential Retention Blueprint is NEVER created for new users!
+    initialProject = createBlankProject('Мой проект', 'Чистый холст для создания вашей схемы.');
+  }
+
   const projects = [initialProject];
   const activeProjectId = initialProject.id;
 

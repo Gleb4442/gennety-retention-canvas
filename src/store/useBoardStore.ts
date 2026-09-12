@@ -34,6 +34,7 @@ import {
   createBlankProject,
   exportWorkspaceBackup,
   importWorkspaceBackup,
+  isOwnerAccessKey,
 } from '../lib/projectStorage';
 
 const MAX_HISTORY = 30;
@@ -130,8 +131,8 @@ function bootstrap() {
       isAuthenticated: false,
       projects: [],
       currentProjectId: '',
-      nodes: INITIAL_NODES,
-      edges: INITIAL_EDGES,
+      nodes: [],
+      edges: [],
       layoutMode: 'freeform' as LayoutMode,
       theme: 'dark' as ThemeMode,
     };
@@ -145,8 +146,8 @@ function bootstrap() {
     isAuthenticated: true,
     projects,
     currentProjectId: activeProj ? activeProj.id : '',
-    nodes: activeProj ? activeProj.nodes : INITIAL_NODES,
-    edges: activeProj ? activeProj.edges : INITIAL_EDGES,
+    nodes: activeProj ? activeProj.nodes : [],
+    edges: activeProj ? activeProj.edges : [],
     layoutMode: (activeProj ? activeProj.layoutMode : 'freeform') as LayoutMode,
     theme: (activeProj ? activeProj.theme : 'dark') as ThemeMode,
   };
@@ -294,12 +295,15 @@ export const useBoardStore = create<BoardStore>((set, get) => {
       });
     },
 
-    createProject: (title: string, template: ProjectTemplate = 'blueprint', description = '') => {
+    createProject: (title: string, template: ProjectTemplate = 'blank', description = '') => {
       const { accessKey, projects } = get();
       if (!accessKey) return '';
 
-      const cleanTitle = title.trim() || (template === 'blueprint' ? 'Retention Strategy Project' : 'Новый холст');
-      const newProject: CanvasProject = template === 'blueprint' 
+      const isOwner = isOwnerAccessKey(accessKey);
+      const isBlueprintTemplate = template === 'blueprint' && isOwner;
+
+      const cleanTitle = title.trim() || (isBlueprintTemplate ? 'Retention Strategy Project' : 'Новый холст');
+      const newProject: CanvasProject = isBlueprintTemplate 
         ? { ...createDefaultBlueprintProject(cleanTitle), description }
         : createBlankProject(cleanTitle, description);
 
@@ -835,15 +839,19 @@ export const useBoardStore = create<BoardStore>((set, get) => {
     },
 
     resetToDefault: () => {
+      const { accessKey } = get();
+      const isOwner = isOwnerAccessKey(accessKey || '');
       get().saveSnapshot();
+      const defaultNodes = isOwner ? INITIAL_NODES : [];
+      const defaultEdges = isOwner ? INITIAL_EDGES : [];
       set({
-        nodes: INITIAL_NODES,
-        edges: INITIAL_EDGES,
+        nodes: defaultNodes,
+        edges: defaultEdges,
         layoutMode: 'freeform',
         selectedNodeId: null,
         selectedEdgeId: null,
       });
-      syncAndPersist(INITIAL_NODES, INITIAL_EDGES, 'freeform', get().theme);
+      syncAndPersist(defaultNodes, defaultEdges, 'freeform', get().theme);
     },
 
     exportJson: () => {

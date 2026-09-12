@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useBoardStore } from '../store/useBoardStore';
+import { isOwnerAccessKey } from '../lib/projectStorage';
 import type { ProjectTemplate } from '../types';
 
 interface NewProjectModalProps {
@@ -8,9 +9,12 @@ interface NewProjectModalProps {
 }
 
 export const NewProjectModal: React.FC<NewProjectModalProps> = ({ isOpen, onClose }) => {
+  const accessKey = useBoardStore((s) => s.accessKey);
+  const isOwner = isOwnerAccessKey(accessKey || '');
+
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [template, setTemplate] = useState<ProjectTemplate>('blueprint');
+  const [template, setTemplate] = useState<ProjectTemplate>(isOwner ? 'blueprint' : 'blank');
 
   const createProject = useBoardStore((s) => s.createProject);
 
@@ -18,15 +22,16 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({ isOpen, onClos
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const finalTitle = title.trim() || (template === 'blueprint' ? 'Retention Strategy Project' : 'Новый холст');
-    createProject(finalTitle, template, description.trim());
+    const isBlueprintSelected = template === 'blueprint' && isOwner;
+    const finalTitle = title.trim() || (isBlueprintSelected ? 'Retention Strategy Project' : 'Новый холст');
+    createProject(finalTitle, isBlueprintSelected ? 'blueprint' : 'blank', description.trim());
     setTitle('');
     setDescription('');
     onClose();
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-150">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-150 select-none">
       <div 
         className="relative w-full max-w-lg p-6 rounded-3xl liquid-glass shadow-2xl z-10 border border-white/10 animate-in zoom-in-95 duration-150"
         onClick={(e) => e.stopPropagation()}
@@ -38,7 +43,7 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({ isOpen, onClos
               Создать Canvas-проект
             </h2>
             <p className="text-xs text-zinc-400 font-mono">
-              Выберите начальный шаблон или начните с чистого листа
+              {isOwner ? 'Выберите начальный шаблон или начните с чистого листа' : 'Создайте новый рабочий холст'}
             </p>
           </div>
           <button
@@ -53,44 +58,46 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({ isOpen, onClos
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Template Selection */}
-          <div className="grid grid-cols-2 gap-3">
-            <button
-              type="button"
-              onClick={() => setTemplate('blueprint')}
-              className={`p-3.5 rounded-2xl text-left transition-all border ${
-                template === 'blueprint'
-                  ? 'liquid-pill-active border-cyan-400/50 shadow-lg ring-1 ring-cyan-400/30'
-                  : 'liquid-pill border-white/5 opacity-70 hover:opacity-100'
-              }`}
-            >
-              <div className="flex items-center gap-2 mb-1.5">
-                <span className="text-cyan-400">⚡</span>
-                <span className="font-medium text-xs text-white">Retention Blueprint</span>
-              </div>
-              <p className="text-[11px] text-zinc-400 leading-snug">
-                Полный мастер-шаблон: циклы возврата, привычки, ритуалы и аппаратные триггеры.
-              </p>
-            </button>
+          {/* Template Selection - only shown if Owner */}
+          {isOwner && (
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setTemplate('blueprint')}
+                className={`p-3.5 rounded-2xl text-left transition-all border ${
+                  template === 'blueprint'
+                    ? 'liquid-pill-active border-cyan-400/50 shadow-lg ring-1 ring-cyan-400/30'
+                    : 'liquid-pill border-white/5 opacity-70 hover:opacity-100'
+                }`}
+              >
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="text-cyan-400">⚡</span>
+                  <span className="font-medium text-xs text-white">Retention Blueprint</span>
+                </div>
+                <p className="text-[11px] text-zinc-400 leading-snug">
+                  Мастер-шаблон Gennety: циклы возврата, психология и аппаратные триггеры.
+                </p>
+              </button>
 
-            <button
-              type="button"
-              onClick={() => setTemplate('blank')}
-              className={`p-3.5 rounded-2xl text-left transition-all border ${
-                template === 'blank'
-                  ? 'liquid-pill-active border-cyan-400/50 shadow-lg ring-1 ring-cyan-400/30'
-                  : 'liquid-pill border-white/5 opacity-70 hover:opacity-100'
-              }`}
-            >
-              <div className="flex items-center gap-2 mb-1.5">
-                <span className="text-emerald-400">◻️</span>
-                <span className="font-medium text-xs text-white">Чистый холст</span>
-              </div>
-              <p className="text-[11px] text-zinc-400 leading-snug">
-                Пустое рабочее пространство для моделирования собственной стратегии с нуля.
-              </p>
-            </button>
-          </div>
+              <button
+                type="button"
+                onClick={() => setTemplate('blank')}
+                className={`p-3.5 rounded-2xl text-left transition-all border ${
+                  template === 'blank'
+                    ? 'liquid-pill-active border-cyan-400/50 shadow-lg ring-1 ring-cyan-400/30'
+                    : 'liquid-pill border-white/5 opacity-70 hover:opacity-100'
+                }`}
+              >
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="text-emerald-400">◻️</span>
+                  <span className="font-medium text-xs text-white">Чистый холст</span>
+                </div>
+                <p className="text-[11px] text-zinc-400 leading-snug">
+                  Пустое рабочее пространство для моделирования собственной стратегии.
+                </p>
+              </button>
+            </div>
+          )}
 
           {/* Project Title */}
           <div>
@@ -101,7 +108,7 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({ isOpen, onClos
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder={template === 'blueprint' ? 'Например: Q4 Retention Expansion 2026' : 'Например: B2B Onboarding Flywheel'}
+              placeholder="Например: Новая воронка онбординга"
               autoFocus
               className="w-full px-4 py-2.5 rounded-xl liquid-pill text-sm text-white placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-cyan-400/50 font-sans"
             />
@@ -115,7 +122,7 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({ isOpen, onClos
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Краткое описание гипотезы или контура удержания..."
+              placeholder="Краткое описание гипотезы или целей проекта..."
               rows={2}
               className="w-full px-4 py-2 rounded-xl liquid-pill text-xs text-white placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-cyan-400/50 font-sans resize-none"
             />
