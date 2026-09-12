@@ -331,3 +331,39 @@
   stroke-width: 2px !important;
   stroke-dasharray: 6 4;
 }
+
+/* Area Selection Marquee & Multi-node Bounding Box */
+.react-flow__selection {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1.5px dashed rgba(255, 255, 255, 0.6) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35) !important;
+  z-index: 10 !important;
+}
+
+.theme-light .react-flow__selection,
+.theme-sand .react-flow__selection,
+.theme-mist .react-flow__selection {
+  background: rgba(0, 0, 0, 0.06) !important;
+  border: 1.5px dashed rgba(0, 0, 0, 0.5) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1) !important;
+}
+
+.react-flow__nodesselection-rect {
+  border: 1.5px dashed rgba(255, 255, 255, 0.35) !important;
+  border-radius: 16px !important;
+  background: rgba(255, 255, 255, 0.02) !important;
+  cursor: grab !important;
+  pointer-events: all !important;
+}
+
+.react-flow__nodesselection-rect:active {
+  cursor: grabbing !important;
+}
+
+.theme-light .react-flow__nodesselection-rect,
+.theme-sand .react-flow__nodesselection-rect,
+.theme-mist .react-flow__nodesselection-rect {
+  border: 1.5px dashed rgba(0, 0, 0, 0.3) !important;
+  background: rgba(0, 0, 0, 0.02) !important;
+}

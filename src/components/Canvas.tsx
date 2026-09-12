@@ -6,6 +6,7 @@ import {
   MiniMap,
   useReactFlow,
   MarkerType,
+  SelectionMode,
 } from '@xyflow/react';
 import type { Node } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
@@ -47,13 +48,16 @@ export const Canvas: React.FC<CanvasProps> = ({ onOpenSearchModal, onOpenAddModa
   const selectedNodeId = useBoardStore((s) => s.selectedNodeId);
   const setSelectedNodeId = useBoardStore((s) => s.setSelectedNodeId);
   const setSelectedEdgeId = useBoardStore((s) => s.setSelectedEdgeId);
-  const deleteNode = useBoardStore((s) => s.deleteNode);
-  const duplicateNode = useBoardStore((s) => s.duplicateNode);
+  const deleteSelectedNodes = useBoardStore((s) => s.deleteSelectedNodes);
+  const duplicateSelectedNodes = useBoardStore((s) => s.duplicateSelectedNodes);
+  const deselectAllNodes = useBoardStore((s) => s.deselectAllNodes);
   const undo = useBoardStore((s) => s.undo);
   const redo = useBoardStore((s) => s.redo);
   const addImageNode = useBoardStore((s) => s.addImageNode);
   const isDrawingMode = useBoardStore((s) => s.isDrawingMode);
   const setIsDrawingMode = useBoardStore((s) => s.setIsDrawingMode);
+  const isSelectAreaMode = useBoardStore((s) => s.isSelectAreaMode);
+  const setIsSelectAreaMode = useBoardStore((s) => s.setIsSelectAreaMode);
   const drawingTool = useBoardStore((s) => s.drawingTool);
 
   const [isLocked, setIsLocked] = useState(false);
@@ -216,22 +220,27 @@ export const Canvas: React.FC<CanvasProps> = ({ onOpenSearchModal, onOpenAddModa
 
       if (isCmdOrCtrl && e.key.toLowerCase() === 'd') {
         e.preventDefault();
-        if (selectedNodeId) {
-          duplicateNode(selectedNodeId);
-        }
+        duplicateSelectedNodes();
         return;
       }
 
       if (e.key === 'Delete' || e.key === 'Backspace') {
-        if (selectedNodeId) {
-          e.preventDefault();
-          deleteNode(selectedNodeId);
-        }
+        e.preventDefault();
+        deleteSelectedNodes();
+        return;
+      }
+
+      if (e.key.toLowerCase() === 'v') {
+        e.preventDefault();
+        setIsSelectAreaMode(!isSelectAreaMode);
+        return;
       }
 
       if (e.key === 'Escape') {
         setSelectedNodeId(null);
         setSelectedEdgeId(null);
+        setIsSelectAreaMode(false);
+        deselectAllNodes();
       }
     };
 
@@ -239,8 +248,11 @@ export const Canvas: React.FC<CanvasProps> = ({ onOpenSearchModal, onOpenAddModa
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [
     selectedNodeId,
-    duplicateNode,
-    deleteNode,
+    duplicateSelectedNodes,
+    deleteSelectedNodes,
+    deselectAllNodes,
+    isSelectAreaMode,
+    setIsSelectAreaMode,
     undo,
     redo,
     setSelectedNodeId,
@@ -262,10 +274,11 @@ export const Canvas: React.FC<CanvasProps> = ({ onOpenSearchModal, onOpenAddModa
   }, [theme]);
 
   const isDrawingActive = isDrawingMode && drawingTool !== 'select';
+  const selectedNodesCount = nodes.filter((n) => n.selected).length;
 
   return (
     <div 
-      className="relative w-full h-full overflow-hidden"
+      className={`relative w-full h-full overflow-hidden ${isSelectAreaMode ? 'cursor-crosshair' : ''}`}
       onDragOver={handleCanvasDragOver}
       onDrop={handleCanvasDrop}
     >
@@ -278,12 +291,19 @@ export const Canvas: React.FC<CanvasProps> = ({ onOpenSearchModal, onOpenAddModa
         nodeTypes={NODE_TYPES}
         edgeTypes={EDGE_TYPES}
         nodesDraggable={!isLocked && !isDrawingActive}
-        nodesConnectable={!isLocked && !isDrawingActive}
+        nodesConnectable={!isLocked && !isDrawingActive && !isSelectAreaMode}
         elementsSelectable={!isDrawingActive}
-        panOnDrag={isDrawingActive ? false : true}
+        panOnDrag={isDrawingActive ? false : isSelectAreaMode ? false : true}
+        selectionOnDrag={isSelectAreaMode}
+        selectionMode={SelectionMode.Partial}
+        selectionKeyCode={isSelectAreaMode ? null : 'Shift'}
+        panOnScroll={true}
         onPaneClick={() => {
           setSelectedNodeId(null);
           setSelectedEdgeId(null);
+          if (isSelectAreaMode) {
+            deselectAllNodes();
+          }
         }}
         minZoom={0.2}
         maxZoom={2.5}
@@ -367,9 +387,51 @@ export const Canvas: React.FC<CanvasProps> = ({ onOpenSearchModal, onOpenAddModa
 
         <div className="w-[1px] h-4 bg-current/10 mx-0.5" />
 
+        {/* Marquee Area Selection Mode Button */}
+        <button
+          onClick={() => {
+            const next = !isSelectAreaMode;
+            setIsSelectAreaMode(next);
+            if (next && isDrawingMode) {
+              setIsDrawingMode(false);
+            }
+          }}
+          className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs transition-all active:scale-95 ${
+            isSelectAreaMode
+              ? 'liquid-pill-active font-semibold shadow-sm ring-1 ring-white/20'
+              : 'liquid-pill opacity-85 hover:opacity-100'
+          }`}
+          title={
+            isSelectAreaMode
+              ? "Выйти из режима выделения области (Esc)"
+              : "Выделение области: зажмите мышь на холсте и выделите группу карточек для совместного перемещения (V)"
+          }
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M4 7V4h3" />
+            <path d="M11 4h2" />
+            <path d="M17 4h3v3" />
+            <path d="M20 11v2" />
+            <path d="M20 17v3h-3" />
+            <path d="M13 20h-2" />
+            <path d="M7 20H4v-3" />
+            <path d="M4 13v-2" />
+          </svg>
+          <span>Выделение</span>
+          {isSelectAreaMode && (
+            <span className="w-1.5 h-1.5 rounded-full bg-current opacity-80 animate-pulse" />
+          )}
+        </button>
+
         {/* Drawing Mode Toggle Button */}
         <button
-          onClick={() => setIsDrawingMode(!isDrawingMode)}
+          onClick={() => {
+            const next = !isDrawingMode;
+            setIsDrawingMode(next);
+            if (next && isSelectAreaMode) {
+              setIsSelectAreaMode(false);
+            }
+          }}
           className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs transition-all active:scale-95 ${
             isDrawingMode
               ? 'liquid-pill-active font-semibold shadow-sm ring-1 ring-white/20'
@@ -386,6 +448,41 @@ export const Canvas: React.FC<CanvasProps> = ({ onOpenSearchModal, onOpenAddModa
           )}
         </button>
       </div>
+
+      {/* Floating Multi-Node Selection Bar */}
+      {selectedNodesCount > 1 && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3 px-4 py-2 rounded-2xl liquid-glass shadow-2xl border border-black/10 dark:border-white/10 text-xs font-mono select-none pointer-events-auto animate-in fade-in zoom-in-95 duration-150">
+          <div className="flex items-center gap-2 font-semibold">
+            <span className="w-2 h-2 rounded-full bg-current opacity-80 animate-pulse" />
+            <span>Выделено узлов: {selectedNodesCount}</span>
+          </div>
+          <span className="opacity-25">|</span>
+          <span className="opacity-70 font-sans hidden md:inline">Зажмите мышью любой узел для перемещения группы</span>
+          <div className="flex items-center gap-1.5 ml-1">
+            <button
+              onClick={duplicateSelectedNodes}
+              className="px-2.5 py-1 rounded-xl liquid-pill hover:liquid-pill-active transition-all font-sans font-medium"
+              title="Дублировать выбранные карточки (Cmd+D)"
+            >
+              Дублировать (⌘D)
+            </button>
+            <button
+              onClick={deleteSelectedNodes}
+              className="px-2.5 py-1 rounded-xl liquid-pill hover:bg-rose-950/40 text-rose-300 hover:text-rose-100 transition-all font-sans font-medium"
+              title="Удалить выбранные карточки (Delete)"
+            >
+              Удалить (Del)
+            </button>
+            <button
+              onClick={deselectAllNodes}
+              className="p-1 px-2 rounded-xl liquid-pill opacity-75 hover:opacity-100 transition-opacity font-sans"
+              title="Снять выделение (Esc)"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Floating Liquid-Glass Drawing Toolbar */}
       <DrawingToolbar />

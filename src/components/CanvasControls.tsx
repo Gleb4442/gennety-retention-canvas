@@ -12,6 +12,9 @@ export const CanvasControls: React.FC<CanvasControlsProps> = ({ isLocked, onTogg
   const nodes = useBoardStore((s) => s.nodes);
   const edges = useBoardStore((s) => s.edges);
 
+  const isSelectAreaMode = useBoardStore((s) => s.isSelectAreaMode);
+  const setIsSelectAreaMode = useBoardStore((s) => s.setIsSelectAreaMode);
+
   return (
     <div className="absolute bottom-6 left-6 z-20 flex flex-col gap-2 select-none">
       {/* Node and Edge Counter Pill */}
@@ -82,6 +85,32 @@ export const CanvasControls: React.FC<CanvasControlsProps> = ({ isLocked, onTogg
         </button>
 
         <div className="w-[1px] h-4 bg-current/10 mx-0.5" />
+
+        {/* Marquee Area Selection Mode Button */}
+        <button
+          onClick={() => setIsSelectAreaMode(!isSelectAreaMode)}
+          className={`p-2 rounded-xl transition-all duration-150 ${
+            isSelectAreaMode
+              ? 'liquid-pill-active font-semibold ring-1 ring-white/20'
+              : 'liquid-pill opacity-70 hover:opacity-100'
+          }`}
+          title={
+            isSelectAreaMode
+              ? 'Выйти из режима выделения области (Esc)'
+              : 'Выделение области: зажмите и выделите группу карточек для перемещения (V)'
+          }
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M4 7V4h3" />
+            <path d="M11 4h2" />
+            <path d="M17 4h3v3" />
+            <path d="M20 11v2" />
+            <path d="M20 17v3h-3" />
+            <path d="M13 20h-2" />
+            <path d="M7 20H4v-3" />
+            <path d="M4 13v-2" />
+          </svg>
+        </button>
 
         <button
           onClick={onToggleLock}

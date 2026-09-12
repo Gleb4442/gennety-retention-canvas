@@ -86,6 +86,13 @@ export interface BoardStore {
   deleteDrawingStroke: (id: string) => void;
   clearDrawings: () => void;
 
+  // Area Selection Mode & Multi-Node Actions
+  isSelectAreaMode: boolean;
+  setIsSelectAreaMode: (active: boolean) => void;
+  deleteSelectedNodes: () => void;
+  duplicateSelectedNodes: () => void;
+  deselectAllNodes: () => void;
+
   // Lightbox Modal
   lightboxImageUrl: string | null;
   lightboxTitle?: string;
@@ -256,10 +263,26 @@ export const useBoardStore = create<BoardStore>((set, get) => {
     drawingTool: 'pen' as DrawingTool,
     drawingColor: '#EDEDF0',
     drawingWidth: 3,
-    setIsDrawingMode: (active) => set({ isDrawingMode: active, isInspectorOpen: active ? false : get().isInspectorOpen }),
-    setDrawingTool: (tool) => set({ drawingTool: tool, isDrawingMode: true }),
+    setIsDrawingMode: (active) => set({ 
+      isDrawingMode: active, 
+      isSelectAreaMode: active ? false : get().isSelectAreaMode,
+      isInspectorOpen: active ? false : get().isInspectorOpen 
+    }),
+    setDrawingTool: (tool) => set({ 
+      drawingTool: tool, 
+      isDrawingMode: true, 
+      isSelectAreaMode: false 
+    }),
     setDrawingColor: (color) => set({ drawingColor: color }),
     setDrawingWidth: (width) => set({ drawingWidth: width }),
+
+    // Area Selection Mode
+    isSelectAreaMode: false,
+    setIsSelectAreaMode: (active) => set({ 
+      isSelectAreaMode: active, 
+      isDrawingMode: active ? false : get().isDrawingMode,
+      isInspectorOpen: active ? false : get().isInspectorOpen 
+    }),
     addDrawingStroke: (stroke) => {
       get().saveSnapshot();
       set((state) => {
@@ -658,25 +681,29 @@ export const useBoardStore = create<BoardStore>((set, get) => {
       set((state) => {
         const updatedNodes = applyNodeChanges(changes, state.nodes);
         
-        const selectChange = changes.find((c) => c.type === 'select');
+        const selectedNodes = updatedNodes.filter((n) => n.selected);
         let newSelectedId = state.selectedNodeId;
-        if (selectChange && 'selected' in selectChange) {
-          if (selectChange.selected) {
-            newSelectedId = selectChange.id;
-          } else if (state.selectedNodeId === selectChange.id) {
-            newSelectedId = null;
-          }
+
+        if (selectedNodes.length === 1) {
+          newSelectedId = selectedNodes[0].id;
+        } else if (selectedNodes.length === 0) {
+          newSelectedId = null;
+        } else {
+          // Multiple nodes selected via box selection
+          newSelectedId = null;
         }
 
         const hasPosChange = changes.some((c) => c.type === 'position' && !c.dragging);
         if (hasPosChange) {
+          get().saveSnapshot();
           syncAndPersist(updatedNodes, state.edges, state.layoutMode, state.theme, state.drawings);
         }
 
         return {
           nodes: updatedNodes,
           selectedNodeId: newSelectedId,
-          isInspectorOpen: newSelectedId ? true : state.isInspectorOpen,
+          // Only open inspector if exactly 1 node is selected; keep closed for multi-node selection to avoid blocking the canvas
+          isInspectorOpen: selectedNodes.length === 1 ? true : (selectedNodes.length > 1 ? false : state.isInspectorOpen),
         };
       });
     },
@@ -880,6 +907,89 @@ export const useBoardStore = create<BoardStore>((set, get) => {
           nodes: updatedNodes,
           selectedNodeId: newId,
           isInspectorOpen: true,
+        };
+      });
+    },
+
+    deselectAllNodes: () => {
+      set((state) => ({
+        nodes: state.nodes.map((n) => (n.selected ? { ...n, selected: false } : n)),
+        edges: state.edges.map((e) => (e.selected ? { ...e, selected: false } : e)),
+        selectedNodeId: null,
+        selectedEdgeId: null,
+        isInspectorOpen: false,
+      }));
+    },
+
+    deleteSelectedNodes: () => {
+      const state = get();
+      const selectedIds = new Set(state.nodes.filter((n) => n.selected).map((n) => n.id));
+      if (state.selectedNodeId) selectedIds.add(state.selectedNodeId);
+      if (selectedIds.size === 0) return;
+
+      get().saveSnapshot();
+      set((state) => {
+        const updatedNodes = state.nodes.filter((node) => !selectedIds.has(node.id));
+        const updatedEdges = state.edges.filter(
+          (edge) => !selectedIds.has(edge.source) && !selectedIds.has(edge.target)
+        );
+        syncAndPersist(updatedNodes, updatedEdges, state.layoutMode, state.theme, state.drawings);
+        return {
+          nodes: updatedNodes,
+          edges: updatedEdges,
+          selectedNodeId: null,
+          isInspectorOpen: false,
+        };
+      });
+    },
+
+    duplicateSelectedNodes: () => {
+      const state = get();
+      let selectedNodes = state.nodes.filter((n) => n.selected);
+      if (selectedNodes.length === 0 && state.selectedNodeId) {
+        const single = state.nodes.find((n) => n.id === state.selectedNodeId);
+        if (single) selectedNodes = [single];
+      }
+      if (selectedNodes.length === 0) return;
+
+      get().saveSnapshot();
+      const idMap = new Map<string, string>();
+      const timestamp = Date.now();
+      const duplicatedNodes: (StrategyNode | ImageNode)[] = selectedNodes.map((nodeToDup, idx) => {
+        const newId = `${nodeToDup.type === 'imageNode' ? 'img' : 'node'}_${timestamp}_${idx}`;
+        idMap.set(nodeToDup.id, newId);
+        return {
+          ...nodeToDup,
+          id: newId,
+          position: {
+            x: nodeToDup.position.x + 50,
+            y: nodeToDup.position.y + 50,
+          },
+          selected: true,
+        };
+      });
+
+      const duplicatedEdges: StrategyEdge[] = [];
+      state.edges.forEach((edge, idx) => {
+        if (idMap.has(edge.source) && idMap.has(edge.target)) {
+          duplicatedEdges.push({
+            ...edge,
+            id: `edge_${timestamp}_${idx}`,
+            source: idMap.get(edge.source)!,
+            target: idMap.get(edge.target)!,
+          });
+        }
+      });
+
+      set((state) => {
+        const unselectedNodes = state.nodes.map((n) => ({ ...n, selected: false }));
+        const updatedNodes = [...unselectedNodes, ...duplicatedNodes];
+        const updatedEdges = [...state.edges, ...duplicatedEdges];
+        syncAndPersist(updatedNodes, updatedEdges, state.layoutMode, state.theme, state.drawings);
+        return {
+          nodes: updatedNodes,
+          edges: updatedEdges,
+          selectedNodeId: duplicatedNodes.length === 1 ? duplicatedNodes[0].id : null,
         };
       });
     },
