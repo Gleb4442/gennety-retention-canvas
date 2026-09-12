@@ -1,10 +1,12 @@
 import type { 
   CanvasProject, 
   StrategyNode, 
+  ImageNode,
   StrategyEdge, 
   CategoryType, 
   LayoutMode, 
-  ThemeMode 
+  ThemeMode,
+  DrawingStroke
 } from '../types';
 import { CATEGORIES } from '../constants/categories';
 
@@ -115,9 +117,9 @@ export function extractJsonString(rawInput: string): string {
  * Automatically calculates visual layout coordinates for nodes that lack them or all start at (0, 0).
  */
 function autoLayoutNodes(
-  nodes: StrategyNode[], 
+  nodes: (StrategyNode | ImageNode)[], 
   edges: StrategyEdge[]
-): StrategyNode[] {
+): (StrategyNode | ImageNode)[] {
   // Check if nodes already have well-distributed positions
   const posKeys = new Set(nodes.map(n => `${Math.round(n.position.x)},${Math.round(n.position.y)}`));
   const needsLayout = posKeys.size <= 1 || nodes.some(n => n.position.x === 0 && n.position.y === 0);
@@ -291,12 +293,38 @@ export function parseCanvasJson(
   const categoryStats: Record<string, number> = {};
 
   // Process & Normalize Nodes
-  const nodes: StrategyNode[] = rawNodes.map((n: any, idx: number) => {
+  const nodes: (StrategyNode | ImageNode)[] = rawNodes.map((n: any, idx: number) => {
     const rawId = String(n.id || n.nodeId || n.key || `node_${idx + 1}`).trim();
     const dataObj = n.data && typeof n.data === 'object' ? n.data : {};
 
     const rawTitle = String(dataObj.title || n.title || n.name || n.header || `Шаг ${idx + 1}`).trim();
     idByTitle[rawTitle.toLowerCase()] = rawId;
+
+    // Position detection
+    let posX = 0;
+    let posY = 0;
+    if (n.position && typeof n.position === 'object') {
+      posX = typeof n.position.x === 'number' ? n.position.x : 0;
+      posY = typeof n.position.y === 'number' ? n.position.y : 0;
+    } else if (typeof n.x === 'number' && typeof n.y === 'number') {
+      posX = n.x;
+      posY = n.y;
+    }
+
+    // Check if standalone ImageNode
+    if (n.type === 'imageNode' || (!dataObj.description && !n.description && (dataObj.imageUrl || n.imageUrl) && !dataObj.category)) {
+      return {
+        id: rawId,
+        type: 'imageNode' as const,
+        position: { x: posX, y: posY },
+        data: {
+          imageUrl: dataObj.imageUrl || n.imageUrl || '',
+          title: rawTitle && rawTitle !== `Шаг ${idx + 1}` ? rawTitle : undefined,
+          caption: dataObj.caption || n.caption || undefined,
+          width: typeof dataObj.width === 'number' ? dataObj.width : (typeof n.width === 'number' ? n.width : 340),
+        },
+      } as ImageNode;
+    }
 
     const category = normalizeCategory(dataObj.category || n.category || n.typeCategory || 'foundation');
     categoryStats[category] = (categoryStats[category] || 0) + 1;
@@ -311,22 +339,12 @@ export function parseCanvasJson(
     const keyMetric = dataObj.keyMetric || n.keyMetric || n.metric || n.target || undefined;
     const outcome = dataObj.outcome || n.outcome || n.result || n.impact || undefined;
     const notes = dataObj.notes || n.notes || n.comment || undefined;
+    const imageUrl = dataObj.imageUrl || n.imageUrl || undefined;
     
     let tags: string[] = [];
     if (Array.isArray(dataObj.tags)) tags = dataObj.tags.map(String);
     else if (Array.isArray(n.tags)) tags = n.tags.map(String);
     else if (typeof n.tags === 'string') tags = n.tags.split(',').map((t: string) => t.trim());
-
-    // Position detection
-    let posX = 0;
-    let posY = 0;
-    if (n.position && typeof n.position === 'object') {
-      posX = typeof n.position.x === 'number' ? n.position.x : 0;
-      posY = typeof n.position.y === 'number' ? n.position.y : 0;
-    } else if (typeof n.x === 'number' && typeof n.y === 'number') {
-      posX = n.x;
-      posY = n.y;
-    }
 
     return {
       id: rawId,
@@ -341,6 +359,7 @@ export function parseCanvasJson(
         outcome: outcome ? String(outcome) : undefined,
         notes: notes ? String(notes) : undefined,
         tags: tags.length > 0 ? tags : undefined,
+        imageUrl: imageUrl ? String(imageUrl) : undefined,
       },
     };
   });
@@ -374,6 +393,7 @@ export function parseCanvasJson(
     const styleType = (['bezier', 'smoothstep', 'straight'].includes(e.styleType || edgeData.styleType)
       ? (e.styleType || edgeData.styleType)
       : 'bezier') as 'bezier' | 'smoothstep' | 'straight';
+    const edgeImageUrl = edgeData.imageUrl || e.imageUrl || undefined;
 
     edges.push({
       id: edgeId,
@@ -386,6 +406,7 @@ export function parseCanvasJson(
         animated,
         styleType,
         color: e.color || edgeData.color || undefined,
+        imageUrl: edgeImageUrl ? String(edgeImageUrl) : undefined,
       },
     });
   });
@@ -416,12 +437,15 @@ export function parseCanvasJson(
     ? rawProject.theme
     : 'dark';
 
+  const drawings: DrawingStroke[] = Array.isArray(rawProject.drawings) ? rawProject.drawings : [];
+
   const project: CanvasProject = {
     id: `proj_${now}_json_${Math.random().toString(36).substring(2, 7)}`,
     title: projectTitle,
     description: projectDesc,
     nodes: finalNodes,
     edges,
+    drawings,
     layoutMode,
     theme,
     createdAt: now,

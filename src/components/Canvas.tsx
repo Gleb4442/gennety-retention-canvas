@@ -11,22 +11,30 @@ import type { Node } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
 import { CustomNode } from './CustomNode';
+import { ImageNode } from './ImageNode';
 import { CustomEdge } from './CustomEdge';
 import { CanvasControls } from './CanvasControls';
 import { SidebarInspector } from './SidebarInspector';
+import { DrawingLayer } from './DrawingLayer';
+import { DrawingToolbar } from './DrawingToolbar';
+import { ImageLightboxModal } from './ImageLightboxModal';
 import { useBoardStore } from '../store/useBoardStore';
 import { THEME_CONFIG } from '../constants/themeTokens';
+import { compressImageFile } from '../utils/imageCompressor';
 import type { StrategyNode } from '../types';
 
 interface CanvasProps {
   onOpenSearchModal: () => void;
 }
 
-const NODE_TYPES = { strategyNode: CustomNode };
+const NODE_TYPES = { 
+  strategyNode: CustomNode,
+  imageNode: ImageNode,
+};
 const EDGE_TYPES = { customEdge: CustomEdge };
 
 export const Canvas: React.FC<CanvasProps> = ({ onOpenSearchModal }) => {
-  const { setCenter, fitView } = useReactFlow();
+  const { setCenter, fitView, screenToFlowPosition } = useReactFlow();
 
   const nodes = useBoardStore((s) => s.nodes);
   const edges = useBoardStore((s) => s.edges);
@@ -41,6 +49,9 @@ export const Canvas: React.FC<CanvasProps> = ({ onOpenSearchModal }) => {
   const duplicateNode = useBoardStore((s) => s.duplicateNode);
   const undo = useBoardStore((s) => s.undo);
   const redo = useBoardStore((s) => s.redo);
+  const addImageNode = useBoardStore((s) => s.addImageNode);
+  const isDrawingMode = useBoardStore((s) => s.isDrawingMode);
+  const drawingTool = useBoardStore((s) => s.drawingTool);
 
   const [isLocked, setIsLocked] = useState(false);
 
@@ -67,6 +78,78 @@ export const Canvas: React.FC<CanvasProps> = ({ onOpenSearchModal }) => {
     },
     [nodes, setCenter]
   );
+
+  // Drag and drop image files directly onto canvas
+  const handleCanvasDragOver = (e: React.DragEvent) => {
+    if (e.dataTransfer.types.includes('Files')) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'copy';
+    }
+  };
+
+  const handleCanvasDrop = async (e: React.DragEvent) => {
+    if (!e.dataTransfer.files || e.dataTransfer.files.length === 0) return;
+    const file = e.dataTransfer.files[0];
+    if (!file.type.startsWith('image/')) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    try {
+      const position = screenToFlowPosition({ x: e.clientX, y: e.clientY });
+      const compressed = await compressImageFile(file, 1600, 0.88);
+      addImageNode(
+        compressed, 
+        { x: position.x - 170, y: position.y - 120 }, 
+        file.name.replace(/\.[^/.]+$/, '')
+      );
+    } catch (err) {
+      console.error('Failed to process dropped image on canvas:', err);
+    }
+  };
+
+  // Clipboard paste listener for images (e.g. Cmd+V screenshots)
+  useEffect(() => {
+    const handlePaste = async (e: ClipboardEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
+        return;
+      }
+
+      const items = e.clipboardData?.items;
+      if (!items) return;
+
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        if (item.type.indexOf('image') !== -1) {
+          e.preventDefault();
+          const file = item.getAsFile();
+          if (file) {
+            try {
+              const compressed = await compressImageFile(file, 1600, 0.88);
+              const viewport = document.querySelector('.react-flow') as HTMLElement;
+              const rect = viewport ? viewport.getBoundingClientRect() : { left: 0, top: 0, width: window.innerWidth, height: window.innerHeight };
+              const centerPos = screenToFlowPosition({
+                x: rect.left + rect.width / 2 + (Math.random() * 60 - 30),
+                y: rect.top + rect.height / 2 + (Math.random() * 60 - 30),
+              });
+              addImageNode(
+                compressed, 
+                { x: centerPos.x - 170, y: centerPos.y - 120 }, 
+                'Вставленное фото'
+              );
+            } catch (err) {
+              console.error('Failed to paste image:', err);
+            }
+          }
+          break;
+        }
+      }
+    };
+
+    window.addEventListener('paste', handlePaste);
+    return () => window.removeEventListener('paste', handlePaste);
+  }, [addImageNode, screenToFlowPosition]);
 
   // Keyboard shortcuts listener
   useEffect(() => {
@@ -137,6 +220,9 @@ export const Canvas: React.FC<CanvasProps> = ({ onOpenSearchModal }) => {
 
   // MiniMap node color
   const nodeColor = useCallback((node: Node) => {
+    if (node.type === 'imageNode') {
+      return theme === 'light' ? '#71717A' : '#A1A1AA';
+    }
     const strategyNode = node as StrategyNode;
     const isLight = ['light', 'sand', 'mist'].includes(theme);
     if (strategyNode.selected) {
@@ -145,10 +231,14 @@ export const Canvas: React.FC<CanvasProps> = ({ onOpenSearchModal }) => {
     return isLight ? '#94A3B8' : '#475569';
   }, [theme]);
 
+  const isDrawingActive = isDrawingMode && drawingTool !== 'select';
 
   return (
-    <div className="relative w-full h-full overflow-hidden">
-
+    <div 
+      className="relative w-full h-full overflow-hidden"
+      onDragOver={handleCanvasDragOver}
+      onDrop={handleCanvasDrop}
+    >
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -157,9 +247,10 @@ export const Canvas: React.FC<CanvasProps> = ({ onOpenSearchModal }) => {
         onConnect={isLocked ? undefined : onConnect}
         nodeTypes={NODE_TYPES}
         edgeTypes={EDGE_TYPES}
-        nodesDraggable={!isLocked}
-        nodesConnectable={!isLocked}
-        elementsSelectable={true}
+        nodesDraggable={!isLocked && !isDrawingActive}
+        nodesConnectable={!isLocked && !isDrawingActive}
+        elementsSelectable={!isDrawingActive}
+        panOnDrag={isDrawingActive ? false : true}
         onPaneClick={() => {
           setSelectedNodeId(null);
           setSelectedEdgeId(null);
@@ -177,6 +268,9 @@ export const Canvas: React.FC<CanvasProps> = ({ onOpenSearchModal }) => {
         }}
         fitView
       >
+        {/* Freehand SVG Drawing Layer mounted inside React Flow Viewport */}
+        <DrawingLayer />
+
         {/* Subtle Liquid Dots */}
         <Background
           variant={BackgroundVariant.Dots}
@@ -202,8 +296,14 @@ export const Canvas: React.FC<CanvasProps> = ({ onOpenSearchModal }) => {
         onToggleLock={() => setIsLocked(!isLocked)}
       />
 
+      {/* Floating Liquid-Glass Drawing Toolbar */}
+      <DrawingToolbar />
+
       {/* Slide-out Sidebar Inspector */}
       <SidebarInspector onFocusNode={handleFocusNode} />
+
+      {/* Fullscreen Photo Lightbox Modal */}
+      <ImageLightboxModal />
     </div>
   );
 };

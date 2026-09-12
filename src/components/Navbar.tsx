@@ -29,6 +29,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenImportJson,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const imageFileInputRef = useRef<HTMLInputElement>(null);
   const [isThemeMenuOpen, setIsThemeMenuOpen] = useState(false);
 
   const layoutMode = useBoardStore((s) => s.layoutMode);
@@ -44,10 +45,29 @@ export const Navbar: React.FC<NavbarProps> = ({
   const importJson = useBoardStore((s) => s.importJson);
   const projects = useBoardStore((s) => s.projects);
   const currentProjectId = useBoardStore((s) => s.currentProjectId);
+  const addImageNode = useBoardStore((s) => s.addImageNode);
+  const isDrawingMode = useBoardStore((s) => s.isDrawingMode);
+  const setIsDrawingMode = useBoardStore((s) => s.setIsDrawingMode);
 
   const activeProject = projects.find((p) => p.id === currentProjectId) || projects[0];
   const canUndo = undoStack.length > 0;
   const canRedo = redoStack.length > 0;
+
+  const handlePhotoFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const { compressImageFile } = await import('../utils/imageCompressor');
+      const compressed = await compressImageFile(file, 1600, 0.88);
+      addImageNode(compressed, undefined, file.name.replace(/\.[^/.]+$/, ''));
+    } catch (err) {
+      console.error('Failed to add photo card:', err);
+      alert('Ошибка добавления фото.');
+    } finally {
+      e.target.value = '';
+    }
+  };
 
   const handleExportPng = async () => {
     const element = document.querySelector('.react-flow__viewport') as HTMLElement;
@@ -133,12 +153,21 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <nav className="fixed top-4 inset-x-6 z-30 flex items-center justify-between pointer-events-none select-none gap-2">
-      {/* Hidden File Input */}
+      {/* Hidden File Input for JSON */}
       <input
         type="file"
         ref={fileInputRef}
         onChange={handleFileChange}
         accept=".json"
+        className="hidden pointer-events-auto"
+      />
+
+      {/* Hidden File Input for Image Upload */}
+      <input
+        type="file"
+        ref={imageFileInputRef}
+        onChange={handlePhotoFileChange}
+        accept="image/*"
         className="hidden pointer-events-auto"
       />
 
@@ -355,6 +384,34 @@ export const Navbar: React.FC<NavbarProps> = ({
         >
           <IconAdd className="w-3.5 h-3.5" />
           <span className="hidden sm:inline">Add Card</span>
+        </button>
+
+        {/* + Add Photo */}
+        <button
+          onClick={() => imageFileInputRef.current?.click()}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl liquid-pill text-xs font-medium transition-all hover:liquid-pill-active"
+          title="Добавить фото-карточку на холст (также можно перетащить файл или вставить из буфера ⌘V)"
+        >
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
+          </svg>
+          <span className="hidden xl:inline">Фото</span>
+        </button>
+
+        {/* Freehand Drawing Mode Toggle */}
+        <button
+          onClick={() => setIsDrawingMode(!isDrawingMode)}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-mono transition-all ${
+            isDrawingMode
+              ? 'liquid-pill-active font-semibold shadow-md'
+              : 'liquid-pill opacity-75 hover:opacity-100'
+          }`}
+          title={isDrawingMode ? "Выйти из режима рисования" : "Включить рисование от руки и ластик"}
+        >
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+          </svg>
+          <span className="hidden xl:inline">Рисование</span>
         </button>
 
         {/* Export / Reset Buttons */}

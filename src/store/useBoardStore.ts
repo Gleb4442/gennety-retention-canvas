@@ -10,12 +10,16 @@ import {
 import type { 
   StrategyNode, 
   StrategyEdge, 
+  ImageNode,
+  ImageNodeData,
   LayoutMode, 
   BoardSnapshot, 
   StrategyNodeData, 
   ThemeMode,
   CanvasProject,
   ProjectTemplate,
+  DrawingStroke,
+  DrawingTool,
 } from '../types';
 import { INITIAL_NODES, INITIAL_EDGES } from '../constants/initialData';
 import { computeLayout } from '../utils/layoutAlgorithms';
@@ -59,8 +63,9 @@ export interface BoardStore {
   isImportJsonModalOpen: boolean;
 
   // Active Canvas Data
-  nodes: StrategyNode[];
+  nodes: (StrategyNode | ImageNode)[];
   edges: StrategyEdge[];
+  drawings: DrawingStroke[];
   selectedNodeId: string | null;
   selectedEdgeId: string | null;
   layoutMode: LayoutMode;
@@ -68,6 +73,28 @@ export interface BoardStore {
   searchQuery: string;
   isInspectorOpen: boolean;
   
+  // Drawing Mode State & Actions
+  isDrawingMode: boolean;
+  drawingTool: DrawingTool;
+  drawingColor: string;
+  drawingWidth: number;
+  setIsDrawingMode: (active: boolean) => void;
+  setDrawingTool: (tool: DrawingTool) => void;
+  setDrawingColor: (color: string) => void;
+  setDrawingWidth: (width: number) => void;
+  addDrawingStroke: (stroke: DrawingStroke) => void;
+  deleteDrawingStroke: (id: string) => void;
+  clearDrawings: () => void;
+
+  // Lightbox Modal
+  lightboxImageUrl: string | null;
+  lightboxTitle?: string;
+  openLightbox: (url: string, title?: string) => void;
+  closeLightbox: () => void;
+
+  // Standalone Image Node on Canvas
+  addImageNode: (imageUrl: string, position?: { x: number; y: number }, title?: string, caption?: string) => string;
+
   // History
   undoStack: BoardSnapshot[];
   redoStack: BoardSnapshot[];
@@ -89,9 +116,9 @@ export interface BoardStore {
   importBackupJson: (jsonString: string) => { success: boolean; error?: string };
 
   // Canvas Setters & Flow Handlers
-  setNodes: (nodes: StrategyNode[]) => void;
+  setNodes: (nodes: (StrategyNode | ImageNode)[]) => void;
   setEdges: (edges: StrategyEdge[]) => void;
-  onNodesChange: (changes: NodeChange<StrategyNode>[]) => void;
+  onNodesChange: (changes: NodeChange<StrategyNode | ImageNode>[]) => void;
   onEdgesChange: (changes: EdgeChange<StrategyEdge>[]) => void;
   onConnect: (connection: Connection) => void;
 
@@ -104,7 +131,7 @@ export interface BoardStore {
 
   // Node CRUD
   addNode: (nodeData: Partial<StrategyNodeData>, position?: { x: number; y: number }) => string;
-  updateNode: (id: string, data: Partial<StrategyNodeData>) => void;
+  updateNode: (id: string, data: Partial<StrategyNodeData | ImageNodeData>) => void;
   deleteNode: (id: string) => void;
   duplicateNode: (id: string) => void;
 
@@ -136,6 +163,7 @@ function bootstrap() {
       currentProjectId: '',
       nodes: [],
       edges: [],
+      drawings: [],
       layoutMode: 'freeform' as LayoutMode,
       theme: 'dark' as ThemeMode,
     };
@@ -149,8 +177,9 @@ function bootstrap() {
     isAuthenticated: true,
     projects,
     currentProjectId: activeProj ? activeProj.id : '',
-    nodes: activeProj ? activeProj.nodes : [],
-    edges: activeProj ? activeProj.edges : [],
+    nodes: activeProj ? (activeProj.nodes || []) : [],
+    edges: activeProj ? (activeProj.edges || []) : [],
+    drawings: activeProj ? (activeProj.drawings || []) : [],
     layoutMode: (activeProj ? activeProj.layoutMode : 'freeform') as LayoutMode,
     theme: (activeProj ? activeProj.theme : 'dark') as ThemeMode,
   };
@@ -161,14 +190,16 @@ const initialBoot = bootstrap();
 export const useBoardStore = create<BoardStore>((set, get) => {
   // Helper to persist current active project into projects list and localStorage
   const syncAndPersist = (
-    nodes: StrategyNode[],
+    nodes: (StrategyNode | ImageNode)[],
     edges: StrategyEdge[],
     layoutMode: LayoutMode,
-    theme: ThemeMode
+    theme: ThemeMode,
+    drawings?: DrawingStroke[]
   ) => {
     const { accessKey, projects, currentProjectId } = get();
     if (!accessKey || !currentProjectId) return;
 
+    const currentDrawings = drawings !== undefined ? drawings : (get().drawings || []);
     const now = Date.now();
     const updatedProjects = projects.map((p) => {
       if (p.id === currentProjectId) {
@@ -176,6 +207,7 @@ export const useBoardStore = create<BoardStore>((set, get) => {
           ...p,
           nodes,
           edges,
+          drawings: currentDrawings,
           layoutMode,
           theme,
           updatedAt: now,
@@ -211,12 +243,87 @@ export const useBoardStore = create<BoardStore>((set, get) => {
     // Active Canvas
     nodes: initialBoot.nodes,
     edges: initialBoot.edges,
+    drawings: initialBoot.drawings || [],
     selectedNodeId: null,
     selectedEdgeId: null,
     layoutMode: initialBoot.layoutMode,
     theme: initialBoot.theme,
     searchQuery: '',
     isInspectorOpen: false,
+
+    // Drawing Mode State & Actions
+    isDrawingMode: false,
+    drawingTool: 'pen' as DrawingTool,
+    drawingColor: '#EDEDF0',
+    drawingWidth: 3,
+    setIsDrawingMode: (active) => set({ isDrawingMode: active, isInspectorOpen: active ? false : get().isInspectorOpen }),
+    setDrawingTool: (tool) => set({ drawingTool: tool, isDrawingMode: true }),
+    setDrawingColor: (color) => set({ drawingColor: color }),
+    setDrawingWidth: (width) => set({ drawingWidth: width }),
+    addDrawingStroke: (stroke) => {
+      get().saveSnapshot();
+      set((state) => {
+        const updated = [...state.drawings, stroke];
+        syncAndPersist(state.nodes, state.edges, state.layoutMode, state.theme, updated);
+        return { drawings: updated };
+      });
+    },
+    deleteDrawingStroke: (id) => {
+      get().saveSnapshot();
+      set((state) => {
+        const updated = state.drawings.filter((d) => d.id !== id);
+        syncAndPersist(state.nodes, state.edges, state.layoutMode, state.theme, updated);
+        return { drawings: updated };
+      });
+    },
+    clearDrawings: () => {
+      get().saveSnapshot();
+      set((state) => {
+        syncAndPersist(state.nodes, state.edges, state.layoutMode, state.theme, []);
+        return { drawings: [] };
+      });
+    },
+
+    // Lightbox Modal
+    lightboxImageUrl: null,
+    lightboxTitle: undefined,
+    openLightbox: (url, title) => set({ lightboxImageUrl: url, lightboxTitle: title }),
+    closeLightbox: () => set({ lightboxImageUrl: null, lightboxTitle: undefined }),
+
+    // Standalone Image Node on Canvas
+    addImageNode: (imageUrl, position, title, caption) => {
+      get().saveSnapshot();
+      const id = `img_${Date.now()}`;
+      const defaultPosition = position || {
+        x: 350 + Math.random() * 150,
+        y: 200 + Math.random() * 150,
+      };
+
+      const newImageNode: ImageNode = {
+        id,
+        type: 'imageNode',
+        position: defaultPosition,
+        data: {
+          imageUrl,
+          title: title || '',
+          caption: caption || title || '',
+          width: 340,
+        },
+      };
+
+      set((state) => {
+        const updatedNodes = [...state.nodes, newImageNode];
+        syncAndPersist(updatedNodes, state.edges, state.layoutMode, state.theme, state.drawings);
+        return {
+          nodes: updatedNodes,
+          selectedNodeId: id,
+          selectedEdgeId: null,
+          isInspectorOpen: true,
+        };
+      });
+
+      return id;
+    },
 
     undoStack: [],
     redoStack: [],
@@ -239,8 +346,9 @@ export const useBoardStore = create<BoardStore>((set, get) => {
         isAuthenticated: true,
         projects,
         currentProjectId: activeProj.id,
-        nodes: activeProj.nodes,
-        edges: activeProj.edges,
+        nodes: activeProj.nodes || [],
+        edges: activeProj.edges || [],
+        drawings: activeProj.drawings || [],
         layoutMode: activeProj.layoutMode,
         theme: activeProj.theme,
         undoStack: [],
@@ -287,8 +395,9 @@ export const useBoardStore = create<BoardStore>((set, get) => {
 
       set({
         currentProjectId: target.id,
-        nodes: target.nodes,
-        edges: target.edges,
+        nodes: target.nodes || [],
+        edges: target.edges || [],
+        drawings: target.drawings || [],
         layoutMode: target.layoutMode,
         theme: target.theme,
         selectedNodeId: null,
@@ -446,6 +555,7 @@ export const useBoardStore = create<BoardStore>((set, get) => {
           currentProjectId: importedProject.id,
           nodes: importedProject.nodes,
           edges: importedProject.edges,
+          drawings: importedProject.drawings || [],
           layoutMode: importedProject.layoutMode,
           theme: importedProject.theme,
           selectedNodeId: null,
@@ -465,7 +575,7 @@ export const useBoardStore = create<BoardStore>((set, get) => {
     },
 
     exportProjectJson: (projectId?: string) => {
-      const { projects, currentProjectId, nodes, edges, layoutMode, theme } = get();
+      const { projects, currentProjectId, nodes, edges, drawings, layoutMode, theme } = get();
       const targetId = projectId || currentProjectId;
       const targetProj = projects.find((p) => p.id === targetId);
 
@@ -478,6 +588,7 @@ export const useBoardStore = create<BoardStore>((set, get) => {
         theme: targetId === currentProjectId ? theme : targetProj?.theme || 'dark',
         nodes: targetId === currentProjectId ? nodes : targetProj?.nodes || [],
         edges: targetId === currentProjectId ? edges : targetProj?.edges || [],
+        drawings: targetId === currentProjectId ? (drawings || []) : (targetProj?.drawings || []),
       };
       return JSON.stringify(payload, null, 2);
     },
@@ -532,10 +643,11 @@ export const useBoardStore = create<BoardStore>((set, get) => {
     },
 
     saveSnapshot: () => {
-      const { nodes, edges, undoStack } = get();
+      const { nodes, edges, drawings, undoStack } = get();
       const newSnapshot: BoardSnapshot = {
         nodes: JSON.parse(JSON.stringify(nodes)),
         edges: JSON.parse(JSON.stringify(edges)),
+        drawings: JSON.parse(JSON.stringify(drawings || [])),
         timestamp: Date.now(),
       };
       const updatedUndo = [...undoStack, newSnapshot].slice(-MAX_HISTORY);
@@ -558,7 +670,7 @@ export const useBoardStore = create<BoardStore>((set, get) => {
 
         const hasPosChange = changes.some((c) => c.type === 'position' && !c.dragging);
         if (hasPosChange) {
-          syncAndPersist(updatedNodes, state.edges, state.layoutMode, state.theme);
+          syncAndPersist(updatedNodes, state.edges, state.layoutMode, state.theme, state.drawings);
         }
 
         return {
@@ -676,15 +788,25 @@ export const useBoardStore = create<BoardStore>((set, get) => {
     updateNode: (id, data) => {
       get().saveSnapshot();
       set((state) => {
-        const updatedNodes = state.nodes.map((node) => {
+        const updatedNodes: (StrategyNode | ImageNode)[] = state.nodes.map((node) => {
           if (node.id === id) {
-            return {
-              ...node,
-              data: {
-                ...node.data,
-                ...data,
-              },
-            };
+            if (node.type === 'imageNode') {
+              return {
+                ...node,
+                data: {
+                  ...node.data,
+                  ...data,
+                },
+              } as ImageNode;
+            } else {
+              return {
+                ...node,
+                data: {
+                  ...node.data,
+                  ...data,
+                },
+              } as StrategyNode;
+            }
           }
           return node;
         });
@@ -715,25 +837,45 @@ export const useBoardStore = create<BoardStore>((set, get) => {
       if (!nodeToDup) return;
 
       get().saveSnapshot();
-      const newId = `node_${Date.now()}`;
-      const duplicatedNode: StrategyNode = {
-        ...nodeToDup,
-        id: newId,
-        position: {
-          x: nodeToDup.position.x + 40,
-          y: nodeToDup.position.y + 40,
-        },
-        data: {
-          ...nodeToDup.data,
-          title: `${nodeToDup.data.title} (Копия)`,
-        },
-        selected: true,
-      };
+      const newId = `${nodeToDup.type === 'imageNode' ? 'img' : 'node'}_${Date.now()}`;
+
+      let duplicatedNode: StrategyNode | ImageNode;
+      if (nodeToDup.type === 'imageNode') {
+        const imgData = nodeToDup.data as ImageNodeData;
+        duplicatedNode = {
+          ...nodeToDup,
+          id: newId,
+          position: {
+            x: nodeToDup.position.x + 40,
+            y: nodeToDup.position.y + 40,
+          },
+          data: {
+            ...imgData,
+            title: imgData.title ? `${imgData.title} (Копия)` : '',
+          },
+          selected: true,
+        } as ImageNode;
+      } else {
+        const stratData = nodeToDup.data as StrategyNodeData;
+        duplicatedNode = {
+          ...nodeToDup,
+          id: newId,
+          position: {
+            x: nodeToDup.position.x + 40,
+            y: nodeToDup.position.y + 40,
+          },
+          data: {
+            ...stratData,
+            title: `${stratData.title} (Копия)`,
+          },
+          selected: true,
+        } as StrategyNode;
+      }
 
       set((state) => {
         const unselectedNodes = state.nodes.map((n) => ({ ...n, selected: false }));
         const updatedNodes = [...unselectedNodes, duplicatedNode];
-        syncAndPersist(updatedNodes, state.edges, state.layoutMode, state.theme);
+        syncAndPersist(updatedNodes, state.edges, state.layoutMode, state.theme, state.drawings);
         return {
           nodes: updatedNodes,
           selectedNodeId: newId,
@@ -758,7 +900,7 @@ export const useBoardStore = create<BoardStore>((set, get) => {
           }
           return edge;
         });
-        syncAndPersist(state.nodes, updatedEdges, state.layoutMode, state.theme);
+        syncAndPersist(state.nodes, updatedEdges, state.layoutMode, state.theme, state.drawings);
         return { edges: updatedEdges };
       });
     },
@@ -767,7 +909,7 @@ export const useBoardStore = create<BoardStore>((set, get) => {
       get().saveSnapshot();
       set((state) => {
         const updatedEdges = state.edges.filter((e) => e.id !== id);
-        syncAndPersist(state.nodes, updatedEdges, state.layoutMode, state.theme);
+        syncAndPersist(state.nodes, updatedEdges, state.layoutMode, state.theme, state.drawings);
         return {
           edges: updatedEdges,
           selectedEdgeId: state.selectedEdgeId === id ? null : state.selectedEdgeId,
@@ -781,53 +923,65 @@ export const useBoardStore = create<BoardStore>((set, get) => {
     },
 
     applyCurrentLayout: async () => {
-      const { nodes, edges, layoutMode, theme } = get();
+      const { nodes, edges, layoutMode, theme, drawings } = get();
       if (layoutMode === 'freeform') return;
 
       get().saveSnapshot();
       const newNodes = await computeLayout(nodes, edges, layoutMode);
       set({ nodes: newNodes });
-      syncAndPersist(newNodes, edges, layoutMode, theme);
+      syncAndPersist(newNodes, edges, layoutMode, theme, drawings);
     },
 
     undo: () => {
-      const { undoStack, redoStack, nodes, edges, theme, layoutMode } = get();
+      const { undoStack, redoStack, nodes, edges, drawings, theme, layoutMode } = get();
       if (undoStack.length === 0) return;
 
       const previous = undoStack[undoStack.length - 1];
       const newUndo = undoStack.slice(0, -1);
       const newRedo = [
         ...redoStack,
-        { nodes: JSON.parse(JSON.stringify(nodes)), edges: JSON.parse(JSON.stringify(edges)), timestamp: Date.now() },
+        {
+          nodes: JSON.parse(JSON.stringify(nodes)),
+          edges: JSON.parse(JSON.stringify(edges)),
+          drawings: JSON.parse(JSON.stringify(drawings || [])),
+          timestamp: Date.now(),
+        },
       ];
 
       set({
         nodes: previous.nodes,
         edges: previous.edges,
+        drawings: previous.drawings || [],
         undoStack: newUndo,
         redoStack: newRedo,
       });
-      syncAndPersist(previous.nodes, previous.edges, layoutMode, theme);
+      syncAndPersist(previous.nodes, previous.edges, layoutMode, theme, previous.drawings || []);
     },
 
     redo: () => {
-      const { undoStack, redoStack, nodes, edges, theme, layoutMode } = get();
+      const { undoStack, redoStack, nodes, edges, drawings, theme, layoutMode } = get();
       if (redoStack.length === 0) return;
 
       const next = redoStack[redoStack.length - 1];
       const newRedo = redoStack.slice(0, -1);
       const newUndo = [
         ...undoStack,
-        { nodes: JSON.parse(JSON.stringify(nodes)), edges: JSON.parse(JSON.stringify(edges)), timestamp: Date.now() },
+        {
+          nodes: JSON.parse(JSON.stringify(nodes)),
+          edges: JSON.parse(JSON.stringify(edges)),
+          drawings: JSON.parse(JSON.stringify(drawings || [])),
+          timestamp: Date.now(),
+        },
       ];
 
       set({
         nodes: next.nodes,
         edges: next.edges,
+        drawings: next.drawings || [],
         undoStack: newUndo,
         redoStack: newRedo,
       });
-      syncAndPersist(next.nodes, next.edges, layoutMode, theme);
+      syncAndPersist(next.nodes, next.edges, layoutMode, theme, next.drawings || []);
     },
 
     resetToDefault: () => {
@@ -839,11 +993,12 @@ export const useBoardStore = create<BoardStore>((set, get) => {
       set({
         nodes: defaultNodes,
         edges: defaultEdges,
+        drawings: [],
         layoutMode: 'freeform',
         selectedNodeId: null,
         selectedEdgeId: null,
       });
-      syncAndPersist(defaultNodes, defaultEdges, 'freeform', get().theme);
+      syncAndPersist(defaultNodes, defaultEdges, 'freeform', get().theme, []);
     },
 
     exportJson: () => {

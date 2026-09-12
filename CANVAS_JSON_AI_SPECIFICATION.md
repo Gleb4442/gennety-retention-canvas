@@ -27,9 +27,10 @@ interface CanvasProjectJson {
   title: string;          // Название схемы / воронки
   description?: string;    // Краткое описание гипотезы или цепочки шагов
   layoutMode?: 'freeform' | 'pyramid' | 'flywheel'; // По умолчанию 'freeform'
-  theme?: 'dark' | 'light' | 'graphite' | 'monochrome'; // По умолчанию 'dark'
-  nodes: StrategyNode[];   // Массив карточек (узлов)
+  theme?: 'dark' | 'stone' | 'slate' | 'graphite' | 'monochrome' | 'light' | 'sand' | 'mist'; // По умолчанию 'dark'
+  nodes: (StrategyNode | ImageNode)[];   // Массив карточек (узлов) и фото-карточек
   edges: StrategyEdge[];   // Массив связей (стрелок)
+  drawings?: DrawingStroke[]; // Массив рисунков от руки (если есть)
 }
 ```
 
@@ -50,8 +51,26 @@ interface CanvasProjectJson {
     "description": "Подробное описание механики, сути шага или психологического триггера.",
     "keyMetric": "Целевая метрика (например: CR 78%, D1 45%, Churn < 3%)",
     "outcome": "Итоговый результат шага (например: Активация аккаунта)",
+    "imageUrl": "https://example.com/mockup.png",
     "tags": ["Onboarding", "Activation", "Core"],
     "notes": "Внутренняя заметка команды или подсказка (необязательно)"
+  }
+}
+```
+
+### 3.1 Фото-карточка на холсте (`type: "imageNode"`):
+Если на холст нужно вынести отдельный макет, фотографию наброска А4 или интерфейс:
+
+```json
+{
+  "id": "img_screen_1",
+  "type": "imageNode",
+  "position": { "x": 480, "y": 180 },
+  "data": {
+    "imageUrl": "https://example.com/screen.png",
+    "title": "Макет первого экрана",
+    "caption": "A/B тест формы регистрации",
+    "width": 340
   }
 }
 ```
@@ -60,12 +79,14 @@ interface CanvasProjectJson {
 | Поле | Тип | Обязательно | Описание |
 |---|---|---|---|
 | `id` | `string` | **Да** | Уникальный строковый идентификатор узла (например: `"step_1"`, `"auth_core"`). |
+| `type` | `"strategyNode" \| "imageNode"` | Нет | По умолчанию `"strategyNode"`. Для чистого изображения — `"imageNode"`. |
 | `position.x` | `number` | Рекомендуется | Координата X на холсте в пикселях. Если не указана, авто-раскладчик разместит узлы по слоям. |
 | `position.y` | `number` | Рекомендуется | Координата Y на холсте в пикселях. |
 | `data.title` | `string` | **Да** | Главный заголовок блока (отображается жирным шрифтом). |
 | `data.badge` | `string` | Нет | Верхняя плашка-метка над заголовком (например: `"Шаг 1"`, `"Aha-Moment"`, `"Retention Tool"`). |
 | `data.category` | `string` | **Да** | Одна из 8 стандартных категорий (определяет акцентный цвет и иконку). |
 | `data.description`| `string` | Рекомендуется | Текстовое описание блока (поддерживает переносы строк `\n` и списки `•`). |
+| `data.imageUrl` | `string` | Нет | Ссылка на изображение (URL или data URL base64) внутри карточки. |
 | `data.keyMetric` | `string` | Нет | Ключевой KPI / конверсия / показатель этапа. |
 | `data.outcome` | `string` | Нет | Результат прохождения шага для пользователя или бизнеса. |
 | `data.tags` | `string[]` | Нет | Массив строковых тегов для быстрой фильтрации и поиска. |
@@ -101,7 +122,8 @@ interface CanvasProjectJson {
   "target": "step_2",
   "label": "Конверсия 68%",
   "animated": true,
-  "styleType": "bezier"
+  "styleType": "bezier",
+  "imageUrl": "https://example.com/icon.png"
 }
 ```
 
@@ -114,6 +136,7 @@ interface CanvasProjectJson {
 | `label` | `string` | Нет | Текстовая подпись над стрелкой (условие перехода, конверсия). |
 | `animated` | `boolean` | Нет | Анимированный пунктир потока частиц (по умолчанию `true`). |
 | `styleType` | `string` | Нет | Форма линии: `"bezier"` (плавная кривая), `"smoothstep"` (прямоугольные изгибы со скруглением), `"straight"` (прямая). По умолчанию `"bezier"`. |
+| `imageUrl` | `string` | Нет | Ссылка на фотографию / миниатюру связи (отображается в плашке связи и открывается в лайтбоксе). |
 
 ---
 

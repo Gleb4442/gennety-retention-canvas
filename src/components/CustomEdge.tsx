@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   BaseEdge,
   EdgeLabelRenderer,
@@ -8,6 +8,7 @@ import {
 import type { EdgeProps } from '@xyflow/react';
 import { useBoardStore } from '../store/useBoardStore';
 import type { StrategyEdgeData, EdgeLabelSize } from '../types';
+import { compressImageFile } from '../utils/imageCompressor';
 
 const LABEL_SIZES: Record<EdgeLabelSize, { text: string; pill: string }> = {
   sm: { text: 'text-[10px]', pill: 'px-3 py-1' },
@@ -28,9 +29,11 @@ export const CustomEdge = ({
   data,
   selected,
 }: EdgeProps & { data?: StrategyEdgeData }) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const updateEdge = useBoardStore((s) => s.updateEdge);
   const deleteEdge = useBoardStore((s) => s.deleteEdge);
   const setSelectedEdgeId = useBoardStore((s) => s.setSelectedEdgeId);
+  const openLightbox = useBoardStore((s) => s.openLightbox);
 
   const [isEditing, setIsEditing] = useState(false);
   const [tempLabel, setTempLabel] = useState(data?.label || '');
@@ -79,6 +82,21 @@ export const CustomEdge = ({
     }
   };
 
+  const handleFileInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const compressed = await compressImageFile(file, 1200, 0.85);
+      updateEdge(id, { imageUrl: compressed });
+    } catch (err) {
+      console.error('Failed to compress edge image:', err);
+      alert('Не удалось загрузить фото связи.');
+    } finally {
+      e.target.value = '';
+    }
+  };
+
   return (
     <>
       <BaseEdge
@@ -90,6 +108,15 @@ export const CustomEdge = ({
       />
 
       <EdgeLabelRenderer>
+        {/* Hidden file input for edge image */}
+        <input
+          type="file"
+          ref={fileInputRef}
+          onChange={handleFileInputChange}
+          accept="image/*"
+          className="hidden pointer-events-auto"
+        />
+
         <div
           style={{
             position: 'absolute',
@@ -151,6 +178,25 @@ export const CustomEdge = ({
               }}
               title="Двойной клик — редактировать название"
             >
+              {/* Optional Image Thumbnail in Edge Pill */}
+              {data?.imageUrl && (
+                <div 
+                  className="relative group/edgimg w-5 h-5 rounded-md overflow-hidden flex-shrink-0 cursor-pointer border border-white/20 shadow-sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openLightbox(data.imageUrl!, data?.label || 'Связь');
+                  }}
+                  title="Кликните для просмотра фото"
+                >
+                  <img src={data.imageUrl} alt={data.label || 'Связь'} className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/edgimg:opacity-100 flex items-center justify-center transition-opacity text-white">
+                    <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+                    </svg>
+                  </div>
+                </div>
+              )}
+
               <span className={`font-mono ${currentSizeConfig.text} tracking-tight whitespace-nowrap opacity-90`}>
                 {data?.label || 'связь'}
               </span>
@@ -169,6 +215,37 @@ export const CustomEdge = ({
                 >
                   {labelSize.toUpperCase()}
                 </button>
+
+                {/* Attach / Change Photo button */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    fileInputRef.current?.click();
+                  }}
+                  className="p-0.5 hover:opacity-100 transition-opacity"
+                  title={data?.imageUrl ? "Заменить фото связи" : "Прикрепить фото к связи"}
+                >
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
+                  </svg>
+                </button>
+
+                {/* Remove photo button if image attached */}
+                {data?.imageUrl && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      updateEdge(id, { imageUrl: undefined });
+                    }}
+                    className="p-0.5 hover:text-rose-400 transition-colors"
+                    title="Удалить фото связи"
+                  >
+                    <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" />
+                    </svg>
+                  </button>
+                )}
+
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -181,6 +258,7 @@ export const CustomEdge = ({
                     <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
                   </svg>
                 </button>
+
                 <button
                   onClick={(e) => {
                     e.stopPropagation();

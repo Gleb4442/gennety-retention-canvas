@@ -1,13 +1,13 @@
-import type { StrategyNode, StrategyEdge, LayoutMode } from '../types';
+import type { StrategyNode, ImageNode, StrategyEdge, LayoutMode } from '../types';
 
 const NODE_WIDTH = 340;
 const NODE_HEIGHT = 220;
 
-export async function getDagreLayout(
-  nodes: StrategyNode[],
+export async function getDagreLayout<T extends StrategyNode | ImageNode>(
+  nodes: T[],
   edges: StrategyEdge[],
   direction: 'TB' | 'LR' = 'TB'
-): Promise<StrategyNode[]> {
+): Promise<T[]> {
   const dagre = (await import('dagre')).default;
   const dagreGraph = new dagre.graphlib.Graph();
   dagreGraph.setDefaultEdgeLabel(() => ({}));
@@ -21,7 +21,10 @@ export async function getDagreLayout(
   });
 
   nodes.forEach((node) => {
-    dagreGraph.setNode(node.id, { width: NODE_WIDTH, height: NODE_HEIGHT });
+    const w = node.type === 'imageNode' && 'width' in node.data && typeof node.data.width === 'number' 
+      ? node.data.width 
+      : NODE_WIDTH;
+    dagreGraph.setNode(node.id, { width: w, height: NODE_HEIGHT });
   });
 
   edges.forEach((edge) => {
@@ -32,23 +35,26 @@ export async function getDagreLayout(
 
   return nodes.map((node) => {
     const nodeWithPosition = dagreGraph.node(node.id);
+    const w = node.type === 'imageNode' && 'width' in node.data && typeof node.data.width === 'number' 
+      ? node.data.width 
+      : NODE_WIDTH;
     return {
       ...node,
       position: {
-        x: nodeWithPosition.x - NODE_WIDTH / 2,
+        x: nodeWithPosition.x - w / 2,
         y: nodeWithPosition.y - NODE_HEIGHT / 2,
       },
     };
   });
 }
 
-export function getFlywheelLayout(
-  nodes: StrategyNode[],
+export function getFlywheelLayout<T extends StrategyNode | ImageNode>(
+  nodes: T[],
   centerX: number = 800,
   centerY: number = 550,
   radiusX: number = 520,
   radiusY: number = 380
-): StrategyNode[] {
+): T[] {
   const total = nodes.length;
   if (total === 0) return [];
 
@@ -73,9 +79,12 @@ export function getFlywheelLayout(
   });
 
   return sortedNodes.map((node, index) => {
+    const w = node.type === 'imageNode' && 'width' in node.data && typeof node.data.width === 'number' 
+      ? node.data.width 
+      : NODE_WIDTH;
     // Start at top (-PI/2) and rotate clockwise
     const angle = (2 * Math.PI * index) / total - Math.PI / 2;
-    const x = centerX + radiusX * Math.cos(angle) - NODE_WIDTH / 2;
+    const x = centerX + radiusX * Math.cos(angle) - w / 2;
     const y = centerY + radiusY * Math.sin(angle) - NODE_HEIGHT / 2;
 
     return {
@@ -89,10 +98,10 @@ export function getFlywheelLayout(
 }
 
 export async function computeLayout(
-  nodes: StrategyNode[],
+  nodes: (StrategyNode | ImageNode)[],
   edges: StrategyEdge[],
   mode: LayoutMode
-): Promise<StrategyNode[]> {
+): Promise<(StrategyNode | ImageNode)[]> {
   switch (mode) {
     case 'pyramid':
       // Hierarchical upward / downward pyramid (TB direction)

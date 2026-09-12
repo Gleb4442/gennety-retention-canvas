@@ -54,12 +54,20 @@ export const SearchModal: React.FC<SearchModalProps> = ({
   const filteredNodes = nodes.filter((node) => {
     const q = query.toLowerCase().trim();
     if (!q) return true;
-    const cat = CATEGORIES[node.data.category]?.label || '';
+    
+    if (node.type === 'imageNode') {
+      const title = (node.data.title || node.data.caption || 'Фото').toLowerCase();
+      const caption = (node.data.caption || '').toLowerCase();
+      return title.includes(q) || caption.includes(q) || 'фото'.includes(q);
+    }
+
+    const stratData = node.data;
+    const cat = (CATEGORIES[stratData.category]?.label || '').toLowerCase();
     return (
-      node.data.title.toLowerCase().includes(q) ||
-      node.data.badge.toLowerCase().includes(q) ||
-      node.data.description.toLowerCase().includes(q) ||
-      cat.toLowerCase().includes(q)
+      (stratData.title || '').toLowerCase().includes(q) ||
+      (stratData.badge || '').toLowerCase().includes(q) ||
+      (stratData.description || '').toLowerCase().includes(q) ||
+      cat.includes(q)
     );
   });
 
@@ -139,7 +147,15 @@ export const SearchModal: React.FC<SearchModalProps> = ({
           ) : (
             filteredNodes.map((node, index) => {
               const isSelected = index === selectedIndex;
-              const NodeIcon = ABSTRACT_ICONS[node.data.category] || IconCustomNode;
+              const isImg = node.type === 'imageNode';
+              const imgData = isImg ? (node.data as import('../types').ImageNodeData) : null;
+              const stratData = !isImg ? (node.data as import('../types').StrategyNodeData) : null;
+
+              const title = isImg ? (imgData?.title || imgData?.caption || 'Фото-карточка') : (stratData?.title || 'Карточка');
+              const badge = isImg ? 'Фото' : (stratData?.badge || 'Card');
+              const desc = isImg ? (imgData?.caption || 'Изображение на холсте') : (stratData?.description || '');
+              const NodeIcon = (!isImg && stratData) ? (ABSTRACT_ICONS[stratData.category] || IconCustomNode) : IconCustomNode;
+
               return (
                 <div
                   key={node.id}
@@ -153,19 +169,23 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                 >
                   <div className="flex items-center gap-3 min-w-0">
                     <div className="w-7 h-7 rounded-xl liquid-pill flex items-center justify-center flex-shrink-0 opacity-85">
-                      <NodeIcon className="w-3.5 h-3.5" />
+                      {isImg && imgData?.imageUrl ? (
+                        <img src={imgData.imageUrl} alt={title} className="w-full h-full object-cover rounded-lg" />
+                      ) : (
+                        <NodeIcon className="w-3.5 h-3.5" />
+                      )}
                     </div>
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
                         <span className="font-semibold text-xs text-inherit truncate">
-                          {node.data.title}
+                          {title}
                         </span>
                         <span className="font-mono text-[9px] px-2 py-0.5 rounded-md liquid-pill opacity-70">
-                          {node.data.badge}
+                          {badge}
                         </span>
                       </div>
                       <p className="text-[11px] opacity-60 truncate max-w-md">
-                        {node.data.description}
+                        {desc}
                       </p>
                     </div>
                   </div>

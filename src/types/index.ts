@@ -40,9 +40,24 @@ export interface StrategyNodeData extends Record<string, unknown> {
   notes?: string;
   tags?: string[];
   isHighlighted?: boolean;
+  imageUrl?: string;
 }
 
 export type StrategyNode = Node<StrategyNodeData, 'strategyNode'>;
+
+export interface ImageNodeData extends Record<string, unknown> {
+  imageUrl: string;
+  title?: string;
+  caption?: string;
+  width?: number;
+  height?: number;
+  aspectRatio?: number;
+  isHighlighted?: boolean;
+}
+
+export type ImageNode = Node<ImageNodeData, 'imageNode'>;
+
+export type BoardNode = StrategyNode | ImageNode;
 
 export type EdgeLabelSize = 'sm' | 'md' | 'lg' | 'xl';
 
@@ -52,15 +67,34 @@ export interface StrategyEdgeData extends Record<string, unknown> {
   styleType?: 'bezier' | 'smoothstep' | 'straight';
   color?: string;
   labelSize?: EdgeLabelSize;
+  imageUrl?: string;
 }
 
 export type StrategyEdge = Edge<StrategyEdgeData, 'customEdge'>;
 
+// ================= Freehand Drawing Types =================
+export interface DrawingPoint {
+  x: number;
+  y: number;
+}
+
+export type DrawingTool = 'select' | 'pen' | 'highlighter' | 'arrow' | 'eraser';
+
+export interface DrawingStroke {
+  id: string;
+  points: DrawingPoint[];
+  color: string;
+  width: number;
+  tool: 'pen' | 'highlighter' | 'arrow';
+  opacity?: number;
+}
+
 export type LayoutMode = 'freeform' | 'pyramid' | 'flywheel';
 
 export interface BoardSnapshot {
-  nodes: StrategyNode[];
+  nodes: (StrategyNode | ImageNode)[];
   edges: StrategyEdge[];
+  drawings?: DrawingStroke[];
   timestamp: number;
 }
 
@@ -70,8 +104,9 @@ export interface CanvasProject {
   id: string;
   title: string;
   description?: string;
-  nodes: StrategyNode[];
+  nodes: (StrategyNode | ImageNode)[];
   edges: StrategyEdge[];
+  drawings?: DrawingStroke[];
   layoutMode: LayoutMode;
   theme: ThemeMode;
   createdAt: number;
