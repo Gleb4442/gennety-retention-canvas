@@ -247,8 +247,8 @@
   background: var(--pill-glass);
   color: var(--text-secondary);
   box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.1);
-  border: none !important;
-  transition: background 0.15s ease, color 0.15s ease;
+  border: 1px solid transparent;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
 .liquid-pill:hover {
