@@ -78,7 +78,7 @@ export const AuthGate: React.FC = () => {
             <ButterflyLogo theme={theme} className="w-full h-full" />
           </div>
           <h1 className="font-display font-bold text-2xl tracking-tight text-white mb-1">
-            Retention Canvas
+            Gennety Canvas
           </h1>
           <p className="text-xs font-mono text-zinc-400 max-w-xs">
             Стратегический хаб удержания пользователей и архитектуры продуктов Gennety

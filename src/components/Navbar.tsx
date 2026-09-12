@@ -115,7 +115,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   const handleResetConfirm = () => {
-    if (confirm('Сбросить схему до начального состояния Retention Canvas?')) {
+    if (confirm('Сбросить схему до начального состояния Gennety Canvas?')) {
       resetToDefault();
     }
   };
@@ -147,7 +147,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
           <div>
             <span className="font-display font-bold text-sm tracking-wider text-inherit block leading-tight">
-              Retention Canvas
+              Gennety Canvas
             </span>
           </div>
         </div>
@@ -155,16 +155,16 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Compact Project Folder Pill */}
         <button
           onClick={onOpenCabinet}
-          className="pointer-events-auto flex items-center gap-2 px-3 py-2 rounded-2xl liquid-glass shadow-2xl text-xs font-mono transition-all hover:bg-white/10 group"
+          className="pointer-events-auto flex items-center gap-2 px-3 py-2 rounded-2xl liquid-glass shadow-2xl text-xs font-mono transition-all hover:bg-black/5 dark:hover:bg-white/10 hover:scale-[1.01] active:scale-[0.99] text-inherit group"
           title={`Проект: ${activeProject?.title || 'Retention'} (кликните, чтобы открыть проекты)`}
         >
-          <svg className="w-3.5 h-3.5 text-zinc-400 group-hover:text-white flex-shrink-0 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg className="w-3.5 h-3.5 opacity-65 group-hover:opacity-100 flex-shrink-0 transition-opacity" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
           </svg>
-          <span className="max-w-[110px] sm:max-w-[140px] truncate text-zinc-300 group-hover:text-white transition-colors">
+          <span className="max-w-[120px] sm:max-w-[160px] truncate opacity-85 group-hover:opacity-100 font-medium transition-opacity">
             {activeProject?.title || 'Проекты'}
           </span>
-          <span className="w-1.5 h-1.5 rounded-full bg-zinc-400 flex-shrink-0" title="Сохранено" />
+          <span className="w-1.5 h-1.5 rounded-full bg-current opacity-40 group-hover:opacity-75 flex-shrink-0 transition-opacity" title="Сохранено" />
         </button>
       </div>
 
@@ -328,7 +328,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <button
             onClick={handleImportJsonClick}
-            className="p-2 rounded-xl liquid-pill opacity-75 hover:opacity-100 transition-opacity text-zinc-300 hover:text-white"
+            className="p-2 rounded-xl liquid-pill opacity-75 hover:opacity-100 transition-opacity"
             title="Импортировать по коду JSON или AI-промпту (⌘I)"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
@@ -339,7 +339,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             onClick={handleResetConfirm}
             className="p-2 rounded-xl liquid-pill opacity-50 hover:opacity-100 transition-opacity"
-            title="Сбросить холст к исходной структуре Retention Canvas"
+            title="Сбросить холст к исходной структуре Gennety Canvas"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
               <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" />
@@ -349,7 +349,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Settings Button (Access Key, Account, Backup) */}
           <button
             onClick={onOpenSettings}
-            className="p-2 rounded-xl liquid-pill text-zinc-300 hover:text-white transition-colors"
+            className="p-2 rounded-xl liquid-pill opacity-75 hover:opacity-100 transition-opacity"
             title="Настройки ключа доступа и аккаунта"
           >
             <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

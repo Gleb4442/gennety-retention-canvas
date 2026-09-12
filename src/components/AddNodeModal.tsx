@@ -88,7 +88,7 @@ export const AddNodeModal: React.FC<AddNodeModalProps> = ({ isOpen, onClose }) =
                 Новый Стратегический Блок
               </h2>
               <p className="text-[11px] opacity-60 font-mono">
-                Добавление узла в архитектуру Retention Canvas
+                Добавление узла в архитектуру Gennety Canvas
               </p>
             </div>
           </div>

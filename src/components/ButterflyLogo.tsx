@@ -14,7 +14,7 @@ export const ButterflyLogo: React.FC<ButterflyLogoProps> = ({ theme, className =
   return (
     <img
       src={src}
-      alt="Retention Canvas"
+      alt="Gennety Canvas"
       className={`${className} object-contain select-none pointer-events-none`}
       draggable={false}
     />

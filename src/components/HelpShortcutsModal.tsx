@@ -45,7 +45,7 @@ export const HelpShortcutsModal: React.FC<HelpShortcutsModalProps> = ({ isOpen, 
                 Горячие Клавиши & Темы
               </h2>
               <p className="text-[11px] opacity-60 font-mono">
-                Miro-управление холстом Retention Canvas
+                Miro-управление холстом Gennety Canvas
               </p>
             </div>
           </div>
