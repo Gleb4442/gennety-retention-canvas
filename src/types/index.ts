@@ -10,7 +10,15 @@ export type CategoryType =
   | 'outcome' 
   | 'custom';
 
-export type ThemeMode = 'dark' | 'light' | 'graphite' | 'monochrome';
+export type ThemeMode = 
+  | 'dark' 
+  | 'light' 
+  | 'graphite' 
+  | 'monochrome' 
+  | 'stone' 
+  | 'slate' 
+  | 'sand' 
+  | 'mist';
 
 export interface CategoryDefinition {
   id: CategoryType;

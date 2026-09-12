@@ -225,7 +225,7 @@ export function importWorkspaceBackup(
       nodes: Array.isArray(p.nodes) ? p.nodes : [],
       edges: Array.isArray(p.edges) ? p.edges : [],
       layoutMode: (['freeform', 'pyramid', 'flywheel'].includes(p.layoutMode as LayoutMode) ? p.layoutMode : 'freeform') as LayoutMode,
-      theme: (['dark', 'light', 'graphite', 'monochrome'].includes(p.theme as ThemeMode) ? p.theme : 'dark') as ThemeMode,
+      theme: (['dark', 'light', 'graphite', 'monochrome', 'stone', 'slate', 'sand', 'mist'].includes(p.theme as ThemeMode) ? p.theme : 'dark') as ThemeMode,
       createdAt: p.createdAt || Date.now(),
       updatedAt: Date.now(),
       tags: Array.isArray(p.tags) ? p.tags : ['Imported'],

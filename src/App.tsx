@@ -35,13 +35,17 @@ export const App: React.FC = () => {
     document.documentElement.classList.remove(
       'theme-dark',
       'theme-light',
-      'theme-solarized',
       'theme-graphite',
       'theme-monochrome',
+      'theme-stone',
+      'theme-slate',
+      'theme-sand',
+      'theme-mist',
       'dark'
     );
     document.documentElement.classList.add(`theme-${theme}`);
-    if (theme !== 'light') {
+    const isLight = ['light', 'sand', 'mist'].includes(theme);
+    if (!isLight) {
       document.documentElement.classList.add('dark');
     }
   }, [theme]);

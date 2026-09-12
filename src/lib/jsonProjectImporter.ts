@@ -412,7 +412,7 @@ export function parseCanvasJson(
     ? rawProject.layoutMode
     : 'freeform';
 
-  const theme: ThemeMode = ['dark', 'light', 'graphite', 'monochrome'].includes(rawProject.theme)
+  const theme: ThemeMode = ['dark', 'light', 'graphite', 'monochrome', 'stone', 'slate', 'sand', 'mist'].includes(rawProject.theme)
     ? rawProject.theme
     : 'dark';
 

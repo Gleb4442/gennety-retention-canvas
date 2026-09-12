@@ -9,7 +9,8 @@ interface ButterflyLogoProps {
 }
 
 export const ButterflyLogo: React.FC<ButterflyLogoProps> = ({ theme, className = 'w-6 h-6' }) => {
-  const src = theme === 'light' ? butterflyBlack : butterflyWhite;
+  const isLight = ['light', 'sand', 'mist'].includes(theme);
+  const src = isLight ? butterflyBlack : butterflyWhite;
 
   return (
     <img

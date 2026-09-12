@@ -138,10 +138,11 @@ export const Canvas: React.FC<CanvasProps> = ({ onOpenSearchModal }) => {
   // MiniMap node color
   const nodeColor = useCallback((node: Node) => {
     const strategyNode = node as StrategyNode;
+    const isLight = ['light', 'sand', 'mist'].includes(theme);
     if (strategyNode.selected) {
-      return theme === 'light' ? '#000000' : '#FFFFFF';
+      return isLight ? '#000000' : '#FFFFFF';
     }
-    return theme === 'light' ? '#94A3B8' : '#475569';
+    return isLight ? '#94A3B8' : '#475569';
   }, [theme]);
 
 

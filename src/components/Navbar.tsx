@@ -120,11 +120,15 @@ export const Navbar: React.FC<NavbarProps> = ({
     }
   };
 
-  const themeOptions: { id: ThemeMode; label: string; desc: string }[] = [
-    { id: 'dark', label: 'Dark Obsidian', desc: 'Глубокое стекло' },
-    { id: 'light', label: 'Liquid Pearl', desc: 'Светлый жемчуг' },
-    { id: 'graphite', label: 'Graphite Gray', desc: 'Матовый серый' },
-    { id: 'monochrome', label: 'Monochrome B&W', desc: 'Чёрно-белая' },
+  const themeOptions: { id: ThemeMode; label: string; desc: string; isLight?: boolean }[] = [
+    { id: 'dark', label: 'Dark Obsidian', desc: 'Глубокое чёрное стекло' },
+    { id: 'stone', label: 'Warm Stone', desc: 'Тёплый базальт (без синевы)' },
+    { id: 'slate', label: 'Nordic Slate', desc: 'Скандинавский сланец' },
+    { id: 'graphite', label: 'Graphite Gray', desc: 'Матовый нейтральный серый' },
+    { id: 'monochrome', label: 'Monochrome B&W', desc: 'Строгий минимал' },
+    { id: 'light', label: 'Liquid Pearl', desc: 'Светлый жемчуг', isLight: true },
+    { id: 'sand', label: 'Parchment Sand', desc: 'Песочный пергамент (книжный)', isLight: true },
+    { id: 'mist', label: 'Titanium Mist', desc: 'Титановая дымка (без бликов)', isLight: true },
   ];
 
   return (
@@ -220,33 +224,82 @@ export const Navbar: React.FC<NavbarProps> = ({
             title="Переключить тему оформления"
           >
             <IconThemeSwitch className="w-3.5 h-3.5 opacity-80" />
-            <span className="hidden md:inline capitalize opacity-90">{theme}</span>
+            <span className="hidden md:inline opacity-90 truncate max-w-[110px]">
+              {themeOptions.find((t) => t.id === theme)?.label || theme}
+            </span>
           </button>
 
           {isThemeMenuOpen && (
             <div 
-              className="absolute top-11 right-0 w-48 p-1.5 rounded-2xl liquid-glass shadow-2xl z-50 flex flex-col gap-1 animate-in fade-in zoom-in-95"
+              className="absolute top-11 right-0 w-64 p-1.5 rounded-2xl liquid-glass shadow-2xl z-50 flex flex-col gap-0.5 animate-in fade-in zoom-in-95 max-h-[85vh] overflow-y-auto"
               onMouseLeave={() => setIsThemeMenuOpen(false)}
             >
-              {themeOptions.map((t) => (
+              {/* Dark & Neutral Group */}
+              <div className="px-2.5 pt-2 pb-1 text-[9px] font-mono uppercase tracking-wider opacity-40">
+                Тёмные & Матовые
+              </div>
+              {themeOptions.filter((t) => !t.isLight).map((t) => (
                 <button
                   key={t.id}
                   onClick={() => {
                     setTheme(t.id);
                     setIsThemeMenuOpen(false);
                   }}
-                  className={`flex items-center justify-between px-3 py-2 rounded-xl text-left text-xs transition-all ${
+                  className={`flex items-center justify-between px-2.5 py-2 rounded-xl text-left text-xs transition-all ${
                     theme === t.id
                       ? 'liquid-pill-active font-semibold'
-                      : 'hover:bg-white/10 opacity-75 hover:opacity-100'
+                      : 'hover:bg-black/5 dark:hover:bg-white/10 opacity-75 hover:opacity-100'
                   }`}
                 >
-                  <div>
-                    <div className="font-medium text-[11px]">{t.label}</div>
-                    <div className="text-[9px] opacity-60 font-mono">{t.desc}</div>
+                  <div className="flex items-center gap-2.5">
+                    <span 
+                      className="w-4 h-4 rounded-full border border-white/20 flex-shrink-0"
+                      style={{ 
+                        backgroundColor: t.id === 'dark' ? '#08090C' : t.id === 'stone' ? '#1C1B1A' : t.id === 'slate' ? '#111418' : t.id === 'graphite' ? '#18191D' : '#050505' 
+                      }} 
+                    />
+                    <div>
+                      <div className="font-medium text-[11px] leading-tight">{t.label}</div>
+                      <div className="text-[9px] opacity-60 font-mono leading-tight">{t.desc}</div>
+                    </div>
                   </div>
                   {theme === t.id && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-current opacity-80" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-current opacity-80 ml-2 flex-shrink-0" />
+                  )}
+                </button>
+              ))}
+
+              {/* Light & Gentle Group */}
+              <div className="px-2.5 pt-2.5 pb-1 text-[9px] font-mono uppercase tracking-wider opacity-40 border-t border-current/10 mt-1">
+                Светлые & Мягкие для глаз
+              </div>
+              {themeOptions.filter((t) => t.isLight).map((t) => (
+                <button
+                  key={t.id}
+                  onClick={() => {
+                    setTheme(t.id);
+                    setIsThemeMenuOpen(false);
+                  }}
+                  className={`flex items-center justify-between px-2.5 py-2 rounded-xl text-left text-xs transition-all ${
+                    theme === t.id
+                      ? 'liquid-pill-active font-semibold'
+                      : 'hover:bg-black/5 dark:hover:bg-white/10 opacity-75 hover:opacity-100'
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <span 
+                      className="w-4 h-4 rounded-full border border-black/20 flex-shrink-0"
+                      style={{ 
+                        backgroundColor: t.id === 'light' ? '#F3F5F8' : t.id === 'sand' ? '#ECE8E1' : '#E4E6EA' 
+                      }} 
+                    />
+                    <div>
+                      <div className="font-medium text-[11px] leading-tight">{t.label}</div>
+                      <div className="text-[9px] opacity-60 font-mono leading-tight">{t.desc}</div>
+                    </div>
+                  </div>
+                  {theme === t.id && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-current opacity-80 ml-2 flex-shrink-0" />
                   )}
                 </button>
               ))}
