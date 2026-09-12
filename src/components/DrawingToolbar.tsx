@@ -4,11 +4,11 @@ import type { DrawingTool } from '../types';
 
 const COLOR_PALETTE = [
   { id: '#F4F4F6', label: 'Белый / Светлый', bg: '#F4F4F6' },
+  { id: '#A1A1AA', label: 'Серый / Цинк', bg: '#A1A1AA' },
   { id: '#18181B', label: 'Чёрный / Графит', bg: '#18181B' },
-  { id: '#E11D48', label: 'Бордовый', bg: '#E11D48' },
-  { id: '#F59E0B', label: 'Янтарный', bg: '#F59E0B' },
-  { id: '#3B82F6', label: 'Лазурный', bg: '#3B82F6' },
-  { id: '#10B981', label: 'Изумрудный', bg: '#10B981' },
+  { id: '#881337', label: 'Бордовый', bg: '#881337' },
+  { id: '#D97706', label: 'Тёплая охра', bg: '#D97706' },
+  { id: '#78716C', label: 'Базальт / Камень', bg: '#78716C' },
 ];
 
 const STROKE_WIDTHS = [

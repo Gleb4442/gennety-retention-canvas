@@ -99,7 +99,6 @@ export const App: React.FC = () => {
       >
         {/* Top Executive Frameless Liquid Glass Bar */}
         <Navbar
-          onOpenAddModal={() => setIsAddModalOpen(true)}
           onOpenSearchModal={() => setIsSearchModalOpen(true)}
           onOpenHelpModal={() => setIsHelpModalOpen(true)}
           onOpenCabinet={() => setIsCabinetOpen(true)}
@@ -108,7 +107,10 @@ export const App: React.FC = () => {
         />
 
         {/* Infinite Interactive Node Canvas */}
-        <Canvas onOpenSearchModal={() => setIsSearchModalOpen(true)} />
+        <Canvas 
+          onOpenSearchModal={() => setIsSearchModalOpen(true)}
+          onOpenAddModal={() => setIsAddModalOpen(true)}
+        />
 
         {/* Add Card Modal */}
         <AddNodeModal
