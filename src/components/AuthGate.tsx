@@ -66,9 +66,9 @@ export const AuthGate: React.FC = () => {
   return (
     <div className="relative w-screen h-screen flex items-center justify-center overflow-hidden select-none px-4" style={{ backgroundColor: 'var(--bg-canvas)' }}>
       {/* Ambient background glows */}
-      <div className="absolute -top-40 -left-40 w-96 h-96 rounded-full bg-cyan-500/10 blur-[120px] pointer-events-none" />
-      <div className="absolute -bottom-40 -right-40 w-96 h-96 rounded-full bg-blue-600/10 blur-[120px] pointer-events-none" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-emerald-500/5 blur-[160px] pointer-events-none" />
+      <div className="absolute -top-40 -left-40 w-96 h-96 rounded-full bg-white/[0.02] blur-[140px] pointer-events-none" />
+      <div className="absolute -bottom-40 -right-40 w-96 h-96 rounded-full bg-rose-950/20 blur-[140px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-white/[0.015] blur-[160px] pointer-events-none" />
 
       {/* Main Glass Panel */}
       <div className="relative w-full max-w-md p-8 rounded-3xl liquid-glass shadow-2xl z-10 animate-in fade-in zoom-in-95 duration-200">
@@ -153,7 +153,7 @@ export const AuthGate: React.FC = () => {
                   }}
                   placeholder="GNTY-XXXX-XXXX-XXXX"
                   autoFocus
-                  className="w-full px-4 py-3 rounded-xl font-mono text-sm tracking-wider liquid-pill text-white placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-cyan-400/50"
+                  className="w-full px-4 py-3 rounded-xl font-mono text-sm tracking-wider liquid-pill text-white placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-white/30"
                 />
               </div>
               <p className="mt-1.5 text-[10px] text-zinc-500">
@@ -179,7 +179,7 @@ export const AuthGate: React.FC = () => {
                   setMode('generate');
                   if (!generatedKey) handleGenerateClick();
                 }}
-                className="text-xs text-zinc-400 hover:text-cyan-400 transition-colors"
+                className="text-xs text-zinc-400 hover:text-white transition-colors"
               >
                 Нет ключа? <span className="underline underline-offset-2">Создать новый персональный ключ</span>
               </button>
@@ -193,11 +193,11 @@ export const AuthGate: React.FC = () => {
             <div className="p-4 rounded-2xl liquid-pill border border-white/5">
               <div className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider mb-2 flex items-center justify-between">
                 <span>Ваш уникальный ключ</span>
-                <span className="text-[10px] text-emerald-400 font-normal">Единожды создаваемый</span>
+                <span className="text-[10px] text-zinc-400 font-normal">Единожды создаваемый</span>
               </div>
 
               <div className="p-3 rounded-xl bg-black/40 border border-white/10 flex items-center justify-between gap-2 mb-3">
-                <span className="font-mono font-bold text-sm tracking-wider text-cyan-300 select-all break-all">
+                <span className="font-mono font-bold text-sm tracking-wider text-zinc-100 select-all break-all">
                   {generatedKey || 'Генерация...'}
                 </span>
 
@@ -208,7 +208,7 @@ export const AuthGate: React.FC = () => {
                   title="Скопировать ключ"
                 >
                   {isCopied ? (
-                    <span className="text-emerald-400 flex items-center gap-1">
+                    <span className="text-zinc-200 flex items-center gap-1">
                       <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                         <polyline points="20 6 9 17 4 12" />
                       </svg>
@@ -227,7 +227,7 @@ export const AuthGate: React.FC = () => {
               </div>
 
               <div className="flex items-start gap-2 text-[11px] text-zinc-400 leading-relaxed">
-                <span className="text-amber-400 flex-shrink-0">⚠️</span>
+                <span className="text-zinc-400 flex-shrink-0">⚠️</span>
                 <span>
                   <strong>Сохраните этот ключ!</strong> Он используется для авторизации в вашем личном кабинете на всех устройствах и доступа ко всем вашим сохранённым Canvas-проектам.
                 </span>

@@ -158,13 +158,13 @@ export const Navbar: React.FC<NavbarProps> = ({
           className="pointer-events-auto flex items-center gap-2 px-3 py-2 rounded-2xl liquid-glass shadow-2xl text-xs font-mono transition-all hover:bg-white/10 group"
           title={`Проект: ${activeProject?.title || 'Retention'} (кликните, чтобы открыть проекты)`}
         >
-          <svg className="w-3.5 h-3.5 text-cyan-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg className="w-3.5 h-3.5 text-zinc-400 group-hover:text-white flex-shrink-0 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
           </svg>
           <span className="max-w-[110px] sm:max-w-[140px] truncate text-zinc-300 group-hover:text-white transition-colors">
             {activeProject?.title || 'Проекты'}
           </span>
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0" title="Сохранено" />
+          <span className="w-1.5 h-1.5 rounded-full bg-zinc-400 flex-shrink-0" title="Сохранено" />
         </button>
       </div>
 
@@ -328,7 +328,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <button
             onClick={handleImportJsonClick}
-            className="p-2 rounded-xl liquid-pill opacity-75 hover:opacity-100 transition-opacity text-cyan-300 hover:text-white"
+            className="p-2 rounded-xl liquid-pill opacity-75 hover:opacity-100 transition-opacity text-zinc-300 hover:text-white"
             title="Импортировать по коду JSON или AI-промпту (⌘I)"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">

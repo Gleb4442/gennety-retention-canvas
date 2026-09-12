@@ -146,7 +146,7 @@ export const PersonalCabinetModal: React.FC<PersonalCabinetModalProps> = ({
                 <h1 className="font-display font-bold text-base text-white">
                   Личный кабинет
                 </h1>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono liquid-pill text-cyan-400 border border-cyan-400/20">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono liquid-pill text-zinc-300 border border-white/10">
                   Проекты
                 </span>
               </div>
@@ -198,7 +198,7 @@ export const PersonalCabinetModal: React.FC<PersonalCabinetModalProps> = ({
               className="px-3 py-1.5 rounded-xl liquid-pill text-xs font-mono text-zinc-300 hover:text-white flex items-center gap-1.5 transition-colors hover:bg-white/10"
               title="Открыть карту настроек ключа и аккаунта"
             >
-              <svg className="w-3.5 h-3.5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg className="w-3.5 h-3.5 text-zinc-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="12" cy="12" r="3" />
                 <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
               </svg>
@@ -227,11 +227,11 @@ export const PersonalCabinetModal: React.FC<PersonalCabinetModalProps> = ({
           </div>
           <div className="p-2.5 rounded-xl liquid-pill">
             <div className="text-[10px] font-mono text-zinc-400 uppercase tracking-wider">Всего блоков</div>
-            <div className="text-lg font-bold font-display text-cyan-300 mt-0.5">{totalNodesCount}</div>
+            <div className="text-lg font-bold font-display text-white mt-0.5">{totalNodesCount}</div>
           </div>
           <div className="p-2.5 rounded-xl liquid-pill">
             <div className="text-[10px] font-mono text-zinc-400 uppercase tracking-wider">Связей в графах</div>
-            <div className="text-lg font-bold font-display text-emerald-300 mt-0.5">{totalEdgesCount}</div>
+            <div className="text-lg font-bold font-display text-zinc-300 mt-0.5">{totalEdgesCount}</div>
           </div>
           <div className="p-2.5 rounded-xl liquid-pill">
             <div className="text-[10px] font-mono text-zinc-400 uppercase tracking-wider">Активный проект</div>
@@ -249,7 +249,7 @@ export const PersonalCabinetModal: React.FC<PersonalCabinetModalProps> = ({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Поиск по проектам..."
-              className="w-full pl-9 pr-4 py-1.5 rounded-xl liquid-pill text-xs text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-cyan-400/50"
+              className="w-full pl-9 pr-4 py-1.5 rounded-xl liquid-pill text-xs text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-white/30"
             />
             <svg
               className="w-4 h-4 text-zinc-500 absolute left-3 top-2"
@@ -264,17 +264,20 @@ export const PersonalCabinetModal: React.FC<PersonalCabinetModalProps> = ({
           </div>
         </div>
 
-        {/* ================= PROJECTS GRID ================= */}
-        <div className="p-6 overflow-y-auto max-h-[55vh]">
+        {/* ================= PROJECT CARDS LIST ================= */}
+        <div className="flex-1 overflow-y-auto p-6 space-y-3 max-h-[50vh]">
           {filteredProjects.length === 0 ? (
-            <div className="text-center py-12 text-zinc-500 font-mono text-xs">
-              Проекты не найдены. Попробуйте изменить поисковый запрос или создайте новый проект.
+            <div className="py-12 text-center text-zinc-500 space-y-2 font-mono text-xs">
+              <div>Проекты не найдены</div>
+              <div className="text-[11px] text-zinc-600">Попробуйте изменить поисковый запрос</div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {filteredProjects.map((p) => {
                 const isActive = p.id === currentProjectId;
                 const isEditingThis = editingProjectId === p.id;
+                const nodeCount = p.nodes?.length || 0;
+                const edgeCount = p.edges?.length || 0;
 
                 return (
                   <div
@@ -287,14 +290,14 @@ export const PersonalCabinetModal: React.FC<PersonalCabinetModalProps> = ({
                     }}
                     className={`group relative p-4 rounded-2xl transition-all cursor-pointer border ${
                       isActive
-                        ? 'liquid-pill-active border-cyan-400/50 shadow-xl ring-1 ring-cyan-400/30'
+                        ? 'liquid-pill-active border-white/25 shadow-xl ring-1 ring-white/10'
                         : 'liquid-glass border-white/5 hover:border-white/20 hover:scale-[1.01]'
                     }`}
                   >
                     {/* Active Ribbon */}
                     {isActive && (
-                      <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-0.5 rounded-md bg-cyan-500/20 text-cyan-300 text-[10px] font-mono font-medium">
-                        <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+                      <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-0.5 rounded-md bg-white/10 text-zinc-200 text-[10px] font-mono font-medium border border-white/10">
+                        <span className="w-1.5 h-1.5 rounded-full bg-white/90" />
                         <span>Открыт</span>
                       </div>
                     )}
@@ -311,14 +314,14 @@ export const PersonalCabinetModal: React.FC<PersonalCabinetModalProps> = ({
                           value={editingTitle}
                           onChange={(e) => setEditingTitle(e.target.value)}
                           autoFocus
-                          className="w-full px-2.5 py-1.5 rounded-lg liquid-pill text-xs font-semibold text-white focus:outline-none focus:ring-1 focus:ring-cyan-400"
+                          className="w-full px-2.5 py-1.5 rounded-lg liquid-pill text-xs font-semibold text-white focus:outline-none focus:ring-1 focus:ring-white/40"
                         />
                         <input
                           type="text"
                           value={editingDesc}
                           onChange={(e) => setEditingDesc(e.target.value)}
                           placeholder="Описание..."
-                          className="w-full px-2.5 py-1 rounded-lg liquid-pill text-[11px] text-zinc-300 focus:outline-none focus:ring-1 focus:ring-cyan-400"
+                          className="w-full px-2.5 py-1 rounded-lg liquid-pill text-[11px] text-zinc-300 focus:outline-none focus:ring-1 focus:ring-white/40"
                         />
                         <div className="flex items-center gap-2 pt-1">
                           <button
@@ -341,7 +344,7 @@ export const PersonalCabinetModal: React.FC<PersonalCabinetModalProps> = ({
                       </form>
                     ) : (
                       <div className="mb-2.5 pr-14">
-                        <h3 className="font-display font-bold text-sm text-white group-hover:text-cyan-300 transition-colors line-clamp-1">
+                        <h3 className="font-display font-bold text-sm text-white group-hover:text-zinc-200 transition-colors line-clamp-1">
                           {p.title}
                         </h3>
                         {p.description && (
@@ -355,10 +358,10 @@ export const PersonalCabinetModal: React.FC<PersonalCabinetModalProps> = ({
                     {/* Meta chips */}
                     <div className="flex flex-wrap items-center gap-1.5 mb-3 font-mono text-[10px]">
                       <span className="px-2 py-0.5 rounded-md liquid-pill text-zinc-300">
-                        🧩 {p.nodes?.length || 0} блоков
+                        🧩 {nodeCount} блоков
                       </span>
                       <span className="px-2 py-0.5 rounded-md liquid-pill text-zinc-400">
-                        ⚡ {p.edges?.length || 0} связей
+                        ⚡ {edgeCount} связей
                       </span>
                       <span className="px-2 py-0.5 rounded-md liquid-pill text-zinc-400 capitalize">
                         📐 {p.layoutMode}
@@ -435,7 +438,7 @@ export const PersonalCabinetModal: React.FC<PersonalCabinetModalProps> = ({
         {/* ================= FOOTER ================= */}
         <div className="px-6 py-3 border-t border-white/10 flex items-center justify-between bg-white/[0.02] text-xs font-mono text-zinc-400">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-400" />
+            <span className="w-2 h-2 rounded-full bg-zinc-400" />
             <span>Автосохранение включено</span>
           </div>
 

@@ -118,7 +118,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-white/10">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl liquid-pill flex items-center justify-center text-cyan-400">
+            <div className="w-8 h-8 rounded-xl liquid-pill flex items-center justify-center text-zinc-300">
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="12" cy="12" r="3" />
                 <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
@@ -151,15 +151,15 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
             <span className="text-zinc-400 uppercase tracking-wider text-[10px]">
               Активный ключ доступа
             </span>
-            <div className="flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-              <span className="text-[10px] text-emerald-400">Авторизован</span>
+            <div className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-zinc-400" />
+              <span className="text-[10px] text-zinc-300">Авторизован</span>
             </div>
           </div>
 
           {/* Key Box */}
           <div className="p-3 rounded-xl bg-black/40 border border-white/10 flex items-center justify-between gap-2">
-            <span className="font-mono font-bold text-sm tracking-wider text-cyan-300 select-all">
+            <span className="font-mono font-bold text-sm tracking-wider text-white select-all">
               {showFullKey ? accessKey : maskAccessKey(accessKey || '')}
             </span>
 
@@ -186,7 +186,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                 title="Копировать ключ"
               >
                 {copiedKey ? (
-                  <span className="text-emerald-400 flex items-center gap-1">✓ Скопирован</span>
+                  <span className="text-zinc-200 font-semibold flex items-center gap-1">✓ Скопирован</span>
                 ) : (
                   <span className="flex items-center gap-1">
                     <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -217,7 +217,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                   }}
                   placeholder="Введите другой ключ..."
                   autoFocus
-                  className="flex-1 px-3 py-1.5 rounded-xl liquid-pill text-xs font-mono text-white focus:outline-none focus:ring-1 focus:ring-cyan-400"
+                  className="flex-1 px-3 py-1.5 rounded-xl liquid-pill text-xs font-mono text-white focus:outline-none focus:ring-1 focus:ring-white/40"
                 />
                 <button
                   type="submit"
@@ -242,7 +242,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
               <button
                 type="button"
                 onClick={() => setIsSwitchingKey(true)}
-                className="text-[11px] text-zinc-400 hover:text-cyan-300 font-mono underline underline-offset-2 transition-colors"
+                className="text-[11px] text-zinc-400 hover:text-white font-mono underline underline-offset-2 transition-colors"
               >
                 Войти по другому ключу
               </button>
@@ -250,7 +250,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
               <button
                 type="button"
                 onClick={handleGenerateNewKey}
-                className="text-[11px] text-zinc-400 hover:text-cyan-300 font-mono underline underline-offset-2 transition-colors"
+                className="text-[11px] text-zinc-400 hover:text-white font-mono underline underline-offset-2 transition-colors"
               >
                 Создать новый ключ
               </button>
@@ -270,7 +270,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
               onClick={handleExportBackup}
               className="px-3.5 py-2.5 rounded-xl liquid-pill text-xs font-medium text-zinc-200 hover:text-white flex items-center justify-center gap-2 transition-colors hover:bg-white/10"
             >
-              <svg className="w-4 h-4 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg className="w-4 h-4 text-zinc-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                 <polyline points="7 10 12 15 17 10" />
                 <line x1="12" y1="15" x2="12" y2="3" />
@@ -283,7 +283,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
               onClick={() => backupInputRef.current?.click()}
               className="px-3.5 py-2.5 rounded-xl liquid-pill text-xs font-medium text-zinc-200 hover:text-white flex items-center justify-center gap-2 transition-colors hover:bg-white/10"
             >
-              <svg className="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg className="w-4 h-4 text-zinc-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <polyline points="1 4 1 10 7 10" />
                 <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
               </svg>

@@ -192,7 +192,7 @@ export const ImportJsonModal: React.FC<ImportJsonModalProps> = ({ isOpen, onClos
         {/* ================= HEADER ================= */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-white/[0.02]">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl liquid-pill flex items-center justify-center text-cyan-400">
+            <div className="w-9 h-9 rounded-xl liquid-pill flex items-center justify-center text-zinc-300">
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <polyline points="16 18 22 12 16 6" />
                 <polyline points="8 6 2 12 8 18" />
@@ -203,7 +203,7 @@ export const ImportJsonModal: React.FC<ImportJsonModalProps> = ({ isOpen, onClos
                 <h2 className="font-display font-bold text-base text-white">
                   Импорт схемы по JSON / AI
                 </h2>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-medium liquid-pill text-cyan-300">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-medium liquid-pill text-zinc-300">
                   A4 → Canvas
                 </span>
               </div>
@@ -268,7 +268,7 @@ export const ImportJsonModal: React.FC<ImportJsonModalProps> = ({ isOpen, onClos
               className="px-2.5 py-1 rounded-xl liquid-pill text-[11px] font-mono text-zinc-300 hover:text-white flex items-center gap-1 transition-colors"
               title="Загрузить .json файл с диска"
             >
-              <svg className="w-3 h-3 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg className="w-3 h-3 text-zinc-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                 <polyline points="17 8 12 3 7 8" />
                 <line x1="12" y1="3" x2="12" y2="15" />
@@ -302,7 +302,7 @@ export const ImportJsonModal: React.FC<ImportJsonModalProps> = ({ isOpen, onClos
                     value={titleOverride}
                     onChange={(e) => setTitleOverride(e.target.value)}
                     placeholder="Например: Новая воронка онбординга"
-                    className="w-full px-3.5 py-1.5 rounded-xl liquid-pill text-xs text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-cyan-400/50"
+                    className="w-full px-3.5 py-1.5 rounded-xl liquid-pill text-xs text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-white/30"
                   />
                 </div>
               </div>
@@ -315,7 +315,7 @@ export const ImportJsonModal: React.FC<ImportJsonModalProps> = ({ isOpen, onClos
                   onChange={(e) => setJsonText(e.target.value)}
                   placeholder={`Вставьте сюда JSON-код (или ответ ChatGPT в блоке \`\`\`json ... \`\`\`):\n\n{\n  "title": "Моя стратегия",\n  "nodes": [...],\n  "edges": [...]\n}`}
                   rows={13}
-                  className="w-full p-3.5 rounded-2xl liquid-pill text-xs font-mono text-zinc-200 placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-cyan-400/50 resize-y leading-relaxed bg-black/40 border border-white/5"
+                  className="w-full p-3.5 rounded-2xl liquid-pill text-xs font-mono text-zinc-200 placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-white/30 resize-y leading-relaxed bg-black/40 border border-white/5"
                   spellCheck={false}
                 />
 
@@ -333,13 +333,13 @@ export const ImportJsonModal: React.FC<ImportJsonModalProps> = ({ isOpen, onClos
               {parseResult && (
                 <div className="animate-in fade-in duration-150">
                   {parseResult.success && parseResult.stats ? (
-                    <div className="p-3.5 rounded-2xl bg-emerald-950/30 border border-emerald-500/30 text-emerald-200 text-xs space-y-2">
+                    <div className="p-3.5 rounded-2xl bg-white/[0.04] border border-white/15 text-zinc-200 text-xs space-y-2">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2 font-medium">
-                          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                          <span className="w-2 h-2 rounded-full bg-zinc-300 animate-pulse" />
                           <span>Синтаксис корректен: «{parseResult.stats.title}»</span>
                         </div>
-                        <div className="flex items-center gap-2 font-mono text-[11px] text-emerald-300">
+                        <div className="flex items-center gap-2 font-mono text-[11px] text-zinc-400">
                           <span>Карточек: {parseResult.stats.nodeCount}</span>
                           <span>•</span>
                           <span>Связей: {parseResult.stats.edgeCount}</span>
@@ -402,7 +402,7 @@ export const ImportJsonModal: React.FC<ImportJsonModalProps> = ({ isOpen, onClos
                       name="importMode"
                       checked={!replaceCurrentCanvas}
                       onChange={() => setReplaceCurrentCanvas(false)}
-                      className="accent-cyan-400"
+                      className="accent-zinc-300"
                     />
                     <span className={!replaceCurrentCanvas ? 'text-white font-medium' : 'text-zinc-400'}>
                       Создать как новый проект
@@ -414,7 +414,7 @@ export const ImportJsonModal: React.FC<ImportJsonModalProps> = ({ isOpen, onClos
                       name="importMode"
                       checked={replaceCurrentCanvas}
                       onChange={() => setReplaceCurrentCanvas(true)}
-                      className="accent-cyan-400"
+                      className="accent-zinc-300"
                     />
                     <span className={replaceCurrentCanvas ? 'text-white font-medium' : 'text-zinc-400'}>
                       Заменить текущий холст
@@ -428,8 +428,8 @@ export const ImportJsonModal: React.FC<ImportJsonModalProps> = ({ isOpen, onClos
           {activeTab === 'prompt' && (
             <div className="space-y-4">
               {/* Instructions */}
-              <div className="p-4 rounded-2xl bg-cyan-950/20 border border-cyan-500/20 space-y-2 text-xs text-zinc-300">
-                <div className="font-display font-semibold text-cyan-300 flex items-center gap-1.5">
+              <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/10 space-y-2 text-xs text-zinc-300">
+                <div className="font-display font-semibold text-white flex items-center gap-1.5">
                   <span>📸 Как превратить рисунок от руки на листе А4 в интерактивную онлайн-схему:</span>
                 </div>
                 <ol className="list-decimal list-inside space-y-1 text-zinc-400 leading-relaxed">
@@ -452,7 +452,7 @@ export const ImportJsonModal: React.FC<ImportJsonModalProps> = ({ isOpen, onClos
                 >
                   {copiedPrompt ? (
                     <>
-                      <span className="text-emerald-300 font-bold">✓</span>
+                      <span className="text-zinc-200 font-bold">✓</span>
                       <span>Скопировано в буфер!</span>
                     </>
                   ) : (
@@ -504,22 +504,22 @@ export const ImportJsonModal: React.FC<ImportJsonModalProps> = ({ isOpen, onClos
               <div className="p-3.5 rounded-2xl liquid-pill border border-white/5 space-y-2">
                 <div className="font-semibold text-white">Рекомендации по координатам:</div>
                 <p className="text-zinc-400 text-[11px] leading-relaxed">
-                  По горизонтали (шаги слева направо): <code className="text-cyan-300 font-mono">X + 420 px</code> (например: 80 → 500 → 920 → 1340).<br />
-                  По вертикали (параллельные ветки): <code className="text-cyan-300 font-mono">Y + 240 px</code> (например: 100 → 340 → 580).<br />
+                  По горизонтали (шаги слева направо): <code className="text-zinc-200 font-mono">X + 420 px</code> (например: 80 → 500 → 920 → 1340).<br />
+                  По вертикали (параллельные ветки): <code className="text-zinc-200 font-mono">Y + 240 px</code> (например: 100 → 340 → 580).<br />
                   <span className="text-zinc-500">Если координаты не указаны, приложение расставит карточки автоматически.</span>
                 </p>
               </div>
 
               <div className="flex items-center justify-between pt-1">
                 <span className="text-zinc-400 text-[11px]">
-                  Полная документация находится в репозитории: <code className="text-cyan-300 font-mono">CANVAS_JSON_AI_SPECIFICATION.md</code>
+                  Полная документация находится в репозитории: <code className="text-zinc-200 font-mono">CANVAS_JSON_AI_SPECIFICATION.md</code>
                 </span>
                 <button
                   onClick={() => {
                     handleInsertSample();
                     setActiveTab('editor');
                   }}
-                  className="px-3 py-1.5 rounded-xl liquid-pill text-xs text-cyan-300 hover:text-white"
+                  className="px-3 py-1.5 rounded-xl liquid-pill text-xs text-zinc-300 hover:text-white"
                 >
                   Вставить тестовый шаблон →
                 </button>
@@ -532,7 +532,7 @@ export const ImportJsonModal: React.FC<ImportJsonModalProps> = ({ isOpen, onClos
         <div className="flex items-center justify-between px-6 py-4 border-t border-white/10 bg-white/[0.02]">
           <div className="text-xs text-zinc-500 font-mono">
             {activeTab === 'editor' && parseResult?.success && (
-              <span className="text-emerald-400 flex items-center gap-1.5">
+              <span className="text-zinc-200 flex items-center gap-1.5">
                 <span>✓ Готово к импорту:</span>
                 <span className="font-semibold">{parseResult.stats?.title}</span>
               </span>
@@ -555,7 +555,7 @@ export const ImportJsonModal: React.FC<ImportJsonModalProps> = ({ isOpen, onClos
                 disabled={!parseResult?.success}
                 className={`px-5 py-2 rounded-xl text-xs font-semibold tracking-wide transition-all ${
                   parseResult?.success
-                    ? 'liquid-pill-active text-white hover:scale-105 shadow-lg shadow-cyan-500/20'
+                    ? 'liquid-pill-active text-white hover:scale-105 shadow-lg shadow-black/40'
                     : 'liquid-pill text-zinc-600 opacity-50 cursor-not-allowed'
                 }`}
               >

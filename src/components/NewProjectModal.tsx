@@ -71,12 +71,12 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({
                 onClick={() => setTemplate('blueprint')}
                 className={`p-3.5 rounded-2xl text-left transition-all border ${
                   template === 'blueprint'
-                    ? 'liquid-pill-active border-cyan-400/50 shadow-lg ring-1 ring-cyan-400/30'
+                    ? 'liquid-pill-active border-rose-900/60 shadow-lg ring-1 ring-rose-900/40'
                     : 'liquid-pill border-white/5 opacity-70 hover:opacity-100'
                 }`}
               >
                 <div className="flex items-center gap-2 mb-1.5">
-                  <span className="text-cyan-400">⚡</span>
+                  <span className="text-rose-400">⚡</span>
                   <span className="font-medium text-xs text-white">Retention Blueprint</span>
                 </div>
                 <p className="text-[11px] text-zinc-400 leading-snug">
@@ -89,12 +89,12 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({
                 onClick={() => setTemplate('blank')}
                 className={`p-3.5 rounded-2xl text-left transition-all border ${
                   template === 'blank'
-                    ? 'liquid-pill-active border-cyan-400/50 shadow-lg ring-1 ring-cyan-400/30'
+                    ? 'liquid-pill-active border-white/30 shadow-lg ring-1 ring-white/20'
                     : 'liquid-pill border-white/5 opacity-70 hover:opacity-100'
                 }`}
               >
                 <div className="flex items-center gap-2 mb-1.5">
-                  <span className="text-emerald-400">◻️</span>
+                  <span className="text-zinc-400">◻️</span>
                   <span className="font-medium text-xs text-white">Чистый холст</span>
                 </div>
                 <p className="text-[11px] text-zinc-400 leading-snug">
@@ -115,7 +115,7 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Например: Новая воронка онбординга"
               autoFocus
-              className="w-full px-4 py-2.5 rounded-xl liquid-pill text-sm text-white placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-cyan-400/50 font-sans"
+              className="w-full px-4 py-2.5 rounded-xl liquid-pill text-sm text-white placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-white/30 font-sans"
             />
           </div>
 
@@ -129,7 +129,7 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Краткое описание гипотезы или целей проекта..."
               rows={2}
-              className="w-full px-4 py-2 rounded-xl liquid-pill text-xs text-white placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-cyan-400/50 font-sans resize-none"
+              className="w-full px-4 py-2 rounded-xl liquid-pill text-xs text-white placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-white/30 font-sans resize-none"
             />
           </div>
 
@@ -140,17 +140,17 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({
               onClose();
               onOpenImportJson?.();
             }}
-            className="w-full p-3 rounded-2xl liquid-pill border border-cyan-500/20 hover:border-cyan-500/40 text-left flex items-center justify-between transition-all group hover:bg-white/[0.04]"
+            className="w-full p-3 rounded-2xl liquid-pill border border-white/10 hover:border-white/25 text-left flex items-center justify-between transition-all group hover:bg-white/[0.04]"
           >
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl liquid-pill flex items-center justify-center text-cyan-400 group-hover:scale-110 transition-transform">
+              <div className="w-8 h-8 rounded-xl liquid-pill flex items-center justify-center text-zinc-300 group-hover:scale-110 transition-transform">
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <polyline points="16 18 22 12 16 6" />
                   <polyline points="8 6 2 12 8 18" />
                 </svg>
               </div>
               <div>
-                <div className="text-xs font-semibold text-zinc-200 group-hover:text-cyan-300 transition-colors">
+                <div className="text-xs font-semibold text-zinc-200 group-hover:text-white transition-colors">
                   Импортировать по коду JSON или скетчу А4
                 </div>
                 <div className="text-[11px] text-zinc-400">
@@ -158,7 +158,7 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({
                 </div>
               </div>
             </div>
-            <span className="text-xs text-zinc-500 group-hover:text-cyan-400 font-mono">→</span>
+            <span className="text-xs text-zinc-500 group-hover:text-white font-mono">→</span>
           </button>
 
           {/* Actions */}
