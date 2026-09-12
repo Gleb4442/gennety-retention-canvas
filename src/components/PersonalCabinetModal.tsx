@@ -1,43 +1,37 @@
 import React, { useState, useRef } from 'react';
 import { useBoardStore } from '../store/useBoardStore';
 import { ButterflyLogo } from './ButterflyLogo';
-import { maskAccessKey } from '../lib/auth';
 import type { CanvasProject } from '../types';
 
 interface PersonalCabinetModalProps {
   isOpen: boolean;
   onClose: () => void;
   onOpenNewProjectModal: () => void;
+  onOpenSettings: () => void;
 }
 
 export const PersonalCabinetModal: React.FC<PersonalCabinetModalProps> = ({
   isOpen,
   onClose,
   onOpenNewProjectModal,
+  onOpenSettings,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [showFullKey, setShowFullKey] = useState(false);
-  const [copiedKey, setCopiedKey] = useState(false);
   const [editingProjectId, setEditingProjectId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState('');
   const [editingDesc, setEditingDesc] = useState('');
 
-  const backupInputRef = useRef<HTMLInputElement>(null);
   const importProjectInputRef = useRef<HTMLInputElement>(null);
 
-  const accessKey = useBoardStore((s) => s.accessKey);
   const projects = useBoardStore((s) => s.projects);
   const currentProjectId = useBoardStore((s) => s.currentProjectId);
   const theme = useBoardStore((s) => s.theme);
-  const logout = useBoardStore((s) => s.logout);
   const switchProject = useBoardStore((s) => s.switchProject);
   const duplicateProject = useBoardStore((s) => s.duplicateProject);
   const renameProject = useBoardStore((s) => s.renameProject);
   const deleteProject = useBoardStore((s) => s.deleteProject);
   const exportProjectJson = useBoardStore((s) => s.exportProjectJson);
-  const exportAllProjectsJson = useBoardStore((s) => s.exportAllProjectsJson);
   const importProjectFromJson = useBoardStore((s) => s.importProjectFromJson);
-  const importBackupJson = useBoardStore((s) => s.importBackupJson);
 
   if (!isOpen) return null;
 
@@ -55,54 +49,6 @@ export const PersonalCabinetModal: React.FC<PersonalCabinetModalProps> = ({
       (p.tags && p.tags.some((t) => t.toLowerCase().includes(q)))
     );
   });
-
-  const handleCopyKey = async () => {
-    if (!accessKey) return;
-    try {
-      await navigator.clipboard.writeText(accessKey);
-      setCopiedKey(true);
-      setTimeout(() => setCopiedKey(false), 2500);
-    } catch {
-      // Fallback copy
-      const t = document.createElement('textarea');
-      t.value = accessKey;
-      document.body.appendChild(t);
-      t.select();
-      document.execCommand('copy');
-      document.body.removeChild(t);
-      setCopiedKey(true);
-      setTimeout(() => setCopiedKey(false), 2500);
-    }
-  };
-
-  const handleExportBackup = () => {
-    const json = exportAllProjectsJson();
-    const blob = new Blob([json], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.download = `retention-canvas-backup-${Date.now()}.json`;
-    link.href = url;
-    link.click();
-    URL.revokeObjectURL(url);
-  };
-
-  const handleBackupFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      const content = ev.target?.result as string;
-      const res = importBackupJson(content);
-      if (!res.success) {
-        alert(res.error || 'Ошибка импорта резервной копии');
-      } else {
-        alert('Резервная копия успешно восстановлена!');
-      }
-    };
-    reader.readAsText(file);
-    e.target.value = '';
-  };
 
   const handleImportSingleProjectFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -174,14 +120,7 @@ export const PersonalCabinetModal: React.FC<PersonalCabinetModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/70 backdrop-blur-md animate-in fade-in duration-200 select-none">
-      {/* Hidden File Inputs */}
-      <input
-        type="file"
-        ref={backupInputRef}
-        onChange={handleBackupFileChange}
-        accept=".json"
-        className="hidden"
-      />
+      {/* Hidden File Input */}
       <input
         type="file"
         ref={importProjectInputRef}
@@ -195,150 +134,34 @@ export const PersonalCabinetModal: React.FC<PersonalCabinetModalProps> = ({
         onClick={(e) => e.stopPropagation()}
       >
         {/* ================= TOP HEADER ================= */}
-        <div className="px-6 py-5 border-b border-white/10 flex flex-wrap items-center justify-between gap-4 bg-white/[0.02]">
-          <div className="flex items-center gap-3.5">
-            <div className="w-11 h-11 rounded-2xl liquid-pill flex items-center justify-center p-2 shadow-md">
+        <div className="px-6 py-4 border-b border-white/10 flex flex-wrap items-center justify-between gap-4 bg-white/[0.02]">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl liquid-pill flex items-center justify-center p-2 shadow-md">
               <ButterflyLogo theme={theme} className="w-full h-full" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="font-display font-bold text-lg text-white">
-                  Личный кабинет стратега
+                <h1 className="font-display font-bold text-base text-white">
+                  Личный кабинет
                 </h1>
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-mono liquid-pill text-cyan-400 border border-cyan-400/20">
-                  Workspace
+                  Проекты
                 </span>
               </div>
               <p className="text-xs text-zinc-400 font-mono">
-                Управление Canvas-проектами и облачным доступом
+                Управление Canvas-проектами и схемами
               </p>
             </div>
           </div>
 
-          {/* Access Key & User Actions */}
-          <div className="flex items-center gap-2.5">
-            {/* Key Pill */}
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl liquid-pill border border-white/5 font-mono text-xs">
-              <span className="text-zinc-400 text-[11px]">Ключ:</span>
-              <span className="text-cyan-300 font-semibold tracking-wider">
-                {showFullKey ? accessKey : maskAccessKey(accessKey || '')}
-              </span>
-              <button
-                type="button"
-                onClick={() => setShowFullKey(!showFullKey)}
-                className="text-zinc-500 hover:text-zinc-300 transition-colors p-0.5"
-                title={showFullKey ? 'Скрыть ключ' : 'Показать полный ключ'}
-              >
-                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  {showFullKey ? (
-                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
-                  ) : (
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8zM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z" />
-                  )}
-                </svg>
-              </button>
-              <button
-                type="button"
-                onClick={handleCopyKey}
-                className="text-zinc-400 hover:text-white transition-colors p-0.5"
-                title="Копировать ключ"
-              >
-                {copiedKey ? (
-                  <span className="text-emerald-400 text-[10px] font-sans">✓</span>
-                ) : (
-                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                  </svg>
-                )}
-              </button>
-            </div>
-
-            {/* Logout */}
-            <button
-              onClick={() => {
-                if (confirm('Выйти из личного кабинета? Ключ останется сохранён в ваших записях.')) {
-                  logout();
-                }
-              }}
-              className="px-3 py-1.5 rounded-xl liquid-pill text-xs text-rose-300 hover:text-rose-200 hover:bg-rose-500/10 transition-colors flex items-center gap-1.5"
-              title="Выйти из этого аккаунта"
-            >
-              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                <polyline points="16 17 21 12 16 7" />
-                <line x1="21" y1="12" x2="9" y2="12" />
-              </svg>
-              <span>Выйти</span>
-            </button>
-
-            {/* Close */}
-            <button
-              onClick={onClose}
-              className="p-2 rounded-xl liquid-pill text-zinc-400 hover:text-white transition-colors ml-1"
-              title="Закрыть кабинет и вернуться к холсту"
-            >
-              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        {/* ================= STATS BAR ================= */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 px-6 py-4 border-b border-white/5 bg-white/[0.01]">
-          <div className="p-3 rounded-2xl liquid-pill">
-            <div className="text-[10px] font-mono text-zinc-400 uppercase tracking-wider">Всего проектов</div>
-            <div className="text-xl font-bold font-display text-white mt-0.5">{projects.length}</div>
-          </div>
-          <div className="p-3 rounded-2xl liquid-pill">
-            <div className="text-[10px] font-mono text-zinc-400 uppercase tracking-wider">Всего блоков</div>
-            <div className="text-xl font-bold font-display text-cyan-300 mt-0.5">{totalNodesCount}</div>
-          </div>
-          <div className="p-3 rounded-2xl liquid-pill">
-            <div className="text-[10px] font-mono text-zinc-400 uppercase tracking-wider">Связей в графах</div>
-            <div className="text-xl font-bold font-display text-emerald-300 mt-0.5">{totalEdgesCount}</div>
-          </div>
-          <div className="p-3 rounded-2xl liquid-pill">
-            <div className="text-[10px] font-mono text-zinc-400 uppercase tracking-wider">Активный проект</div>
-            <div className="text-sm font-semibold font-display text-zinc-200 mt-1 truncate">
-              {activeProj?.title || '—'}
-            </div>
-          </div>
-        </div>
-
-        {/* ================= CONTROLS TOOLBAR ================= */}
-        <div className="px-6 py-3.5 border-b border-white/10 flex flex-wrap items-center justify-between gap-3 bg-white/[0.01]">
-          {/* Search */}
-          <div className="relative flex-1 min-w-[220px]">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Поиск проектов по названию..."
-              className="w-full pl-9 pr-4 py-2 rounded-xl liquid-pill text-xs text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-cyan-400/50"
-            />
-            <svg
-              className="w-4 h-4 text-zinc-500 absolute left-3 top-2.5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <circle cx="11" cy="11" r="8" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
-          </div>
-
-          {/* Action buttons */}
-          <div className="flex items-center gap-2 flex-wrap">
+          {/* Action Buttons */}
+          <div className="flex items-center gap-2">
             <button
               onClick={() => {
                 onClose();
                 onOpenNewProjectModal();
               }}
-              className="px-4 py-2 rounded-xl liquid-pill-active font-semibold text-xs text-white flex items-center gap-1.5 transition-transform hover:scale-105"
+              className="px-3.5 py-1.5 rounded-xl liquid-pill-active font-semibold text-xs text-white flex items-center gap-1.5 transition-transform hover:scale-105"
             >
               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <line x1="12" y1="5" x2="12" y2="19" />
@@ -349,51 +172,97 @@ export const PersonalCabinetModal: React.FC<PersonalCabinetModalProps> = ({
 
             <button
               onClick={() => importProjectInputRef.current?.click()}
-              className="px-3 py-2 rounded-xl liquid-pill text-xs text-zinc-300 hover:text-white flex items-center gap-1.5 transition-colors"
-              title="Импортировать один Canvas проект из JSON файла"
+              className="px-3 py-1.5 rounded-xl liquid-pill text-xs text-zinc-300 hover:text-white flex items-center gap-1.5 transition-colors"
+              title="Импортировать проект из JSON файла"
             >
               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                 <polyline points="17 8 12 3 7 8" />
                 <line x1="12" y1="3" x2="12" y2="15" />
               </svg>
-              <span className="hidden sm:inline">Импорт JSON</span>
+              <span className="hidden sm:inline">Импорт</span>
             </button>
 
+            {/* Settings & Key Button */}
             <button
-              onClick={handleExportBackup}
-              className="px-3 py-2 rounded-xl liquid-pill text-xs text-zinc-300 hover:text-white flex items-center gap-1.5 transition-colors"
-              title="Скачать полную резервную копию всех проектов"
+              onClick={onOpenSettings}
+              className="px-3 py-1.5 rounded-xl liquid-pill text-xs font-mono text-zinc-300 hover:text-white flex items-center gap-1.5 transition-colors hover:bg-white/10"
+              title="Открыть карту настроек ключа и аккаунта"
             >
-              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="7 10 12 15 17 10" />
-                <line x1="12" y1="15" x2="12" y2="3" />
+              <svg className="w-3.5 h-3.5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="3" />
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
               </svg>
-              <span className="hidden sm:inline">Резервная копия</span>
+              <span>Настройки</span>
             </button>
 
+            {/* Close */}
             <button
-              onClick={() => backupInputRef.current?.click()}
-              className="p-2 rounded-xl liquid-pill text-zinc-400 hover:text-white transition-colors"
-              title="Восстановить все проекты из резервной копии"
+              onClick={onClose}
+              className="p-1.5 rounded-xl liquid-pill text-zinc-400 hover:text-white transition-colors"
+              title="Закрыть"
             >
-              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polyline points="1 4 1 10 7 10" />
-                <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
               </svg>
             </button>
           </div>
         </div>
 
+        {/* ================= STATS BAR ================= */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 px-6 py-3 border-b border-white/5 bg-white/[0.01]">
+          <div className="p-2.5 rounded-xl liquid-pill">
+            <div className="text-[10px] font-mono text-zinc-400 uppercase tracking-wider">Всего проектов</div>
+            <div className="text-lg font-bold font-display text-white mt-0.5">{projects.length}</div>
+          </div>
+          <div className="p-2.5 rounded-xl liquid-pill">
+            <div className="text-[10px] font-mono text-zinc-400 uppercase tracking-wider">Всего блоков</div>
+            <div className="text-lg font-bold font-display text-cyan-300 mt-0.5">{totalNodesCount}</div>
+          </div>
+          <div className="p-2.5 rounded-xl liquid-pill">
+            <div className="text-[10px] font-mono text-zinc-400 uppercase tracking-wider">Связей в графах</div>
+            <div className="text-lg font-bold font-display text-emerald-300 mt-0.5">{totalEdgesCount}</div>
+          </div>
+          <div className="p-2.5 rounded-xl liquid-pill">
+            <div className="text-[10px] font-mono text-zinc-400 uppercase tracking-wider">Активный проект</div>
+            <div className="text-xs font-semibold font-display text-zinc-200 mt-1 truncate">
+              {activeProj?.title || '—'}
+            </div>
+          </div>
+        </div>
+
+        {/* ================= CONTROLS SEARCH ================= */}
+        <div className="px-6 py-3 border-b border-white/10 bg-white/[0.01]">
+          <div className="relative">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Поиск по проектам..."
+              className="w-full pl-9 pr-4 py-1.5 rounded-xl liquid-pill text-xs text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-cyan-400/50"
+            />
+            <svg
+              className="w-4 h-4 text-zinc-500 absolute left-3 top-2"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+          </div>
+        </div>
+
         {/* ================= PROJECTS GRID ================= */}
-        <div className="p-6 overflow-y-auto max-h-[60vh]">
+        <div className="p-6 overflow-y-auto max-h-[55vh]">
           {filteredProjects.length === 0 ? (
             <div className="text-center py-12 text-zinc-500 font-mono text-xs">
               Проекты не найдены. Попробуйте изменить поисковый запрос или создайте новый проект.
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
               {filteredProjects.map((p) => {
                 const isActive = p.id === currentProjectId;
                 const isEditingThis = editingProjectId === p.id;
@@ -407,7 +276,7 @@ export const PersonalCabinetModal: React.FC<PersonalCabinetModalProps> = ({
                         onClose();
                       }
                     }}
-                    className={`group relative p-5 rounded-2xl transition-all cursor-pointer border ${
+                    className={`group relative p-4 rounded-2xl transition-all cursor-pointer border ${
                       isActive
                         ? 'liquid-pill-active border-cyan-400/50 shadow-xl ring-1 ring-cyan-400/30'
                         : 'liquid-glass border-white/5 hover:border-white/20 hover:scale-[1.01]'
@@ -462,12 +331,12 @@ export const PersonalCabinetModal: React.FC<PersonalCabinetModalProps> = ({
                         </div>
                       </form>
                     ) : (
-                      <div className="mb-3 pr-14">
+                      <div className="mb-2.5 pr-14">
                         <h3 className="font-display font-bold text-sm text-white group-hover:text-cyan-300 transition-colors line-clamp-1">
                           {p.title}
                         </h3>
                         {p.description && (
-                          <p className="text-[11px] text-zinc-400 mt-1 line-clamp-2 leading-relaxed font-sans">
+                          <p className="text-[11px] text-zinc-400 mt-0.5 line-clamp-2 leading-relaxed font-sans">
                             {p.description}
                           </p>
                         )}
@@ -475,7 +344,7 @@ export const PersonalCabinetModal: React.FC<PersonalCabinetModalProps> = ({
                     )}
 
                     {/* Meta chips */}
-                    <div className="flex flex-wrap items-center gap-2 mb-4 font-mono text-[10px]">
+                    <div className="flex flex-wrap items-center gap-1.5 mb-3 font-mono text-[10px]">
                       <span className="px-2 py-0.5 rounded-md liquid-pill text-zinc-300">
                         🧩 {p.nodes?.length || 0} блоков
                       </span>
@@ -488,7 +357,7 @@ export const PersonalCabinetModal: React.FC<PersonalCabinetModalProps> = ({
                     </div>
 
                     {/* Footer with date & actions */}
-                    <div className="flex items-center justify-between pt-3 border-t border-white/5 text-[10px] font-mono text-zinc-500">
+                    <div className="flex items-center justify-between pt-2.5 border-t border-white/5 text-[10px] font-mono text-zinc-500">
                       <span>{formatDate(p.updatedAt)}</span>
 
                       <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
@@ -558,7 +427,7 @@ export const PersonalCabinetModal: React.FC<PersonalCabinetModalProps> = ({
         <div className="px-6 py-3 border-t border-white/10 flex items-center justify-between bg-white/[0.02] text-xs font-mono text-zinc-400">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-emerald-400" />
-            <span>Автосохранение включено • Хранилище активно</span>
+            <span>Автосохранение включено</span>
           </div>
 
           <button

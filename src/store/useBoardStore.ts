@@ -53,6 +53,7 @@ export interface BoardStore {
   lastSavedAt: number | null;
   isCabinetOpen: boolean;
   isNewProjectModalOpen: boolean;
+  isSettingsOpen: boolean;
 
   // Active Canvas Data
   nodes: StrategyNode[];
@@ -71,6 +72,7 @@ export interface BoardStore {
   // Project Actions
   setIsCabinetOpen: (open: boolean) => void;
   setIsNewProjectModalOpen: (open: boolean) => void;
+  setIsSettingsOpen: (open: boolean) => void;
   switchProject: (projectId: string) => void;
   createProject: (title: string, template?: ProjectTemplate, description?: string) => string;
   duplicateProject: (projectId: string) => string;
@@ -199,6 +201,7 @@ export const useBoardStore = create<BoardStore>((set, get) => {
     lastSavedAt: Date.now(),
     isCabinetOpen: false,
     isNewProjectModalOpen: false,
+    isSettingsOpen: false,
 
     // Active Canvas
     nodes: initialBoot.nodes,
@@ -265,6 +268,7 @@ export const useBoardStore = create<BoardStore>((set, get) => {
     // ==================== PROJECT METHODS ====================
     setIsCabinetOpen: (open) => set({ isCabinetOpen: open }),
     setIsNewProjectModalOpen: (open) => set({ isNewProjectModalOpen: open }),
+    setIsSettingsOpen: (open) => set({ isSettingsOpen: open }),
 
     switchProject: (projectId: string) => {
       const { projects, accessKey } = get();

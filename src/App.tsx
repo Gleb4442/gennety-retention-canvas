@@ -8,6 +8,7 @@ import { HelpShortcutsModal } from './components/HelpShortcutsModal';
 import { AuthGate } from './components/AuthGate';
 import { PersonalCabinetModal } from './components/PersonalCabinetModal';
 import { NewProjectModal } from './components/NewProjectModal';
+import { SettingsModal } from './components/SettingsModal';
 import { useBoardStore } from './store/useBoardStore';
 
 export const App: React.FC = () => {
@@ -20,6 +21,8 @@ export const App: React.FC = () => {
   const setIsCabinetOpen = useBoardStore((s) => s.setIsCabinetOpen);
   const isNewProjectModalOpen = useBoardStore((s) => s.isNewProjectModalOpen);
   const setIsNewProjectModalOpen = useBoardStore((s) => s.setIsNewProjectModalOpen);
+  const isSettingsOpen = useBoardStore((s) => s.isSettingsOpen);
+  const setIsSettingsOpen = useBoardStore((s) => s.setIsSettingsOpen);
 
   const theme = useBoardStore((s) => s.theme);
   const setSelectedNodeId = useBoardStore((s) => s.setSelectedNodeId);
@@ -40,7 +43,7 @@ export const App: React.FC = () => {
     }
   }, [theme]);
 
-  // Global keyboard shortcuts for Projects and Cabinet
+  // Global keyboard shortcuts for Projects, Cabinet, and Settings
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Ignore when typing in inputs/textareas
@@ -54,11 +57,17 @@ export const App: React.FC = () => {
         e.preventDefault();
         setIsCabinetOpen(!isCabinetOpen);
       }
+
+      // Cmd+, -> Open Settings Card
+      if ((e.metaKey || e.ctrlKey) && e.key === ',') {
+        e.preventDefault();
+        setIsSettingsOpen(!isSettingsOpen);
+      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isCabinetOpen, setIsCabinetOpen]);
+  }, [isCabinetOpen, setIsCabinetOpen, isSettingsOpen, setIsSettingsOpen]);
 
   const handleSelectSearchedNode = (nodeId: string) => {
     setSelectedNodeId(nodeId);
@@ -81,6 +90,7 @@ export const App: React.FC = () => {
           onOpenSearchModal={() => setIsSearchModalOpen(true)}
           onOpenHelpModal={() => setIsHelpModalOpen(true)}
           onOpenCabinet={() => setIsCabinetOpen(true)}
+          onOpenSettings={() => setIsSettingsOpen(true)}
         />
 
         {/* Infinite Interactive Node Canvas */}
@@ -110,12 +120,22 @@ export const App: React.FC = () => {
           isOpen={isCabinetOpen}
           onClose={() => setIsCabinetOpen(false)}
           onOpenNewProjectModal={() => setIsNewProjectModalOpen(true)}
+          onOpenSettings={() => {
+            setIsCabinetOpen(false);
+            setIsSettingsOpen(true);
+          }}
         />
 
         {/* Create New Project Modal */}
         <NewProjectModal
           isOpen={isNewProjectModalOpen}
           onClose={() => setIsNewProjectModalOpen(false)}
+        />
+
+        {/* Dedicated Access Key & Account Settings Card */}
+        <SettingsModal
+          isOpen={isSettingsOpen}
+          onClose={() => setIsSettingsOpen(false)}
         />
       </div>
     </ReactFlowProvider>

@@ -10,13 +10,13 @@ import {
   IconSearchMinimal,
 } from './AbstractIcons';
 import { ButterflyLogo } from './ButterflyLogo';
-import { maskAccessKey } from '../lib/auth';
 
 interface NavbarProps {
   onOpenAddModal: () => void;
   onOpenSearchModal: () => void;
   onOpenHelpModal: () => void;
   onOpenCabinet: () => void;
+  onOpenSettings: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -24,6 +24,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenSearchModal,
   onOpenHelpModal,
   onOpenCabinet,
+  onOpenSettings,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isThemeMenuOpen, setIsThemeMenuOpen] = useState(false);
@@ -41,8 +42,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   const importJson = useBoardStore((s) => s.importJson);
   const projects = useBoardStore((s) => s.projects);
   const currentProjectId = useBoardStore((s) => s.currentProjectId);
-  const accessKey = useBoardStore((s) => s.accessKey);
-  const isSaving = useBoardStore((s) => s.isSaving);
 
   const activeProject = projects.find((p) => p.id === currentProjectId) || projects[0];
   const canUndo = undoStack.length > 0;
@@ -133,41 +132,34 @@ export const Navbar: React.FC<NavbarProps> = ({
         className="hidden pointer-events-auto"
       />
 
-      {/* Island 1 (Left): Brand Identity & Active Project Button */}
-      <div className="pointer-events-auto flex items-center gap-2.5 px-3 py-1.5 rounded-2xl liquid-glass shadow-2xl">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl liquid-pill flex items-center justify-center p-1.5 text-inherit opacity-95 shadow-sm flex-shrink-0">
+      {/* Left Section: Standard Brand Identity + Compact Separate Project Folder */}
+      <div className="flex items-center gap-2">
+        {/* Standard Brand Block (Pristine size) */}
+        <div className="pointer-events-auto flex items-center gap-3 px-3.5 py-2 rounded-2xl liquid-glass shadow-2xl">
+          <div className="w-10 h-10 rounded-xl liquid-pill flex items-center justify-center p-1.5 text-inherit opacity-95 shadow-sm flex-shrink-0">
             <ButterflyLogo theme={theme} className="w-full h-full" />
           </div>
-          <span className="font-display font-bold text-sm tracking-wider text-inherit block leading-tight hidden sm:inline">
-            Retention Canvas
-          </span>
+          <div>
+            <span className="font-display font-bold text-sm tracking-wider text-inherit block leading-tight">
+              Retention Canvas
+            </span>
+          </div>
         </div>
 
-        <div className="h-5 w-[1px] bg-white/10 mx-0.5" />
-
-        {/* Project Selector / Cabinet Trigger */}
+        {/* Compact Project Folder Pill */}
         <button
           onClick={onOpenCabinet}
-          className="flex items-center gap-2 px-2.5 py-1 rounded-xl liquid-pill text-xs font-mono transition-all hover:bg-white/10 group max-w-[210px] md:max-w-[280px]"
-          title="Открыть Личный кабинет и проекты"
+          className="pointer-events-auto flex items-center gap-2 px-3 py-2 rounded-2xl liquid-glass shadow-2xl text-xs font-mono transition-all hover:bg-white/10 group"
+          title={`Проект: ${activeProject?.title || 'Retention'} (кликните, чтобы открыть проекты)`}
         >
           <svg className="w-3.5 h-3.5 text-cyan-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
           </svg>
-          <span className="truncate font-semibold text-white group-hover:text-cyan-300 transition-colors">
-            {activeProject?.title || 'Без названия'}
+          <span className="max-w-[110px] sm:max-w-[140px] truncate text-zinc-300 group-hover:text-white transition-colors">
+            {activeProject?.title || 'Проекты'}
           </span>
-          <svg className="w-3 h-3 text-zinc-400 group-hover:text-white transition-colors flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <polyline points="6 9 12 15 18 9" />
-          </svg>
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0" title="Сохранено" />
         </button>
-
-        {/* Save indicator */}
-        <div className="hidden lg:flex items-center gap-1.5 px-2 py-0.5 rounded-md liquid-pill text-[10px] font-mono text-zinc-400">
-          <span className={`w-1.5 h-1.5 rounded-full ${isSaving ? 'bg-amber-400 animate-ping' : 'bg-emerald-400'}`} />
-          <span>{isSaving ? 'Сохранение...' : 'Сохранено'}</span>
-        </div>
       </div>
 
       {/* Island 2 (Center): Frameless Layout Mode Switcher */}
@@ -212,21 +204,8 @@ export const Navbar: React.FC<NavbarProps> = ({
         </button>
       </div>
 
-      {/* Island 3 (Right): Cabinet, Theme Switcher & Actions */}
+      {/* Island 3 (Right): Theme Switcher, Actions & Settings */}
       <div className="pointer-events-auto flex items-center gap-1.5 p-1 rounded-2xl liquid-glass shadow-2xl">
-        {/* Personal Cabinet Button */}
-        <button
-          onClick={onOpenCabinet}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl liquid-pill text-xs font-mono text-zinc-200 hover:text-white transition-all hover:bg-white/10"
-          title="Личный кабинет и управление проектами"
-        >
-          <svg className="w-3.5 h-3.5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M21 2l-2 2m-1.5 1.5L14 9a5 5 0 1 0-4 4l3.5 3.5 1.5-1.5 2 2 2-2-1.5-1.5 2-2 2 2 2-2-3.5-3.5z" />
-          </svg>
-          <span className="hidden xl:inline">{accessKey ? maskAccessKey(accessKey) : 'Кабинет'}</span>
-          <span className="hidden sm:inline xl:hidden">Кабинет</span>
-        </button>
-
         {/* Theme Dropdown Toggle */}
         <div className="relative">
           <button
@@ -319,7 +298,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <span className="hidden sm:inline">Add Card</span>
         </button>
 
-        {/* Export / Reset Dropdown & Buttons */}
+        {/* Export / Reset Buttons */}
         <div className="flex items-center gap-0.5">
           <button
             onClick={handleExportPng}
@@ -358,6 +337,18 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
               <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" />
+            </svg>
+          </button>
+
+          {/* Settings Button (Access Key, Account, Backup) */}
+          <button
+            onClick={onOpenSettings}
+            className="p-2 rounded-xl liquid-pill text-zinc-300 hover:text-white transition-colors"
+            title="Настройки ключа доступа и аккаунта"
+          >
+            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="3" />
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
             </svg>
           </button>
 
