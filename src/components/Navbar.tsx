@@ -17,6 +17,7 @@ interface NavbarProps {
   onOpenHelpModal: () => void;
   onOpenCabinet: () => void;
   onOpenSettings: () => void;
+  onOpenImportJson?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -25,6 +26,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenHelpModal,
   onOpenCabinet,
   onOpenSettings,
+  onOpenImportJson,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isThemeMenuOpen, setIsThemeMenuOpen] = useState(false);
@@ -89,7 +91,11 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   const handleImportJsonClick = () => {
-    fileInputRef.current?.click();
+    if (onOpenImportJson) {
+      onOpenImportJson();
+    } else {
+      fileInputRef.current?.click();
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -322,8 +328,8 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <button
             onClick={handleImportJsonClick}
-            className="p-2 rounded-xl liquid-pill opacity-75 hover:opacity-100 transition-opacity"
-            title="Импортировать JSON"
+            className="p-2 rounded-xl liquid-pill opacity-75 hover:opacity-100 transition-opacity text-cyan-300 hover:text-white"
+            title="Импортировать по коду JSON или AI-промпту (⌘I)"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
               <path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z" />

@@ -9,6 +9,7 @@ import { AuthGate } from './components/AuthGate';
 import { PersonalCabinetModal } from './components/PersonalCabinetModal';
 import { NewProjectModal } from './components/NewProjectModal';
 import { SettingsModal } from './components/SettingsModal';
+import { ImportJsonModal } from './components/ImportJsonModal';
 import { useBoardStore } from './store/useBoardStore';
 
 export const App: React.FC = () => {
@@ -23,6 +24,8 @@ export const App: React.FC = () => {
   const setIsNewProjectModalOpen = useBoardStore((s) => s.setIsNewProjectModalOpen);
   const isSettingsOpen = useBoardStore((s) => s.isSettingsOpen);
   const setIsSettingsOpen = useBoardStore((s) => s.setIsSettingsOpen);
+  const isImportJsonModalOpen = useBoardStore((s) => s.isImportJsonModalOpen);
+  const setIsImportJsonModalOpen = useBoardStore((s) => s.setIsImportJsonModalOpen);
 
   const theme = useBoardStore((s) => s.theme);
   const setSelectedNodeId = useBoardStore((s) => s.setSelectedNodeId);
@@ -63,11 +66,17 @@ export const App: React.FC = () => {
         e.preventDefault();
         setIsSettingsOpen(!isSettingsOpen);
       }
+
+      // Cmd+I -> Open Import JSON / AI Modal
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'i') {
+        e.preventDefault();
+        setIsImportJsonModalOpen(!isImportJsonModalOpen);
+      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isCabinetOpen, setIsCabinetOpen, isSettingsOpen, setIsSettingsOpen]);
+  }, [isCabinetOpen, setIsCabinetOpen, isSettingsOpen, setIsSettingsOpen, isImportJsonModalOpen, setIsImportJsonModalOpen]);
 
   const handleSelectSearchedNode = (nodeId: string) => {
     setSelectedNodeId(nodeId);
@@ -91,6 +100,7 @@ export const App: React.FC = () => {
           onOpenHelpModal={() => setIsHelpModalOpen(true)}
           onOpenCabinet={() => setIsCabinetOpen(true)}
           onOpenSettings={() => setIsSettingsOpen(true)}
+          onOpenImportJson={() => setIsImportJsonModalOpen(true)}
         />
 
         {/* Infinite Interactive Node Canvas */}
@@ -124,18 +134,32 @@ export const App: React.FC = () => {
             setIsCabinetOpen(false);
             setIsSettingsOpen(true);
           }}
+          onOpenImportJson={() => {
+            setIsCabinetOpen(false);
+            setIsImportJsonModalOpen(true);
+          }}
         />
 
         {/* Create New Project Modal */}
         <NewProjectModal
           isOpen={isNewProjectModalOpen}
           onClose={() => setIsNewProjectModalOpen(false)}
+          onOpenImportJson={() => {
+            setIsNewProjectModalOpen(false);
+            setIsImportJsonModalOpen(true);
+          }}
         />
 
         {/* Dedicated Access Key & Account Settings Card */}
         <SettingsModal
           isOpen={isSettingsOpen}
           onClose={() => setIsSettingsOpen(false)}
+        />
+
+        {/* Import from JSON Code / AI Modal */}
+        <ImportJsonModal
+          isOpen={isImportJsonModalOpen}
+          onClose={() => setIsImportJsonModalOpen(false)}
         />
       </div>
     </ReactFlowProvider>

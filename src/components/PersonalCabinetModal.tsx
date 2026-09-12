@@ -8,6 +8,7 @@ interface PersonalCabinetModalProps {
   onClose: () => void;
   onOpenNewProjectModal: () => void;
   onOpenSettings: () => void;
+  onOpenImportJson?: () => void;
 }
 
 export const PersonalCabinetModal: React.FC<PersonalCabinetModalProps> = ({
@@ -15,6 +16,7 @@ export const PersonalCabinetModal: React.FC<PersonalCabinetModalProps> = ({
   onClose,
   onOpenNewProjectModal,
   onOpenSettings,
+  onOpenImportJson,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [editingProjectId, setEditingProjectId] = useState<string | null>(null);
@@ -171,9 +173,16 @@ export const PersonalCabinetModal: React.FC<PersonalCabinetModalProps> = ({
             </button>
 
             <button
-              onClick={() => importProjectInputRef.current?.click()}
+              onClick={() => {
+                if (onOpenImportJson) {
+                  onClose();
+                  onOpenImportJson();
+                } else {
+                  importProjectInputRef.current?.click();
+                }
+              }}
               className="px-3 py-1.5 rounded-xl liquid-pill text-xs text-zinc-300 hover:text-white flex items-center gap-1.5 transition-colors"
-              title="Импортировать проект из JSON файла"
+              title="Импортировать проект из JSON-кода или AI-промпта"
             >
               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />

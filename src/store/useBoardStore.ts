@@ -36,6 +36,7 @@ import {
   importWorkspaceBackup,
   isOwnerAccessKey,
 } from '../lib/projectStorage';
+import { parseCanvasJson } from '../lib/jsonProjectImporter';
 
 const MAX_HISTORY = 30;
 
@@ -55,6 +56,7 @@ export interface BoardStore {
   isCabinetOpen: boolean;
   isNewProjectModalOpen: boolean;
   isSettingsOpen: boolean;
+  isImportJsonModalOpen: boolean;
 
   // Active Canvas Data
   nodes: StrategyNode[];
@@ -74,6 +76,7 @@ export interface BoardStore {
   setIsCabinetOpen: (open: boolean) => void;
   setIsNewProjectModalOpen: (open: boolean) => void;
   setIsSettingsOpen: (open: boolean) => void;
+  setIsImportJsonModalOpen: (open: boolean) => void;
   switchProject: (projectId: string) => void;
   createProject: (title: string, template?: ProjectTemplate, description?: string) => string;
   duplicateProject: (projectId: string) => string;
@@ -203,6 +206,7 @@ export const useBoardStore = create<BoardStore>((set, get) => {
     isCabinetOpen: false,
     isNewProjectModalOpen: false,
     isSettingsOpen: false,
+    isImportJsonModalOpen: false,
 
     // Active Canvas
     nodes: initialBoot.nodes,
@@ -270,6 +274,7 @@ export const useBoardStore = create<BoardStore>((set, get) => {
     setIsCabinetOpen: (open) => set({ isCabinetOpen: open }),
     setIsNewProjectModalOpen: (open) => set({ isNewProjectModalOpen: open }),
     setIsSettingsOpen: (open) => set({ isSettingsOpen: open }),
+    setIsImportJsonModalOpen: (open) => set({ isImportJsonModalOpen: open }),
 
     switchProject: (projectId: string) => {
       const { projects, accessKey } = get();
@@ -423,29 +428,15 @@ export const useBoardStore = create<BoardStore>((set, get) => {
 
     importProjectFromJson: (jsonString: string, titleOverride?: string) => {
       try {
-        const data = JSON.parse(jsonString);
-        if (!Array.isArray(data.nodes) || !Array.isArray(data.edges)) {
-          return { success: false, error: 'Неверный формат JSON: отсутствуют массивы nodes и edges' };
-        }
-
         const { accessKey, projects } = get();
         if (!accessKey) return { success: false, error: 'Необходима авторизация' };
 
-        const now = Date.now();
-        const importedProject: CanvasProject = {
-          id: `proj_${now}_imported`,
-          title: titleOverride || data.title || data.project || `Импортированный проект ${new Date().toLocaleDateString()}`,
-          description: data.description || 'Импортировано из внешнего JSON файла.',
-          nodes: data.nodes,
-          edges: data.edges,
-          layoutMode: data.layoutMode || 'freeform',
-          theme: data.theme || 'dark',
-          createdAt: now,
-          updatedAt: now,
-          tags: ['Imported'],
-          isFavorite: false,
-        };
+        const parseRes = parseCanvasJson(jsonString, titleOverride);
+        if (!parseRes.success || !parseRes.project) {
+          return { success: false, error: parseRes.error || 'Неверный формат JSON схемы' };
+        }
 
+        const importedProject = parseRes.project;
         const updatedProjects = [importedProject, ...projects];
         saveProjectsForUser(accessKey, updatedProjects);
         saveActiveProjectIdForUser(accessKey, importedProject.id);
@@ -462,7 +453,8 @@ export const useBoardStore = create<BoardStore>((set, get) => {
           undoStack: [],
           redoStack: [],
           isCabinetOpen: false,
-          lastSavedAt: now,
+          isImportJsonModalOpen: false,
+          lastSavedAt: Date.now(),
         });
 
         return { success: true };

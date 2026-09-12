@@ -6,9 +6,14 @@ import type { ProjectTemplate } from '../types';
 interface NewProjectModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onOpenImportJson?: () => void;
 }
 
-export const NewProjectModal: React.FC<NewProjectModalProps> = ({ isOpen, onClose }) => {
+export const NewProjectModal: React.FC<NewProjectModalProps> = ({ 
+  isOpen, 
+  onClose,
+  onOpenImportJson,
+}) => {
   const accessKey = useBoardStore((s) => s.accessKey);
   const isOwner = isOwnerAccessKey(accessKey || '');
 
@@ -127,6 +132,34 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({ isOpen, onClos
               className="w-full px-4 py-2 rounded-xl liquid-pill text-xs text-white placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-cyan-400/50 font-sans resize-none"
             />
           </div>
+
+          {/* Quick Import from JSON / AI Sketch */}
+          <button
+            type="button"
+            onClick={() => {
+              onClose();
+              onOpenImportJson?.();
+            }}
+            className="w-full p-3 rounded-2xl liquid-pill border border-cyan-500/20 hover:border-cyan-500/40 text-left flex items-center justify-between transition-all group hover:bg-white/[0.04]"
+          >
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl liquid-pill flex items-center justify-center text-cyan-400 group-hover:scale-110 transition-transform">
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polyline points="16 18 22 12 16 6" />
+                  <polyline points="8 6 2 12 8 18" />
+                </svg>
+              </div>
+              <div>
+                <div className="text-xs font-semibold text-zinc-200 group-hover:text-cyan-300 transition-colors">
+                  Импортировать по коду JSON или скетчу А4
+                </div>
+                <div className="text-[11px] text-zinc-400">
+                  Вставить JSON от ChatGPT / Claude или загрузить файл
+                </div>
+              </div>
+            </div>
+            <span className="text-xs text-zinc-500 group-hover:text-cyan-400 font-mono">→</span>
+          </button>
 
           {/* Actions */}
           <div className="flex items-center justify-end gap-2 pt-2">
