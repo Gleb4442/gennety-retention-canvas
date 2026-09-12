@@ -388,32 +388,13 @@ export const Navbar: React.FC<NavbarProps> = ({
             </svg>
           </button>
 
-          {/* AI Agent & MCP Bridge Button with Cloth Shimmer Effect */}
+          {/* MCP Bridge Button */}
           <button
             onClick={() => setIsAiBridgeModalOpen(true)}
-            className="cloth-shimmer-btn group relative flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-mono font-medium text-inherit transition-all"
-            title="AI-Агент & MCP Мост: Копирование системного промпта со всеми адресами и MCP (⌘J)"
+            className="px-3.5 py-1.5 rounded-xl liquid-pill font-mono font-bold text-xs sm:text-sm tracking-wider text-indigo-500 dark:text-indigo-300 hover:text-indigo-600 dark:hover:text-white border border-indigo-500/25 hover:border-indigo-500/50 hover:bg-indigo-500/10 transition-all shadow-xs active:scale-95"
+            title="MCP & AI-Агент: системный промпт со всеми адресами, MCP-сервер и API (⌘J)"
           >
-            {/* Ambient cloth aura */}
-            <span className="absolute -inset-0.5 rounded-xl bg-gradient-to-r from-indigo-500/20 via-purple-500/25 to-pink-500/20 blur-xs opacity-50 group-hover:opacity-100 transition-opacity -z-10 pointer-events-none" />
-
-            {/* Neural Spark Icon with breathing fold glow */}
-            <span className="relative z-10 flex items-center justify-center text-indigo-400 dark:text-indigo-300 group-hover:text-white transition-colors">
-              <svg className="w-3.5 h-3.5 drop-shadow-[0_0_6px_rgba(129,140,248,0.5)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M12 2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2 2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" />
-                <path d="M4 11a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-7z" />
-                <path d="M9 16h.01" />
-                <path d="M15 16h.01" />
-              </svg>
-              <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-indigo-400 shadow-[0_0_6px_#818cf8] animate-pulse" />
-            </span>
-
-            <span className="relative z-10 font-semibold tracking-wide flex items-center gap-1.5">
-              <span className="hidden sm:inline">AI & MCP</span>
-              <kbd className="hidden xl:inline-block text-[9px] px-1 py-0.5 rounded bg-black/10 dark:bg-white/10 opacity-70 group-hover:opacity-100 font-mono transition-opacity">
-                ⌘J
-              </kbd>
-            </span>
+            MCP
           </button>
 
           {/* Settings Button (Access Key, Account, Backup) */}

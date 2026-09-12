@@ -193,22 +193,16 @@ export const PersonalCabinetModal: React.FC<PersonalCabinetModalProps> = ({
               <span className="hidden sm:inline">Импорт</span>
             </button>
 
-            {/* AI Agent & MCP Button */}
+            {/* MCP Bridge Button */}
             <button
               onClick={() => {
                 onClose();
                 setIsAiBridgeModalOpen(true);
               }}
-              className="px-3 py-1.5 rounded-xl bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 flex items-center gap-1.5 transition-colors border border-indigo-500/20 text-xs font-mono shadow-sm"
-              title="AI-Агент & MCP Мост: скопировать промпт или подключить MCP"
+              className="px-3.5 py-1.5 rounded-xl bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 flex items-center gap-1.5 transition-colors border border-indigo-500/20 text-xs font-mono font-bold shadow-sm"
+              title="MCP & AI-Агент: системный промпт, MCP-сервер и API"
             >
-              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M12 2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2 2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" />
-                <path d="M4 11a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-7z" />
-                <path d="M9 16h.01" />
-                <path d="M15 16h.01" />
-              </svg>
-              <span>AI & MCP</span>
+              <span>MCP</span>
             </button>
 
             {/* Settings & Key Button */}
