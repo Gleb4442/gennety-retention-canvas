@@ -41,6 +41,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   const importJson = useBoardStore((s) => s.importJson);
   const projects = useBoardStore((s) => s.projects);
   const currentProjectId = useBoardStore((s) => s.currentProjectId);
+  const setIsAiBridgeModalOpen = useBoardStore((s) => s.setIsAiBridgeModalOpen);
 
   const activeProject = projects.find((p) => p.id === currentProjectId) || projects[0];
   const canUndo = undoStack.length > 0;
@@ -385,6 +386,21 @@ export const Navbar: React.FC<NavbarProps> = ({
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
               <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" />
             </svg>
+          </button>
+
+          {/* AI Agent & MCP Bridge Button */}
+          <button
+            onClick={() => setIsAiBridgeModalOpen(true)}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl liquid-pill text-xs font-mono font-medium text-indigo-500 dark:text-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-300 transition-all hover:scale-105 shadow-xs group"
+            title="AI-Агент & MCP Мост: Копирование системного промпта со всеми адресами и MCP (⌘J)"
+          >
+            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M12 2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2 2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" />
+              <path d="M4 11a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-7z" />
+              <path d="M9 16h.01" />
+              <path d="M15 16h.01" />
+            </svg>
+            <span className="hidden lg:inline">AI & MCP</span>
           </button>
 
           {/* Settings Button (Access Key, Account, Backup) */}

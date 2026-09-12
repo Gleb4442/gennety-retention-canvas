@@ -10,6 +10,7 @@ import { PersonalCabinetModal } from './components/PersonalCabinetModal';
 import { NewProjectModal } from './components/NewProjectModal';
 import { SettingsModal } from './components/SettingsModal';
 import { ImportJsonModal } from './components/ImportJsonModal';
+import { AiAgentBridgeModal } from './components/AiAgentBridgeModal';
 import { useBoardStore } from './store/useBoardStore';
 
 export const App: React.FC = () => {
@@ -26,6 +27,8 @@ export const App: React.FC = () => {
   const setIsSettingsOpen = useBoardStore((s) => s.setIsSettingsOpen);
   const isImportJsonModalOpen = useBoardStore((s) => s.isImportJsonModalOpen);
   const setIsImportJsonModalOpen = useBoardStore((s) => s.setIsImportJsonModalOpen);
+  const isAiBridgeModalOpen = useBoardStore((s) => s.isAiBridgeModalOpen);
+  const setIsAiBridgeModalOpen = useBoardStore((s) => s.setIsAiBridgeModalOpen);
 
   const theme = useBoardStore((s) => s.theme);
   const setSelectedNodeId = useBoardStore((s) => s.setSelectedNodeId);
@@ -76,11 +79,17 @@ export const App: React.FC = () => {
         e.preventDefault();
         setIsImportJsonModalOpen(!isImportJsonModalOpen);
       }
+
+      // Cmd+J -> Open AI Agent & MCP Bridge Modal
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'j') {
+        e.preventDefault();
+        setIsAiBridgeModalOpen(!isAiBridgeModalOpen);
+      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isCabinetOpen, setIsCabinetOpen, isSettingsOpen, setIsSettingsOpen, isImportJsonModalOpen, setIsImportJsonModalOpen]);
+  }, [isCabinetOpen, setIsCabinetOpen, isSettingsOpen, setIsSettingsOpen, isImportJsonModalOpen, setIsImportJsonModalOpen, isAiBridgeModalOpen, setIsAiBridgeModalOpen]);
 
   const handleSelectSearchedNode = (nodeId: string) => {
     setSelectedNodeId(nodeId);
@@ -166,6 +175,12 @@ export const App: React.FC = () => {
         <ImportJsonModal
           isOpen={isImportJsonModalOpen}
           onClose={() => setIsImportJsonModalOpen(false)}
+        />
+
+        {/* AI Agent & MCP Bridge Modal */}
+        <AiAgentBridgeModal
+          isOpen={isAiBridgeModalOpen}
+          onClose={() => setIsAiBridgeModalOpen(false)}
         />
       </div>
     </ReactFlowProvider>

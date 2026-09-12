@@ -92,6 +92,7 @@ export const ImportJsonModal: React.FC<ImportJsonModalProps> = ({ isOpen, onClos
   const setLayoutMode = useBoardStore((s) => s.setLayoutMode);
   const setTheme = useBoardStore((s) => s.setTheme);
   const saveSnapshot = useBoardStore((s) => s.saveSnapshot);
+  const setIsAiBridgeModalOpen = useBoardStore((s) => s.setIsAiBridgeModalOpen);
 
   // Validate on text change
   useEffect(() => {
@@ -427,6 +428,28 @@ export const ImportJsonModal: React.FC<ImportJsonModalProps> = ({ isOpen, onClos
 
           {activeTab === 'prompt' && (
             <div className="space-y-4">
+              {/* Master AI Agent & MCP Bridge Banner */}
+              <div className="p-4 rounded-2xl bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 border border-indigo-500/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div className="space-y-0.5">
+                  <div className="font-display font-semibold text-xs text-zinc-900 dark:text-white flex items-center gap-1.5">
+                    <span>🤖 Полный системный промпт со всеми адресами и MCP-сервер</span>
+                  </div>
+                  <p className="text-[11px] text-zinc-600 dark:text-zinc-400">
+                    Скопируйте мастер-промпт с вашим ключом доступа, ссылками авто-входа и подключите Claude Desktop / Cursor.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    onClose();
+                    setIsAiBridgeModalOpen(true);
+                  }}
+                  className="px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold flex-shrink-0 transition-colors shadow-sm"
+                >
+                  Открыть AI Мост
+                </button>
+              </div>
+
               {/* Instructions */}
               <div className="p-4 rounded-2xl bg-zinc-100/70 dark:bg-white/[0.04] border border-black/10 dark:border-white/10 space-y-2 text-xs text-zinc-700 dark:text-zinc-300">
                 <div className="font-display font-semibold text-zinc-900 dark:text-white flex items-center gap-1.5">

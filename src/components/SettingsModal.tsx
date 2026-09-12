@@ -22,6 +22,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
   const exportAllProjectsJson = useBoardStore((s) => s.exportAllProjectsJson);
   const importBackupJson = useBoardStore((s) => s.importBackupJson);
   const projects = useBoardStore((s) => s.projects);
+  const setIsAiBridgeModalOpen = useBoardStore((s) => s.setIsAiBridgeModalOpen);
 
   if (!isOpen) return null;
 
@@ -292,7 +293,29 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
           </div>
         </div>
 
-        {/* Section 3: Logout Action */}
+        {/* Section 3: AI & MCP Integration */}
+        <div className="p-4 rounded-2xl bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 border border-indigo-500/20 flex items-center justify-between gap-3">
+          <div className="space-y-0.5">
+            <div className="font-display font-semibold text-xs text-zinc-900 dark:text-white flex items-center gap-1.5">
+              <span>🤖 AI-Агент & MCP Мост</span>
+            </div>
+            <p className="text-[11px] text-zinc-600 dark:text-zinc-400">
+              Копирование системного промпта со всеми адресами, MCP-сервер и авто-вход
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              onClose();
+              setIsAiBridgeModalOpen(true);
+            }}
+            className="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold flex-shrink-0 transition-colors shadow-sm"
+          >
+            Открыть
+          </button>
+        </div>
+
+        {/* Section 4: Logout Action */}
         <div className="flex items-center justify-between pt-2 border-t border-black/10 dark:border-white/10">
           <button
             type="button"

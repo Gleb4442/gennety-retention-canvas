@@ -61,6 +61,13 @@
   4. Вставьте полученный код в модальное окно импорта (`⌘I`) и нажмите «Импортировать проект».
 - **Полная открытая документация схемы**: [`CANVAS_JSON_AI_SPECIFICATION.md`](./CANVAS_JSON_AI_SPECIFICATION.md) (описание всех 8 категорий, связей, координат и примеры).
 
+### 7. AI-Агент & Model Context Protocol (MCP) Мост (`⌘J`)
+- **Единый Master AI-Промпт в 1 клик**: Генерация комплексного промпта со всеми адресами, URL для 1-click входа, ключом доступа, расшифровкой специфики 8 категорий графа и полным дампом всех ваших проектов и папок.
+- **Встроенный MCP-сервер (`npm run mcp`)**: Подключение AI-агентов (Claude Desktop, Cursor, Antigravity, Cline) по протоколу JSON-RPC 2.0. Инструменты: `list_projects`, `get_project_canvas`, `search_canvas`, `analyze_retention_flow`, `create_or_update_node`, `export_workspace_backup`.
+- **Авто-логин по прямой ссылке**: `https://gennety-retention-canvas.vercel.app/?key=ВАШ_КЛЮЧ` моментально авторизует браузерных агентов (Aside Browser, Playwright, Puppeteer).
+- **REST & JavaScript API**: Автономный доступ через `GET /api/workspace?key=...` и `window.__GENNETY_WORKSPACE__.exportFullSnapshot()`.
+- **Подробное руководство**: Полная инструкция по настройке и примеры запросов доступны в [`MCP_GUIDE.md`](./MCP_GUIDE.md).
+
 ---
 
 ## 🌐 Web-версия (Vercel)

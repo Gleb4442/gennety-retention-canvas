@@ -40,13 +40,39 @@ export function validateAccessKey(rawKey: string): { valid: boolean; error?: str
 
 /**
  * Returns the stored access key or null if not authenticated.
+ * Also checks URL query parameters (?key=... or ?accessKey=...) for instant one-click login.
  */
 export function getStoredKey(): string | null {
   try {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const urlKey = params.get('key') || params.get('accessKey') || params.get('token');
+      if (urlKey && urlKey.trim().length >= 4) {
+        const cleanKey = urlKey.trim();
+        setStoredKey(cleanKey);
+        return cleanKey;
+      }
+    }
     return localStorage.getItem(STORAGE_AUTH_KEY);
   } catch {
     return null;
   }
+}
+
+/**
+ * Returns the production or current origin URL with the access key embedded for one-click auth.
+ */
+export function getDirectAuthUrl(key: string, baseUrl?: string): string {
+  const base = baseUrl || (typeof window !== 'undefined' && window.location.origin ? window.location.origin : 'https://gennety-retention-canvas.vercel.app');
+  return `${base}/?key=${encodeURIComponent(key.trim())}`;
+}
+
+/**
+ * Returns the API endpoint URL with the access key embedded.
+ */
+export function getApiWorkspaceUrl(key: string, baseUrl?: string): string {
+  const base = baseUrl || (typeof window !== 'undefined' && window.location.origin ? window.location.origin : 'https://gennety-retention-canvas.vercel.app');
+  return `${base}/api/workspace?key=${encodeURIComponent(key.trim())}`;
 }
 
 /**

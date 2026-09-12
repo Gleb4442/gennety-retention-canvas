@@ -41,6 +41,7 @@ import {
   isOwnerAccessKey,
 } from '../lib/projectStorage';
 import { parseCanvasJson } from '../lib/jsonProjectImporter';
+import { pushLocalWorkspaceToApi } from '../lib/apiSync';
 
 const MAX_HISTORY = 30;
 
@@ -61,6 +62,7 @@ export interface BoardStore {
   isNewProjectModalOpen: boolean;
   isSettingsOpen: boolean;
   isImportJsonModalOpen: boolean;
+  isAiBridgeModalOpen: boolean;
 
   // Active Canvas Data
   nodes: (StrategyNode | ImageNode)[];
@@ -111,6 +113,7 @@ export interface BoardStore {
   setIsNewProjectModalOpen: (open: boolean) => void;
   setIsSettingsOpen: (open: boolean) => void;
   setIsImportJsonModalOpen: (open: boolean) => void;
+  setIsAiBridgeModalOpen: (open: boolean) => void;
   switchProject: (projectId: string) => void;
   createProject: (title: string, template?: ProjectTemplate, description?: string) => string;
   duplicateProject: (projectId: string) => string;
@@ -230,6 +233,7 @@ export const useBoardStore = create<BoardStore>((set, get) => {
     });
 
     saveProjectsForUser(accessKey, updatedProjects);
+    pushLocalWorkspaceToApi(accessKey, updatedProjects, currentProjectId);
   };
 
   return {
@@ -246,6 +250,7 @@ export const useBoardStore = create<BoardStore>((set, get) => {
     isNewProjectModalOpen: false,
     isSettingsOpen: false,
     isImportJsonModalOpen: false,
+    isAiBridgeModalOpen: false,
 
     // Active Canvas
     nodes: initialBoot.nodes,
@@ -381,6 +386,8 @@ export const useBoardStore = create<BoardStore>((set, get) => {
         lastSavedAt: Date.now(),
       });
 
+      pushLocalWorkspaceToApi(key, projects, activeProj.id);
+
       return { success: true };
     },
 
@@ -390,6 +397,7 @@ export const useBoardStore = create<BoardStore>((set, get) => {
         accessKey: null,
         isAuthenticated: false,
         isCabinetOpen: false,
+        isAiBridgeModalOpen: false,
         selectedNodeId: null,
         selectedEdgeId: null,
       });
@@ -406,6 +414,7 @@ export const useBoardStore = create<BoardStore>((set, get) => {
     setIsNewProjectModalOpen: (open) => set({ isNewProjectModalOpen: open }),
     setIsSettingsOpen: (open) => set({ isSettingsOpen: open }),
     setIsImportJsonModalOpen: (open) => set({ isImportJsonModalOpen: open }),
+    setIsAiBridgeModalOpen: (open) => set({ isAiBridgeModalOpen: open }),
 
     switchProject: (projectId: string) => {
       const { projects, accessKey } = get();
@@ -1120,3 +1129,49 @@ export const useBoardStore = create<BoardStore>((set, get) => {
     },
   };
 });
+
+// Attach global API for browser agents (Aside, DevTools, Playwright)
+if (typeof window !== 'undefined') {
+  (window as any).__GENNETY_WORKSPACE__ = {
+    getStore: () => useBoardStore.getState(),
+    getAccessKey: () => useBoardStore.getState().accessKey,
+    getProjects: () => useBoardStore.getState().projects,
+    getActiveProject: () => {
+      const s = useBoardStore.getState();
+      return s.projects.find((p) => p.id === s.currentProjectId) || s.projects[0];
+    },
+    exportFullSnapshot: () => {
+      const s = useBoardStore.getState();
+      return {
+        version: '2.0.0',
+        accessKey: s.accessKey,
+        currentProjectId: s.currentProjectId,
+        totalProjects: s.projects.length,
+        projects: s.projects,
+        activeProject: s.projects.find((p) => p.id === s.currentProjectId) || s.projects[0],
+      };
+    },
+    searchNodes: (query: string) => {
+      const q = (query || '').toLowerCase().trim();
+      const s = useBoardStore.getState();
+      const matches: any[] = [];
+      for (const proj of s.projects) {
+        for (const n of proj.nodes || []) {
+          const d = (n as any).data || {};
+          const text = `${d.title || ''} ${d.description || ''} ${d.badge || ''} ${d.keyMetric || ''} ${d.outcome || ''} ${(d.tags || []).join(' ')}`.toLowerCase();
+          if (text.includes(q)) {
+            matches.push({ projectId: proj.id, projectTitle: proj.title, node: n });
+          }
+        }
+      }
+      return matches;
+    },
+    openAiBridge: () => useBoardStore.getState().setIsAiBridgeModalOpen(true),
+  };
+
+  // Trigger non-blocking sync to /api/workspace on startup
+  if (initialBoot.accessKey && initialBoot.projects.length > 0) {
+    pushLocalWorkspaceToApi(initialBoot.accessKey, initialBoot.projects, initialBoot.currentProjectId, 800);
+  }
+}
+
