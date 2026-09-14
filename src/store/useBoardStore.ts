@@ -41,7 +41,7 @@ import {
   isOwnerAccessKey,
 } from '../lib/projectStorage';
 import { parseCanvasJson } from '../lib/jsonProjectImporter';
-import { pushLocalWorkspaceToApi } from '../lib/apiSync';
+import { pushLocalWorkspaceToApi, fetchRemoteWorkspace, type CloudSyncStatus } from '../lib/apiSync';
 
 const MAX_HISTORY = 30;
 
@@ -52,6 +52,10 @@ export interface BoardStore {
   login: (key: string) => { success: boolean; error?: string };
   logout: () => void;
   generateAndSetKey: () => string;
+
+  // Cloud Database Sync
+  cloudSyncStatus: CloudSyncStatus;
+  syncWithCloudDatabase: (overrideKey?: string) => Promise<void>;
 
   // Projects & Workspace
   projects: CanvasProject[];
@@ -233,13 +237,18 @@ export const useBoardStore = create<BoardStore>((set, get) => {
     });
 
     saveProjectsForUser(accessKey, updatedProjects);
-    pushLocalWorkspaceToApi(accessKey, updatedProjects, currentProjectId);
+    pushLocalWorkspaceToApi(accessKey, updatedProjects, currentProjectId, 800, (status) => {
+      set({ cloudSyncStatus: status });
+    });
   };
 
   return {
     // Auth State
     accessKey: initialBoot.accessKey,
     isAuthenticated: initialBoot.isAuthenticated,
+
+    // Cloud Database Sync State
+    cloudSyncStatus: 'idle' as CloudSyncStatus,
 
     // Projects State
     projects: initialBoot.projects,
@@ -384,11 +393,82 @@ export const useBoardStore = create<BoardStore>((set, get) => {
         selectedNodeId: null,
         selectedEdgeId: null,
         lastSavedAt: Date.now(),
+        cloudSyncStatus: 'syncing',
       });
 
-      pushLocalWorkspaceToApi(key, projects, activeProj.id);
+      // Synchronize with Supabase Cloud Database immediately
+      get().syncWithCloudDatabase(key);
 
       return { success: true };
+    },
+
+    syncWithCloudDatabase: async (overrideKey?: string) => {
+      const key = overrideKey || get().accessKey;
+      if (!key) return;
+
+      set({ cloudSyncStatus: 'syncing' });
+      try {
+        const remote = await fetchRemoteWorkspace(key);
+        if (!remote) {
+          set({ cloudSyncStatus: 'offline' });
+          return;
+        }
+
+        const localProjects = get().projects;
+        const currentActiveId = get().currentProjectId;
+
+        if (remote.success && Array.isArray(remote.projects) && remote.projects.length > 0) {
+          const remoteUpdated = remote.updatedAt || 0;
+          const localMaxUpdated = localProjects.reduce((max, p) => Math.max(max, p.updatedAt || 0), 0);
+
+          // If remote has valid projects and is newer, or local was just an empty blank project
+          const isLocalBlank = localProjects.length === 0 ||
+            (localProjects.length === 1 && (localProjects[0].nodes?.length || 0) === 0);
+
+          if (remoteUpdated >= localMaxUpdated || isLocalBlank) {
+            const activeId = remote.activeProjectId && remote.projects.some((p) => p.id === remote.activeProjectId)
+              ? remote.activeProjectId
+              : remote.projects[0].id;
+            const activeProj = remote.projects.find((p) => p.id === activeId) || remote.projects[0];
+
+            saveProjectsForUser(key, remote.projects);
+            saveActiveProjectIdForUser(key, activeId);
+
+            set({
+              projects: remote.projects,
+              currentProjectId: activeId,
+              nodes: activeProj.nodes || [],
+              edges: activeProj.edges || [],
+              drawings: activeProj.drawings || [],
+              layoutMode: activeProj.layoutMode || 'freeform',
+              theme: activeProj.theme || 'dark',
+              cloudSyncStatus: 'synced',
+              lastSavedAt: remoteUpdated || Date.now(),
+            });
+            return;
+          } else {
+            // Local is newer: push local state to Cloud DB
+            pushLocalWorkspaceToApi(key, localProjects, currentActiveId, 0, (status) => {
+              set({ cloudSyncStatus: status });
+            });
+            return;
+          }
+        }
+
+        if (remote.notFound) {
+          // If remote doesn't have this key yet in database, upload our local projects to Supabase!
+          if (localProjects.length > 0) {
+            pushLocalWorkspaceToApi(key, localProjects, currentActiveId, 0, (status) => {
+              set({ cloudSyncStatus: status });
+            });
+          } else {
+            set({ cloudSyncStatus: 'synced' });
+          }
+        }
+      } catch (err) {
+        console.warn('[Cloud Sync] syncWithCloudDatabase error:', err);
+        set({ cloudSyncStatus: 'error' });
+      }
     },
 
     logout: () => {
@@ -1169,9 +1249,10 @@ if (typeof window !== 'undefined') {
     openAiBridge: () => useBoardStore.getState().setIsAiBridgeModalOpen(true),
   };
 
-  // Trigger non-blocking sync to /api/workspace on startup
-  if (initialBoot.accessKey && initialBoot.projects.length > 0) {
-    pushLocalWorkspaceToApi(initialBoot.accessKey, initialBoot.projects, initialBoot.currentProjectId, 800);
+  // Trigger bi-directional sync with Supabase Cloud Database on startup
+  if (initialBoot.accessKey) {
+    useBoardStore.getState().syncWithCloudDatabase(initialBoot.accessKey);
   }
 }
+
 

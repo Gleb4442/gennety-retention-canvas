@@ -41,6 +41,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   const importJson = useBoardStore((s) => s.importJson);
   const projects = useBoardStore((s) => s.projects);
   const currentProjectId = useBoardStore((s) => s.currentProjectId);
+  const cloudSyncStatus = useBoardStore((s) => s.cloudSyncStatus);
   const setIsAiBridgeModalOpen = useBoardStore((s) => s.setIsAiBridgeModalOpen);
 
   const activeProject = projects.find((p) => p.id === currentProjectId) || projects[0];
@@ -154,11 +155,21 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
         </div>
 
-        {/* Compact Project Folder Pill */}
+        {/* Compact Project Folder Pill with Cloud Database Sync Indicator */}
         <button
           onClick={onOpenCabinet}
           className="pointer-events-auto flex items-center gap-2 px-3 py-2 rounded-2xl liquid-glass shadow-2xl text-xs font-mono transition-all hover:bg-black/5 dark:hover:bg-white/10 hover:scale-[1.01] active:scale-[0.99] text-inherit group"
-          title={`Проект: ${activeProject?.title || 'Retention'} (кликните, чтобы открыть проекты)`}
+          title={`Проект: ${activeProject?.title || 'Retention'} | Статус БД: ${
+            cloudSyncStatus === 'syncing'
+              ? 'Сохранение в Supabase Postgres...'
+              : cloudSyncStatus === 'synced'
+              ? 'Синхронизировано с базой данных Supabase'
+              : cloudSyncStatus === 'offline'
+              ? 'Офлайн (сохранено локально)'
+              : cloudSyncStatus === 'error'
+              ? 'Ошибка соединения с БД'
+              : 'База данных Supabase подключена'
+          }`}
         >
           <svg className="w-3.5 h-3.5 opacity-65 group-hover:opacity-100 flex-shrink-0 transition-opacity" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
@@ -166,7 +177,17 @@ export const Navbar: React.FC<NavbarProps> = ({
           <span className="max-w-[120px] sm:max-w-[160px] truncate opacity-85 group-hover:opacity-100 font-medium transition-opacity">
             {activeProject?.title || 'Проекты'}
           </span>
-          <span className="w-1.5 h-1.5 rounded-full bg-current opacity-40 group-hover:opacity-75 flex-shrink-0 transition-opacity" title="Сохранено" />
+          {cloudSyncStatus === 'syncing' ? (
+            <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse flex-shrink-0 shadow-sm" title="Сохранение в базу данных..." />
+          ) : cloudSyncStatus === 'synced' ? (
+            <span className="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0 shadow-sm" title="Сохранено в базе данных Supabase" />
+          ) : cloudSyncStatus === 'offline' ? (
+            <span className="w-2 h-2 rounded-full bg-zinc-400 flex-shrink-0" title="Офлайн" />
+          ) : cloudSyncStatus === 'error' ? (
+            <span className="w-2 h-2 rounded-full bg-rose-500 flex-shrink-0 animate-bounce" title="Ошибка связи с БД" />
+          ) : (
+            <span className="w-2 h-2 rounded-full bg-emerald-500/80 flex-shrink-0 shadow-sm" title="База данных подключена" />
+          )}
         </button>
       </div>
 

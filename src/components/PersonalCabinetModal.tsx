@@ -35,6 +35,8 @@ export const PersonalCabinetModal: React.FC<PersonalCabinetModalProps> = ({
   const exportProjectJson = useBoardStore((s) => s.exportProjectJson);
   const importProjectFromJson = useBoardStore((s) => s.importProjectFromJson);
   const setIsAiBridgeModalOpen = useBoardStore((s) => s.setIsAiBridgeModalOpen);
+  const cloudSyncStatus = useBoardStore((s) => s.cloudSyncStatus);
+  const syncWithCloudDatabase = useBoardStore((s) => s.syncWithCloudDatabase);
 
   if (!isOpen) return null;
 
@@ -453,10 +455,41 @@ export const PersonalCabinetModal: React.FC<PersonalCabinetModalProps> = ({
         </div>
 
         {/* ================= FOOTER ================= */}
-        <div className="px-6 py-3.5 border-t border-black/10 dark:border-white/10 flex items-center justify-between bg-zinc-100/70 dark:bg-black/30 text-xs font-mono text-zinc-500 dark:text-zinc-400">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-zinc-500 dark:bg-zinc-400" />
-            <span>Автосохранение включено</span>
+        <div className="px-6 py-3.5 border-t border-black/10 dark:border-white/10 flex flex-wrap items-center justify-between gap-2 bg-zinc-100/70 dark:bg-black/30 text-xs font-mono text-zinc-500 dark:text-zinc-400">
+          <div className="flex items-center gap-2.5">
+            <span
+              className={`w-2.5 h-2.5 rounded-full ${
+                cloudSyncStatus === 'syncing'
+                  ? 'bg-amber-400 animate-pulse'
+                  : cloudSyncStatus === 'synced'
+                  ? 'bg-emerald-500 shadow-sm'
+                  : cloudSyncStatus === 'offline'
+                  ? 'bg-zinc-400'
+                  : cloudSyncStatus === 'error'
+                  ? 'bg-rose-500'
+                  : 'bg-emerald-500/80'
+              }`}
+            />
+            <span className="text-[11px] text-zinc-700 dark:text-zinc-300">
+              База данных: <strong>Supabase PostgreSQL</strong> ({
+                cloudSyncStatus === 'syncing'
+                  ? 'Синхронизация...'
+                  : cloudSyncStatus === 'synced'
+                  ? 'Синхронизировано'
+                  : cloudSyncStatus === 'offline'
+                  ? 'Локальный режим'
+                  : cloudSyncStatus === 'error'
+                  ? 'Ошибка связи'
+                  : 'Подключена'
+              })
+            </span>
+            <button
+              onClick={() => syncWithCloudDatabase()}
+              className="text-[10px] underline underline-offset-2 text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors ml-1"
+              title="Обновить данные из базы данных Supabase"
+            >
+              Синхронизировать сейчас
+            </button>
           </div>
 
           <button

@@ -23,6 +23,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
   const importBackupJson = useBoardStore((s) => s.importBackupJson);
   const projects = useBoardStore((s) => s.projects);
   const setIsAiBridgeModalOpen = useBoardStore((s) => s.setIsAiBridgeModalOpen);
+  const cloudSyncStatus = useBoardStore((s) => s.cloudSyncStatus);
+  const syncWithCloudDatabase = useBoardStore((s) => s.syncWithCloudDatabase);
 
   if (!isOpen) return null;
 
@@ -257,6 +259,63 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
               </button>
             </div>
           )}
+        </div>
+
+        {/* Section 1.5: Cloud Database Status */}
+        <div className="p-4 rounded-2xl bg-zinc-100/70 dark:bg-white/[0.05] border border-black/10 dark:border-white/10 space-y-2.5">
+          <div className="flex items-center justify-between text-xs font-mono">
+            <span className="text-zinc-500 dark:text-zinc-400 uppercase tracking-wider text-[10px] font-medium">
+              Облачная база данных
+            </span>
+            <div className="flex items-center gap-1.5">
+              <span
+                className={`w-2 h-2 rounded-full ${
+                  cloudSyncStatus === 'syncing'
+                    ? 'bg-amber-400 animate-pulse'
+                    : cloudSyncStatus === 'synced'
+                    ? 'bg-emerald-500 shadow-sm'
+                    : cloudSyncStatus === 'offline'
+                    ? 'bg-zinc-400'
+                    : cloudSyncStatus === 'error'
+                    ? 'bg-rose-500'
+                    : 'bg-emerald-500/80'
+                }`}
+              />
+              <span className="text-[10px] text-zinc-700 dark:text-zinc-300 font-semibold font-mono">
+                {cloudSyncStatus === 'syncing'
+                  ? 'Синхронизация...'
+                  : cloudSyncStatus === 'synced'
+                  ? 'Синхронизировано'
+                  : cloudSyncStatus === 'offline'
+                  ? 'Офлайн'
+                  : cloudSyncStatus === 'error'
+                  ? 'Ошибка связи'
+                  : 'Подключена'}
+              </span>
+            </div>
+          </div>
+
+          <div className="p-3 rounded-xl bg-white dark:bg-black/50 border border-black/10 dark:border-white/15 space-y-1 text-xs">
+            <div className="flex items-center justify-between font-mono text-[11px]">
+              <span className="text-zinc-500 dark:text-zinc-400">Провайдер:</span>
+              <span className="font-semibold text-zinc-900 dark:text-white">Supabase PostgreSQL (AWS eu-west-1)</span>
+            </div>
+            <div className="flex items-center justify-between font-mono text-[11px]">
+              <span className="text-zinc-500 dark:text-zinc-400">Таблица:</span>
+              <span className="font-semibold text-zinc-900 dark:text-white">canvas_workspaces</span>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between pt-1">
+            <span className="text-[10px] text-zinc-500 font-mono">Все схемы и карточки сохраняются в облаке</span>
+            <button
+              type="button"
+              onClick={() => syncWithCloudDatabase()}
+              className="px-2.5 py-1 rounded-lg bg-zinc-100 hover:bg-zinc-200 dark:bg-white/10 dark:hover:bg-white/20 text-[10px] font-mono font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white transition-colors"
+            >
+              Синхронизировать сейчас
+            </button>
+          </div>
         </div>
 
         {/* Section 2: Backup Hub */}

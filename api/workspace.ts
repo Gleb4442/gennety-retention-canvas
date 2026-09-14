@@ -1,5 +1,31 @@
-// In-memory cache for serverless lifecycle (or cloud sync)
+import { Pool } from 'pg';
+
+// In-memory fallback cache
 let memoryStore: Record<string, { projects: any[]; activeProjectId: string; updatedAt: number }> = {};
+
+// Cached PostgreSQL pool for serverless execution
+let pool: Pool | null = null;
+
+function getDbPool(): Pool | null {
+  const connectionString = process.env.DATABASE_URL;
+  if (!connectionString) {
+    return null;
+  }
+
+  if (!pool) {
+    pool = new Pool({
+      connectionString,
+      ssl: {
+        rejectUnauthorized: false,
+      },
+      max: 4,
+      idleTimeoutMillis: 30000,
+      connectionTimeoutMillis: 5000,
+    });
+  }
+
+  return pool;
+}
 
 export default async function handler(req: any, res: any) {
   // CORS Headers
@@ -12,17 +38,55 @@ export default async function handler(req: any, res: any) {
   }
 
   const { method, query, body } = req;
+  const db = getDbPool();
 
   // GET /api/workspace?key=...
   if (method === 'GET') {
-    const key = (query.key as string) || (query.accessKey as string);
-    if (!key) {
+    const rawKey = (query.key as string) || (query.accessKey as string);
+    if (!rawKey) {
       return res.status(400).json({ success: false, error: 'Параметр "key" обязателен.' });
     }
 
-    const cleanKey = key.trim();
-    const stored = memoryStore[cleanKey];
+    const cleanKey = rawKey.trim();
 
+    // 1. Try fetching from Cloud Database (Supabase PostgreSQL)
+    if (db) {
+      try {
+        const result = await db.query(
+          `SELECT access_key, active_project_id, projects, updated_at
+           FROM canvas_workspaces
+           WHERE access_key = $1`,
+          [cleanKey]
+        );
+
+        if (result.rows.length > 0) {
+          const row = result.rows[0];
+          const projects = typeof row.projects === 'string' ? JSON.parse(row.projects) : row.projects;
+
+          // Keep in-memory cache hot
+          memoryStore[cleanKey] = {
+            projects,
+            activeProjectId: row.active_project_id,
+            updatedAt: new Date(row.updated_at).getTime(),
+          };
+
+          return res.status(200).json({
+            success: true,
+            accessKey: row.access_key,
+            activeProjectId: row.active_project_id,
+            projects,
+            updatedAt: new Date(row.updated_at).getTime(),
+            storage: 'cloud_postgres',
+          });
+        }
+      } catch (err: any) {
+        console.error('[API Workspace] Postgres GET error:', err.message);
+        // Fall back to memoryStore
+      }
+    }
+
+    // 2. Fallback to memory store if DB is empty or unavailable
+    const stored = memoryStore[cleanKey];
     if (stored) {
       return res.status(200).json({
         success: true,
@@ -30,14 +94,14 @@ export default async function handler(req: any, res: any) {
         projects: stored.projects,
         activeProjectId: stored.activeProjectId,
         updatedAt: stored.updatedAt,
+        storage: 'memory_fallback',
       });
     }
 
-    // If not found in memory, return empty signal so client uses starter or local data
     return res.status(200).json({
       success: false,
       notFound: true,
-      message: 'Workspace not found in cloud cache. Using local snapshot.',
+      message: 'Workspace not found in database. Using local snapshot.',
     });
   }
 
@@ -55,17 +119,57 @@ export default async function handler(req: any, res: any) {
       }
 
       const cleanKey = accessKey.trim();
+      const targetActiveId = activeProjectId || projects[0]?.id || '';
+      const now = Date.now();
+
+      // Always update in-memory cache
       memoryStore[cleanKey] = {
         projects,
-        activeProjectId: activeProjectId || projects[0]?.id || '',
-        updatedAt: Date.now(),
+        activeProjectId: targetActiveId,
+        updatedAt: now,
       };
+
+      // 1. Persist to Cloud Database (Supabase PostgreSQL)
+      if (db) {
+        try {
+          await db.query(
+            `INSERT INTO canvas_workspaces (access_key, active_project_id, projects, updated_at)
+             VALUES ($1, $2, $3, NOW())
+             ON CONFLICT (access_key)
+             DO UPDATE SET
+               active_project_id = EXCLUDED.active_project_id,
+               projects = EXCLUDED.projects,
+               updated_at = NOW()`,
+            [cleanKey, targetActiveId, JSON.stringify(projects)]
+          );
+
+          return res.status(200).json({
+            success: true,
+            accessKey: cleanKey,
+            totalProjects: projects.length,
+            savedAt: now,
+            storage: 'cloud_postgres',
+          });
+        } catch (dbErr: any) {
+          console.error('[API Workspace] Postgres POST error:', dbErr.message);
+          // Return success via memory fallback with warning
+          return res.status(200).json({
+            success: true,
+            accessKey: cleanKey,
+            totalProjects: projects.length,
+            savedAt: now,
+            storage: 'memory_fallback',
+            warning: 'Database save failed, cached in memory',
+          });
+        }
+      }
 
       return res.status(200).json({
         success: true,
         accessKey: cleanKey,
         totalProjects: projects.length,
-        savedAt: Date.now(),
+        savedAt: now,
+        storage: 'memory_only',
       });
     } catch (err: any) {
       return res.status(500).json({

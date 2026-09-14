@@ -170,11 +170,34 @@ export function loadProjectsForUser(accessKey: string): { projects: CanvasProjec
  * Saves projects array to localStorage for the given access key.
  */
 export function saveProjectsForUser(accessKey: string, projects: CanvasProject[]): void {
+  const projectsKey = getProjectsStorageKey(accessKey);
   try {
-    const projectsKey = getProjectsStorageKey(accessKey);
     localStorage.setItem(projectsKey, JSON.stringify(projects));
   } catch (e) {
-    console.error('Failed to save projects to localStorage:', e);
+    console.warn('[Storage] localStorage quota exceeded, trimming heavy media for local cache:', e);
+    try {
+      // Create a lightweight local copy without huge base64 data URIs so node topology is never lost
+      const prunedProjects = projects.map((p) => ({
+        ...p,
+        nodes: p.nodes.map((n) => {
+          if (n.data && typeof (n.data as any).imageUrl === 'string' && (n.data as any).imageUrl.startsWith('data:')) {
+            // Drop heavy local base64 preview for localStorage, full version is safe in Cloud DB
+            return {
+              ...n,
+              data: {
+                ...n.data,
+                imageUrl: undefined,
+                _hasCloudMedia: true,
+              },
+            };
+          }
+          return n;
+        }),
+      }));
+      localStorage.setItem(projectsKey, JSON.stringify(prunedProjects));
+    } catch (innerErr) {
+      console.error('[Storage] Critical: could not persist even pruned projects to localStorage:', innerErr);
+    }
   }
 }
 
