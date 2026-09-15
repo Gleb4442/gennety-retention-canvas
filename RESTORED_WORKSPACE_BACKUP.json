@@ -1,0 +1,819 @@
+{
+  "version": "2.0.0",
+  "restoredAt": "2026-09-15T03:42:23Z",
+  "activeProjectId": "proj_1789423111794_json_9nffk",
+  "totalProjects": 3,
+  "projects": [
+    {
+      "id": "proj_1789423111794_json_9nffk",
+      "title": "Сдвиг парадигмы: Couples Lifestyle OS",
+      "description": "Экосистема удержания пар: kinetic dual bond, слепые дропы свиданий, double-dates и институт кураторов.",
+      "nodes": [
+        {
+          "id": "node_foundation_duo",
+          "type": "strategyNode",
+          "position": {
+            "x": 305,
+            "y": 80
+          },
+          "data": {
+            "title": "Сдвиг парадигмы: Couples Lifestyle OS",
+            "badge": "Paradigm Shift",
+            "category": "foundation",
+            "description": "Трансформация продукта из утилиты поиска пары в закрытую экосистему совместного лайфстайла и романтических сценариев.",
+            "keyMetric": "Конверсия из успеха знакомства в парное членство > 75%",
+            "outcome": "Ликвидация оттока при нахождении пары, запуск долгосрочного LTV",
+            "tags": [
+              "Foundation",
+              "ParadigmShift",
+              "DuoOS"
+            ]
+          },
+          "measured": {
+            "width": 340,
+            "height": 301
+          }
+        },
+        {
+          "id": "node_hardware_bond",
+          "type": "strategyNode",
+          "position": {
+            "x": 90,
+            "y": 420
+          },
+          "data": {
+            "title": "Kinetic Dual Bond (Аппаратное слияние)",
+            "badge": "Retention Tool",
+            "category": "hardware",
+            "description": "Физическое касание NFC-аксессуаров обоих партнеров блокирует сингл-поиск и создает единый связанный профиль 'Verified Couple'.",
+            "keyMetric": "100% защита от случайного использования дейтинга в отношениях",
+            "outcome": "Овеществленный ритуал верности и переход на парный клубный статус",
+            "tags": [
+              "Hardware",
+              "NFC",
+              "DualBond",
+              "RenovatioHaptics"
+            ]
+          },
+          "measured": {
+            "width": 340,
+            "height": 301
+          }
+        },
+        {
+          "id": "node_psychology_routine",
+          "type": "strategyNode",
+          "position": {
+            "x": 530,
+            "y": 760
+          },
+          "data": {
+            "title": "Ликвидация 'Бытового болота'",
+            "badge": "Value Delivery",
+            "category": "psychology",
+            "description": "Снятие стресса выбора досуга. Закрытие новой острой боли пары: куда пойти вместе статусно, красиво и без пошлости.",
+            "keyMetric": "NPS пары по качеству совместного досуга > 85",
+            "outcome": "Глубокая эмоциональная зависимость отношений от инфраструктуры клуба",
+            "tags": [
+              "Psychology",
+              "RoutineKiller",
+              "EmotionalBond"
+            ]
+          },
+          "measured": {
+            "width": 340,
+            "height": 315
+          }
+        },
+        {
+          "id": "node_retention_datedrops",
+          "type": "strategyNode",
+          "position": {
+            "x": 90,
+            "y": 760
+          },
+          "data": {
+            "title": "Curated Date Drops (Слепые маршруты)",
+            "badge": "Habit Loop",
+            "category": "retention",
+            "description": "Еженедельный четверговый дроп эксклюзивного сценария свидания (секретные локации, спешел-меню, бронь в 1 клик по NFC-ключу).",
+            "keyMetric": "Weekly Active Couples (WAC) > 60%, 2.5 свидания в месяц",
+            "outcome": "Регулярный ритуал потребления клубной инфраструктуры",
+            "tags": [
+              "Retention",
+              "DateDrops",
+              "HabitLoop",
+              "Concierge"
+            ]
+          },
+          "measured": {
+            "width": 340,
+            "height": 301
+          }
+        },
+        {
+          "id": "node_event_doubledate",
+          "type": "strategyNode",
+          "position": {
+            "x": 520,
+            "y": 1100
+          },
+          "data": {
+            "title": "Double-Date & Resident Salons",
+            "badge": "Execution",
+            "category": "event",
+            "description": "Сегрегация мероприятий: закрытые ужины, падл-турниры и поездки для пар, формирующие круг общения равных семейных союзов.",
+            "keyMetric": "Посещаемость резидентских ивентов > 40% активных пар",
+            "outcome": "Социальный клей: пара дружит семьями внутри закрытого комьюнити",
+            "tags": [
+              "Event",
+              "DoubleDate",
+              "SocialCircle",
+              "PadelClub"
+            ]
+          },
+          "measured": {
+            "width": 340,
+            "height": 301
+          }
+        },
+        {
+          "id": "node_lifecycle_gatekeeper",
+          "type": "strategyNode",
+          "position": {
+            "x": 79.11797729428696,
+            "y": 1445.2921362342784
+          },
+          "data": {
+            "title": "Gatekeeper Privilege (Институт власти)",
+            "badge": "Relevance Engine",
+            "category": "lifecycle",
+            "description": "Пары получают статус кураторов: право совместного голоса и вето (Blackball) при одобрении кандидатов из листа ожидания (Waitlist).",
+            "keyMetric": "Monthly Voting Engagement > 80% кураторских пар",
+            "outcome": "Удержание на социальном тщеславии и чувстве принадлежности к совету",
+            "tags": [
+              "Lifecycle",
+              "Gatekeeper",
+              "SocialPower",
+              "Waitlist"
+            ]
+          },
+          "measured": {
+            "width": 340,
+            "height": 320
+          },
+          "selected": true,
+          "dragging": false
+        },
+        {
+          "id": "node_lifecycle_monolith",
+          "type": "strategyNode",
+          "position": {
+            "x": 571.1573169313573,
+            "y": 1466.4606811713916
+          },
+          "data": {
+            "title": "Graduation Monolith & Content Factory",
+            "badge": "Relevance Engine",
+            "category": "lifecycle",
+            "description": "Торжественный выход пары в брак/приватность с вручением физического арт-объекта и съемкой кинематографичной micro-дорами.",
+            "keyMetric": "Органический виральный охват > 500k views на кейс, CAC = $0",
+            "outcome": "Уход пары привлекает 500 новых одиночек в воронку клуба",
+            "tags": [
+              "Lifecycle",
+              "Alumni",
+              "SocialProof",
+              "DouyinDramas"
+            ]
+          },
+          "measured": {
+            "width": 340,
+            "height": 301
+          },
+          "selected": false,
+          "dragging": false
+        },
+        {
+          "id": "node_outcome_ltv",
+          "type": "strategyNode",
+          "position": {
+            "x": 319.1123632914089,
+            "y": 1891.1348609198449
+          },
+          "data": {
+            "title": "Рекордный LTV и Top-1 Retention",
+            "badge": "End Result",
+            "category": "outcome",
+            "description": "Пожизненный цикл удержания: сингл платит за вход и статус, пара платит за лайфстайл и власть, выпускники создают органический трафик.",
+            "keyMetric": "Парный LTV $1,200–$3,600, Churn Rate < 2.5% в месяц",
+            "outcome": "Безусловное лидерство по монетизации и удержанию среди social-продуктов",
+            "tags": [
+              "Outcome",
+              "RecordLTV",
+              "Top1Retention",
+              "Monopoly"
+            ]
+          },
+          "measured": {
+            "width": 340,
+            "height": 315
+          },
+          "selected": false,
+          "dragging": false
+        }
+      ],
+      "edges": [
+        {
+          "id": "edge_f_to_hw",
+          "source": "node_foundation_duo",
+          "target": "node_hardware_bond",
+          "type": "customEdge",
+          "animated": true,
+          "data": {
+            "label": "Аппаратная фиксация союза",
+            "animated": true,
+            "styleType": "bezier"
+          }
+        },
+        {
+          "id": "edge_f_to_psy",
+          "source": "node_foundation_duo",
+          "target": "node_psychology_routine",
+          "type": "customEdge",
+          "animated": true,
+          "data": {
+            "label": "Смена JTBD на лайфстайл",
+            "animated": true,
+            "styleType": "bezier"
+          }
+        },
+        {
+          "id": "edge_hw_to_ret",
+          "source": "node_hardware_bond",
+          "target": "node_retention_datedrops",
+          "type": "customEdge",
+          "animated": true,
+          "data": {
+            "label": "Доступ к секретным броням по чипу",
+            "animated": true,
+            "styleType": "bezier"
+          }
+        },
+        {
+          "id": "edge_psy_to_ev",
+          "source": "node_psychology_routine",
+          "target": "node_event_doubledate",
+          "type": "customEdge",
+          "animated": true,
+          "data": {
+            "label": "Потребность в окружении равных пар",
+            "animated": true,
+            "styleType": "bezier"
+          }
+        },
+        {
+          "id": "edge_ret_to_gate",
+          "source": "node_retention_datedrops",
+          "target": "node_lifecycle_gatekeeper",
+          "type": "customEdge",
+          "animated": true,
+          "data": {
+            "label": "Рост клубного стажа и доверия",
+            "animated": true,
+            "styleType": "bezier"
+          }
+        },
+        {
+          "id": "edge_ev_to_mono",
+          "source": "node_event_doubledate",
+          "target": "node_lifecycle_monolith",
+          "type": "customEdge",
+          "animated": true,
+          "data": {
+            "label": "Накопление совместной истории",
+            "animated": true,
+            "styleType": "bezier"
+          }
+        },
+        {
+          "id": "edge_gate_to_out",
+          "source": "node_lifecycle_gatekeeper",
+          "target": "node_outcome_ltv",
+          "type": "customEdge",
+          "animated": true,
+          "data": {
+            "label": "Пожизненная привязка через статус",
+            "animated": true,
+            "styleType": "bezier"
+          }
+        },
+        {
+          "id": "edge_mono_to_out",
+          "source": "node_lifecycle_monolith",
+          "target": "node_outcome_ltv",
+          "type": "customEdge",
+          "animated": true,
+          "data": {
+            "label": "Виральный маховик новых участников",
+            "animated": true,
+            "styleType": "bezier"
+          }
+        },
+        {
+          "id": "edge_ret_to_ev",
+          "source": "node_retention_datedrops",
+          "target": "node_event_doubledate",
+          "type": "customEdge",
+          "animated": true,
+          "data": {
+            "label": "Кросс-участие в общих активностях",
+            "animated": true,
+            "styleType": "bezier"
+          }
+        }
+      ],
+      "drawings": [],
+      "layoutMode": "pyramid",
+      "theme": "dark",
+      "createdAt": 1789423111794,
+      "updatedAt": 1789432284402,
+      "tags": [
+        "Couples OS",
+        "Dual Bond",
+        "Lifestyle"
+      ],
+      "isFavorite": true
+    },
+    {
+      "id": "proj_funnel_club_hardware",
+      "title": "Воронка входа в клуб и Hardware-подписки",
+      "description": "Модель отбора кандидатов, продажи девайса и регулярной подписки с заморозкой членства при оттоке.",
+      "layoutMode": "freeform",
+      "theme": "dark",
+      "createdAt": 1789420000000,
+      "updatedAt": 1789432943763,
+      "tags": [
+        "Club Funnel",
+        "Hardware Subscription",
+        "Anti-Churn"
+      ],
+      "isFavorite": true,
+      "nodes": [
+        {
+          "id": "step_entry",
+          "type": "strategyNode",
+          "position": {
+            "x": 80,
+            "y": 200
+          },
+          "data": {
+            "title": "ВХОД В КЛУБ",
+            "badge": "Шаг 1 / Триггер",
+            "category": "foundation",
+            "description": "Первичный интерес пользователя к сообществу и старт процесса вступления.",
+            "keyMetric": "CR старта онбординга",
+            "outcome": "Инициация заявки кандидатом",
+            "tags": [
+              "Club",
+              "Trigger",
+              "Acquisition"
+            ]
+          }
+        },
+        {
+          "id": "step_application",
+          "type": "strategyNode",
+          "position": {
+            "x": 500,
+            "y": 200
+          },
+          "data": {
+            "title": "ПОДАЧА ЗАЯВКИ ЧЕРЕЗ ПРИЛОЖЕНИЕ",
+            "badge": "Шаг 2 / Анкета",
+            "category": "foundation",
+            "description": "Заполнение персональной анкеты и верификация данных в приложении.",
+            "keyMetric": "CR завершения анкеты > 65%",
+            "outcome": "Сформированная заявка на модерацию",
+            "tags": [
+              "Onboarding",
+              "Application",
+              "Verification"
+            ]
+          }
+        },
+        {
+          "id": "step_decision",
+          "type": "strategyNode",
+          "position": {
+            "x": 920,
+            "y": 200
+          },
+          "data": {
+            "title": "МОДЕРАЦИЯ (ACCEPT / DECLINE)",
+            "badge": "Шаг 3 / Фильтр",
+            "category": "psychology",
+            "description": "Скоринг профиля: подтверждение соответствия клубу либо отказ.",
+            "keyMetric": "Approval Rate ~20-30%",
+            "outcome": "Сегментация на одобренных кандидатов и пул ожидания",
+            "tags": [
+              "Scoring",
+              "Curated Community",
+              "Status"
+            ]
+          }
+        },
+        {
+          "id": "step_approved",
+          "type": "strategyNode",
+          "position": {
+            "x": 1340,
+            "y": 140
+          },
+          "data": {
+            "title": "ОДОБРЕНИЕ, ДЕВАЙС И ПОДПИСКА",
+            "badge": "Шаг 4 / Доступ",
+            "category": "retention",
+            "description": "Покупка девайса и оформление регулярной подписки для подтверждения членства.",
+            "keyMetric": "CR в покупку девайса > 50%",
+            "outcome": "Активированное платное членство",
+            "tags": [
+              "Subscription",
+              "Hardware Gate",
+              "Monetization"
+            ]
+          }
+        },
+        {
+          "id": "step_hardware",
+          "type": "strategyNode",
+          "position": {
+            "x": 1760,
+            "y": 140
+          },
+          "data": {
+            "title": "HARDWARE-ДОСТУП В КЛУБ",
+            "badge": "Шаг 5 / Устройство",
+            "category": "hardware",
+            "description": "Использование физического устройства для аутентификации и участия в жизни клуба.",
+            "keyMetric": "MAU девайса, посещаемость клуба",
+            "outcome": "Регулярное использование физического девайса в клубе",
+            "tags": [
+              "Hardware",
+              "Access",
+              "Offline Retention"
+            ]
+          }
+        },
+        {
+          "id": "step_decline",
+          "type": "strategyNode",
+          "position": {
+            "x": 1340,
+            "y": 380
+          },
+          "data": {
+            "title": "DECLINE: ШАНС НА БУДУЩЕЕ",
+            "badge": "Ветка / Ожидание",
+            "category": "lifecycle",
+            "description": "Мягкий отказ с сохранением контакта и возможностью повторной подачи.",
+            "keyMetric": "Reactivation CR > 15%",
+            "outcome": "Лояльный резерв кандидатов",
+            "tags": [
+              "Waitlist",
+              "Nurturing",
+              "Reactivation"
+            ]
+          }
+        },
+        {
+          "id": "step_frozen",
+          "type": "strategyNode",
+          "position": {
+            "x": 1760,
+            "y": 380
+          },
+          "data": {
+            "title": "ЗАМОРОЗКА ЧЛЕНСТВА",
+            "badge": "Ветка / Отток",
+            "category": "lifecycle",
+            "description": "Приостановка доступа и функционала девайса при прекращении оплаты подписки.",
+            "keyMetric": "Возобновление подписки > 30%",
+            "outcome": "Стимул к реактивации и защите статуса",
+            "tags": [
+              "Churn",
+              "Suspension",
+              "Winback"
+            ]
+          }
+        }
+      ],
+      "edges": [
+        {
+          "id": "e_entry_app",
+          "source": "step_entry",
+          "target": "step_application",
+          "type": "customEdge",
+          "animated": true,
+          "data": {
+            "label": "Установка приложения",
+            "styleType": "bezier"
+          }
+        },
+        {
+          "id": "e_app_decision",
+          "source": "step_application",
+          "target": "step_decision",
+          "type": "customEdge",
+          "animated": true,
+          "data": {
+            "label": "Отправка анкеты",
+            "styleType": "bezier"
+          }
+        },
+        {
+          "id": "e_decision_approved",
+          "source": "step_decision",
+          "target": "step_approved",
+          "type": "customEdge",
+          "animated": true,
+          "data": {
+            "label": "Accept (Одобрено)",
+            "styleType": "bezier"
+          }
+        },
+        {
+          "id": "e_decision_decline",
+          "source": "step_decision",
+          "target": "step_decline",
+          "type": "customEdge",
+          "animated": false,
+          "data": {
+            "label": "Decline (Шанс позже)",
+            "styleType": "bezier"
+          }
+        },
+        {
+          "id": "e_approved_hardware",
+          "source": "step_approved",
+          "target": "step_hardware",
+          "type": "customEdge",
+          "animated": true,
+          "data": {
+            "label": "Покупка девайса",
+            "styleType": "bezier"
+          }
+        },
+        {
+          "id": "e_approved_frozen",
+          "source": "step_approved",
+          "target": "step_frozen",
+          "type": "customEdge",
+          "animated": false,
+          "data": {
+            "label": "Остановка оплаты подписки",
+            "styleType": "bezier"
+          }
+        },
+        {
+          "id": "e_frozen_approved",
+          "source": "step_frozen",
+          "target": "step_approved",
+          "type": "customEdge",
+          "animated": true,
+          "data": {
+            "label": "Возобновление подписки",
+            "styleType": "bezier"
+          }
+        }
+      ]
+    },
+    {
+      "id": "proj_master_flywheel",
+      "title": "Retention Flywheel (Основной)",
+      "description": "Мастер-стратегия удержания пользователей Gennety: циклы, психология, ритуалы и аппаратные триггеры.",
+      "layoutMode": "flywheel",
+      "theme": "dark",
+      "createdAt": 1789200000000,
+      "updatedAt": 1789432943729,
+      "tags": [
+        "Master Template",
+        "Retention Flywheel"
+      ],
+      "isFavorite": true,
+      "nodes": [
+        {
+          "id": "shift_core",
+          "type": "strategyNode",
+          "position": {
+            "x": 250,
+            "y": 100
+          },
+          "data": {
+            "title": "СДВИГ БИЗНЕС-МОДЕЛИ",
+            "badge": "Foundation",
+            "category": "foundation",
+            "description": "Плата за комьюнити, статус и закрытый клуб вместо поиска пары. Устраняем мотив удалять апп после мэтча.",
+            "keyMetric": "Регулярная подписка",
+            "outcome": "Член клуба",
+            "tags": [
+              "Business Model",
+              "Disruption"
+            ]
+          }
+        },
+        {
+          "id": "emotion_status",
+          "type": "strategyNode",
+          "position": {
+            "x": 650,
+            "y": 100
+          },
+          "data": {
+            "title": "ЧИСТЫЕ ЭМОЦИИ & СТАТУС",
+            "badge": "Aha-moment",
+            "category": "psychology",
+            "description": "Эмоции первой очереди (влюбленность, азарт, признание) + социальный статус и пафос второй очереди.",
+            "keyMetric": "D1 Retention > 55%",
+            "outcome": "Эмоциональный крючок",
+            "tags": [
+              "Psychology",
+              "Ego"
+            ]
+          }
+        },
+        {
+          "id": "hardware_beacon",
+          "type": "strategyNode",
+          "position": {
+            "x": 1050,
+            "y": 100
+          },
+          "data": {
+            "title": "HARDWARE-СИГНАЛКА",
+            "badge": "Физический маркер",
+            "category": "hardware",
+            "description": "Материальный объект в реальном мире. Рождает тактильное ощущение принадлежности к избранным.",
+            "keyMetric": "WOM Organic Share",
+            "outcome": "Материализация статуса",
+            "tags": [
+              "Hardware",
+              "Signaling"
+            ]
+          }
+        },
+        {
+          "id": "gym_model",
+          "type": "strategyNode",
+          "position": {
+            "x": 1050,
+            "y": 450
+          },
+          "data": {
+            "title": "МЕХАНИКА СПОРТЗАЛА",
+            "badge": "Retention Engine",
+            "category": "retention",
+            "description": "Оффлайн-ивенты как регулярный ритуал. Платят за абонемент ради доступа к жизни клуба.",
+            "keyMetric": "W4 Retention > 40%",
+            "outcome": "Привычка членства",
+            "tags": [
+              "Gym Model",
+              "Habit Loop"
+            ]
+          }
+        },
+        {
+          "id": "event_duality",
+          "type": "strategyNode",
+          "position": {
+            "x": 650,
+            "y": 450
+          },
+          "data": {
+            "title": "ДВОЙСТВЕННОСТЬ ИВЕНТОВ",
+            "badge": "Community",
+            "category": "event",
+            "description": "Внешняя масштабность (соцсети, шум, пафос) + внутренняя приватная камерность (закрытые связи).",
+            "keyMetric": "Event Attendance & UGC",
+            "outcome": "Сверхсильная комьюнити-связь",
+            "tags": [
+              "Events",
+              "Social Capital"
+            ]
+          }
+        },
+        {
+          "id": "anti_churn",
+          "type": "strategyNode",
+          "position": {
+            "x": 250,
+            "y": 450
+          },
+          "data": {
+            "title": "HARDWARE V2 & РОТАЦИЯ",
+            "badge": "Anti-Churn",
+            "category": "lifecycle",
+            "description": "Двухуровневый апгрейд: сменяемый девайс + ротация тематических сезонов и кулуарных встреч.",
+            "keyMetric": "M6 Churn < 4%",
+            "outcome": "Пожизненный LTV",
+            "tags": [
+              "LTV",
+              "Lifecycle"
+            ]
+          }
+        },
+        {
+          "id": "goal_retention",
+          "type": "strategyNode",
+          "position": {
+            "x": 650,
+            "y": 800
+          },
+          "data": {
+            "title": "ТОП-1 RETENTION & LTV",
+            "badge": "Apex Goal",
+            "category": "outcome",
+            "description": "Безусловное лидерство в категории дейтинга/комьюнити с рекордными показателями удержания.",
+            "keyMetric": "D360 Retention & LTV Apex",
+            "outcome": "Мировой бенчмарк",
+            "tags": [
+              "Goal",
+              "Dominance"
+            ]
+          }
+        }
+      ],
+      "edges": [
+        {
+          "id": "e1",
+          "source": "shift_core",
+          "target": "emotion_status",
+          "type": "customEdge",
+          "animated": true,
+          "data": {
+            "label": "формирует контекст"
+          }
+        },
+        {
+          "id": "e2",
+          "source": "emotion_status",
+          "target": "hardware_beacon",
+          "type": "customEdge",
+          "animated": true,
+          "data": {
+            "label": "материализуется через"
+          }
+        },
+        {
+          "id": "e3",
+          "source": "hardware_beacon",
+          "target": "gym_model",
+          "type": "customEdge",
+          "animated": true,
+          "data": {
+            "label": "подстегивает ритуал"
+          }
+        },
+        {
+          "id": "e4",
+          "source": "gym_model",
+          "target": "event_duality",
+          "type": "customEdge",
+          "animated": true,
+          "data": {
+            "label": "собирает людей"
+          }
+        },
+        {
+          "id": "e5",
+          "source": "event_duality",
+          "target": "anti_churn",
+          "type": "customEdge",
+          "animated": true,
+          "data": {
+            "label": "подпитывает цикл"
+          }
+        },
+        {
+          "id": "e6",
+          "source": "anti_churn",
+          "target": "shift_core",
+          "type": "customEdge",
+          "animated": true,
+          "data": {
+            "label": "замыкает маховик"
+          }
+        },
+        {
+          "id": "e7",
+          "source": "anti_churn",
+          "target": "goal_retention",
+          "type": "customEdge",
+          "animated": true,
+          "data": {
+            "label": "приводит к"
+          }
+        }
+      ]
+    }
+  ]
+}
