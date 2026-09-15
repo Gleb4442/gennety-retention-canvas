@@ -20,6 +20,8 @@ export type ThemeMode =
   | 'sand' 
   | 'mist';
 
+export type UiFontSize = 'sm' | 'md' | 'lg';
+
 export interface CategoryDefinition {
   id: CategoryType;
   label: string;

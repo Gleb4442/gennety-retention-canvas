@@ -34,7 +34,7 @@ export const HelpShortcutsModal: React.FC<HelpShortcutsModalProps> = ({ isOpen, 
       onClick={onClose}
     >
       <div
-        className="w-full max-w-lg liquid-glass rounded-3xl shadow-2xl overflow-hidden flex flex-col"
+        className="w-full max-w-lg minimal-modal rounded-3xl shadow-2xl overflow-hidden flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="px-6 py-4 flex items-center justify-between border-b border-current/10">

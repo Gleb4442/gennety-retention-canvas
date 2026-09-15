@@ -16,6 +16,7 @@ import type {
   BoardSnapshot, 
   StrategyNodeData, 
   ThemeMode,
+  UiFontSize,
   CanvasProject,
   ProjectTemplate,
   DrawingStroke,
@@ -85,6 +86,7 @@ export interface BoardStore {
   selectedEdgeId: string | null;
   layoutMode: LayoutMode;
   theme: ThemeMode;
+  uiFontSize: UiFontSize;
   searchQuery: string;
   isInspectorOpen: boolean;
   
@@ -151,6 +153,7 @@ export interface BoardStore {
   setSearchQuery: (query: string) => void;
   setIsInspectorOpen: (open: boolean) => void;
   setTheme: (theme: ThemeMode) => void;
+  setUiFontSize: (size: UiFontSize) => void;
 
   // Node CRUD
   addNode: (nodeData: Partial<StrategyNodeData>, position?: { x: number; y: number }) => string;
@@ -212,6 +215,8 @@ export interface BoardStore {
 function bootstrap() {
   const shareParams = getShareParamsFromUrl();
   const storedKey = getStoredKey();
+  const storedFontSize = (typeof window !== 'undefined' ? localStorage.getItem('gennety_ui_font_size') : null) as UiFontSize | null;
+  const uiFontSize: UiFontSize = storedFontSize && ['sm', 'md', 'lg'].includes(storedFontSize) ? storedFontSize : 'md';
 
   // If entering via direct project share link
   if (shareParams.shareToken || (shareParams.projectId && shareParams.role)) {
@@ -226,6 +231,7 @@ function bootstrap() {
       drawings: [],
       layoutMode: 'freeform' as LayoutMode,
       theme: 'dark' as ThemeMode,
+      uiFontSize,
       userRole: role,
       isViewerMode: role === 'viewer',
     };
@@ -242,6 +248,7 @@ function bootstrap() {
       drawings: [],
       layoutMode: 'freeform' as LayoutMode,
       theme: 'dark' as ThemeMode,
+      uiFontSize,
       userRole: 'editor' as UserRole,
       isViewerMode: false,
     };
@@ -260,6 +267,7 @@ function bootstrap() {
     drawings: activeProj ? (activeProj.drawings || []) : [],
     layoutMode: (activeProj ? activeProj.layoutMode : 'freeform') as LayoutMode,
     theme: (activeProj ? activeProj.theme : 'dark') as ThemeMode,
+    uiFontSize,
     userRole: (isOwnerAccessKey(storedKey) ? 'owner' : 'editor') as UserRole,
     isViewerMode: false,
   };
@@ -371,6 +379,7 @@ export const useBoardStore = create<BoardStore>((set, get) => {
     selectedEdgeId: null,
     layoutMode: initialBoot.layoutMode,
     theme: initialBoot.theme,
+    uiFontSize: initialBoot.uiFontSize,
     searchQuery: '',
     isInspectorOpen: false,
 
@@ -854,6 +863,13 @@ export const useBoardStore = create<BoardStore>((set, get) => {
     setTheme: (theme) => {
       set({ theme });
       syncAndPersist(get().nodes, get().edges, get().layoutMode, theme);
+    },
+
+    setUiFontSize: (uiFontSize) => {
+      try {
+        localStorage.setItem('gennety_ui_font_size', uiFontSize);
+      } catch {}
+      set({ uiFontSize });
     },
 
     saveSnapshot: () => {

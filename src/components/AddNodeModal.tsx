@@ -74,7 +74,7 @@ export const AddNodeModal: React.FC<AddNodeModalProps> = ({ isOpen, onClose }) =
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xl animate-in fade-in select-none">
       <div 
-        className="w-full max-w-lg liquid-glass rounded-3xl shadow-2xl overflow-hidden flex flex-col"
+        className="w-full max-w-lg minimal-modal rounded-3xl shadow-2xl overflow-hidden flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}

@@ -25,6 +25,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
   const setIsAiBridgeModalOpen = useBoardStore((s) => s.setIsAiBridgeModalOpen);
   const cloudSyncStatus = useBoardStore((s) => s.cloudSyncStatus);
   const syncWithCloudDatabase = useBoardStore((s) => s.syncWithCloudDatabase);
+  const uiFontSize = useBoardStore((s) => s.uiFontSize);
+  const setUiFontSize = useBoardStore((s) => s.setUiFontSize);
 
   if (!isOpen) return null;
 
@@ -115,7 +117,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
       />
 
       <div 
-        className="relative w-full max-w-lg p-6 rounded-3xl liquid-glass shadow-2xl border border-black/15 dark:border-white/10 animate-in zoom-in-95 duration-150 space-y-5 text-zinc-900 dark:text-zinc-100"
+        className="relative w-full max-w-lg p-6 rounded-3xl minimal-modal border border-black/15 dark:border-white/10 animate-in zoom-in-95 duration-150 space-y-5 text-zinc-900 dark:text-zinc-100"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -129,10 +131,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
             </div>
             <div>
               <h2 className="font-display font-bold text-base text-zinc-900 dark:text-white">
-                Настройки доступа
+                Настройки системы
               </h2>
-              <p className="text-[11px] text-zinc-500 dark:text-zinc-400 font-mono">
-                Управление ключом, бэкапами и аккаунтом
+              <p className="text-[11px] text-zinc-500 dark:text-zinc-400 font-mono font-medium">
+                Интерфейс, размер текста, ключ доступа и бэкапы
               </p>
             </div>
           </div>
@@ -146,6 +148,59 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
               <line x1="6" y1="6" x2="18" y2="18" />
             </svg>
           </button>
+        </div>
+
+        {/* Section 0: UI Font Size Configuration */}
+        <div className="p-4 rounded-2xl bg-zinc-100/70 dark:bg-white/[0.05] border border-black/10 dark:border-white/10 space-y-2.5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <svg className="w-4 h-4 opacity-75" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polyline points="4 7 4 4 20 4 20 7" />
+                <line x1="9" y1="20" x2="15" y2="20" />
+                <line x1="12" y1="4" x2="12" y2="20" />
+              </svg>
+              <span className="font-semibold text-xs tracking-tight">Размер шрифта интерфейса</span>
+            </div>
+            <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded-md bg-black/10 dark:bg-white/10">
+              {uiFontSize === 'sm' ? '13px' : uiFontSize === 'lg' ? '16px' : '14.5px'}
+            </span>
+          </div>
+
+          <div className="grid grid-cols-3 gap-1.5 p-1 rounded-xl bg-white dark:bg-black/40 border border-black/10 dark:border-white/10">
+            <button
+              type="button"
+              onClick={() => setUiFontSize('sm')}
+              className={`py-2 px-2.5 rounded-lg text-xs font-semibold transition-all ${
+                uiFontSize === 'sm'
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-white/5'
+              }`}
+            >
+              Компактный
+            </button>
+            <button
+              type="button"
+              onClick={() => setUiFontSize('md')}
+              className={`py-2 px-2.5 rounded-lg text-xs font-semibold transition-all ${
+                uiFontSize === 'md'
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-white/5'
+              }`}
+            >
+              Стандартный
+            </button>
+            <button
+              type="button"
+              onClick={() => setUiFontSize('lg')}
+              className={`py-2 px-2.5 rounded-lg text-xs font-semibold transition-all ${
+                uiFontSize === 'lg'
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-white/5'
+              }`}
+            >
+              Крупный
+            </button>
+          </div>
         </div>
 
         {/* Section 1: Access Key Card */}

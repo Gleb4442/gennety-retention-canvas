@@ -72,11 +72,11 @@ export const ShareProjectModal: React.FC = () => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-150">
-      <div className="w-full max-w-lg rounded-2xl liquid-card flex flex-col shadow-2xl border border-white/20 dark:border-white/10 overflow-hidden">
+      <div className="w-full max-w-lg rounded-2xl minimal-modal flex flex-col shadow-2xl overflow-hidden">
         {/* Header */}
         <div className="p-5 border-b border-black/10 dark:border-white/10 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <span className="p-2 rounded-xl liquid-pill text-emerald-400">
+            <span className="p-2 rounded-xl liquid-pill text-blue-400">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="18" cy="5" r="3" />
                 <circle cx="6" cy="12" r="3" />

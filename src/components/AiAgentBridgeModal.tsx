@@ -101,7 +101,7 @@ console.log('Projects:', workspace.projects);`;
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-3xl max-h-[88vh] flex flex-col rounded-3xl liquid-glass shadow-2xl border border-black/10 dark:border-white/10 overflow-hidden animate-in zoom-in-95 duration-150 text-zinc-900 dark:text-zinc-100"
+        className="relative w-full max-w-3xl max-h-[88vh] flex flex-col rounded-3xl minimal-modal shadow-2xl overflow-hidden animate-in zoom-in-95 duration-150 text-zinc-900 dark:text-zinc-100"
         onClick={(e) => e.stopPropagation()}
       >
         {/* ================= HEADER: Minimalist & Clean ================= */}

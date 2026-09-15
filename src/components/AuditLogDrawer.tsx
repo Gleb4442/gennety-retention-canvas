@@ -96,7 +96,7 @@ export const AuditLogDrawer: React.FC = () => {
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end bg-black/40 backdrop-blur-xs transition-opacity animate-in fade-in duration-200">
-      <div className="w-full max-w-md h-full liquid-card flex flex-col shadow-2xl border-l border-white/20 dark:border-white/10 animate-in slide-in-from-right duration-250">
+      <div className="w-full max-w-md h-full minimal-modal flex flex-col shadow-2xl border-l border-black/10 dark:border-white/10 animate-in slide-in-from-right duration-250">
         {/* Drawer Header */}
         <div className="p-4 border-b border-black/10 dark:border-white/10 flex items-center justify-between">
           <div className="flex items-center gap-2">

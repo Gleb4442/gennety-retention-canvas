@@ -213,18 +213,18 @@ export const CustomNode = memo(({ id, data, selected }: NodeProps & { data: Stra
             </div>
 
             {/* Minimalist Monospace Badge */}
-            <span className="font-mono text-[10px] tracking-wider uppercase font-medium px-2.5 py-1 rounded-lg liquid-pill text-inherit opacity-85">
+            <span className="font-mono text-[10px] tracking-wider uppercase font-semibold px-2.5 py-1 rounded-lg liquid-pill text-inherit opacity-90">
               {data.badge || categoryDef.badgeDefault}
             </span>
           </div>
 
-          <span className="text-[10px] font-mono opacity-50 tracking-wider uppercase">
+          <span className="text-[10px] font-mono opacity-60 tracking-wider uppercase font-medium">
             {categoryDef.neutralTag}
           </span>
         </div>
 
         {/* Title */}
-        <h3 className="font-display font-semibold text-sm leading-snug tracking-tight text-inherit opacity-95 group-hover:opacity-100 transition-opacity">
+        <h3 className="font-display font-bold text-[15px] leading-snug tracking-tight text-inherit opacity-95 group-hover:opacity-100 transition-opacity">
           {data.title}
         </h3>
 
@@ -284,28 +284,28 @@ export const CustomNode = memo(({ id, data, selected }: NodeProps & { data: Stra
         )}
 
         {/* Description */}
-        <div className="text-xs leading-relaxed opacity-75 whitespace-pre-line space-y-1 font-sans">
+        <div className="text-[13px] leading-relaxed opacity-85 whitespace-pre-line space-y-1 font-sans font-medium">
           {data.description}
         </div>
 
         {/* Key Metric Highlight - Frameless Liquid Inset */}
         {data.keyMetric && (
-          <div className="flex items-start gap-2.5 p-2.5 rounded-xl liquid-pill text-[11px] leading-tight opacity-90 shadow-inner">
-            <span className="w-1.5 h-1.5 rounded-full bg-current mt-1.5 flex-shrink-0 opacity-70" />
+          <div className="flex items-start gap-2.5 p-2.5 rounded-xl liquid-pill text-xs leading-tight opacity-95 shadow-inner">
+            <span className="w-1.5 h-1.5 rounded-full bg-current mt-1 flex-shrink-0 opacity-70" />
             <div>
-              <span className="font-semibold opacity-95">Цель: </span>
-              <span className="opacity-85">{data.keyMetric}</span>
+              <span className="font-bold opacity-100">Цель: </span>
+              <span className="opacity-90 font-medium">{data.keyMetric}</span>
             </div>
           </div>
         )}
 
         {/* Strategic Outcome Highlight - Frameless Liquid Inset */}
         {data.outcome && (
-          <div className="flex items-start gap-2.5 p-2.5 rounded-xl liquid-pill text-[11px] leading-tight opacity-90 shadow-inner">
-            <span className="w-1.5 h-1.5 rounded-full bg-current mt-1.5 flex-shrink-0 opacity-70" />
+          <div className="flex items-start gap-2.5 p-2.5 rounded-xl liquid-pill text-xs leading-tight opacity-95 shadow-inner">
+            <span className="w-1.5 h-1.5 rounded-full bg-current mt-1 flex-shrink-0 opacity-70" />
             <div>
-              <span className="font-semibold opacity-95">Результат: </span>
-              <span className="opacity-85">{data.outcome}</span>
+              <span className="font-bold opacity-100">Результат: </span>
+              <span className="opacity-90 font-medium">{data.outcome}</span>
             </div>
           </div>
         )}

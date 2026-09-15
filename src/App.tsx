@@ -43,9 +43,10 @@ export const App: React.FC = () => {
   const fetchVersions = useBoardStore((s) => s.fetchVersions);
 
   const theme = useBoardStore((s) => s.theme);
+  const uiFontSize = useBoardStore((s) => s.uiFontSize);
   const setSelectedNodeId = useBoardStore((s) => s.setSelectedNodeId);
 
-  // Sync theme class to document body / html
+  // Sync theme and UI font size class to document body / html
   useEffect(() => {
     document.documentElement.classList.remove(
       'theme-dark',
@@ -64,6 +65,11 @@ export const App: React.FC = () => {
       document.documentElement.classList.add('dark');
     }
   }, [theme]);
+
+  useEffect(() => {
+    document.documentElement.classList.remove('font-size-sm', 'font-size-md', 'font-size-lg');
+    document.documentElement.classList.add(`font-size-${uiFontSize}`);
+  }, [uiFontSize]);
 
   // Global keyboard shortcuts for Projects, Cabinet, and Settings
   useEffect(() => {

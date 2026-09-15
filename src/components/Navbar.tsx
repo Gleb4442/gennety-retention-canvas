@@ -139,7 +139,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   ];
 
   return (
-    <nav className="fixed top-4 inset-x-6 z-30 flex items-center justify-between pointer-events-none select-none gap-2">
+    <nav className="fixed top-3 inset-x-3 sm:inset-x-5 z-30 flex items-center justify-between pointer-events-none select-none gap-2 flex-nowrap">
       {/* Hidden File Input for JSON */}
       <input
         type="file"
@@ -149,24 +149,22 @@ export const Navbar: React.FC<NavbarProps> = ({
         className="hidden pointer-events-auto"
       />
 
-      {/* Left Section: Standard Brand Identity + Compact Separate Project Folder */}
-      <div className="flex items-center gap-2">
-        {/* Standard Brand Block (Pristine size) */}
-        <div className="pointer-events-auto flex items-center gap-3 px-3.5 py-2 rounded-2xl liquid-glass shadow-2xl">
-          <div className="w-10 h-10 rounded-xl liquid-pill flex items-center justify-center p-1.5 text-inherit opacity-95 shadow-sm flex-shrink-0">
+      {/* Left Section: Brand Logo ("Canvas") + Project Pill */}
+      <div className="flex items-center gap-1.5 flex-shrink-0">
+        {/* Brand Block (Canvas only) */}
+        <div className="pointer-events-auto flex items-center gap-2 px-2.5 py-1.5 rounded-xl liquid-glass shadow-lg flex-shrink-0">
+          <div className="w-7 h-7 rounded-lg liquid-pill flex items-center justify-center p-1 text-inherit opacity-95 shadow-sm flex-shrink-0">
             <ButterflyLogo theme={theme} className="w-full h-full" />
           </div>
-          <div>
-            <span className="font-display font-bold text-sm tracking-wider text-inherit block leading-tight">
-              Gennety Canvas
-            </span>
-          </div>
+          <span className="font-display font-bold text-sm tracking-wide text-inherit block leading-none pr-0.5">
+            Canvas
+          </span>
         </div>
 
         {/* Compact Project Folder Pill with Cloud Database Sync Indicator */}
         <button
           onClick={onOpenCabinet}
-          className="pointer-events-auto flex items-center gap-2 px-3 py-2 rounded-2xl liquid-glass shadow-2xl text-xs font-mono transition-all hover:bg-black/5 dark:hover:bg-white/10 hover:scale-[1.01] active:scale-[0.99] text-inherit group"
+          className="pointer-events-auto flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl liquid-glass shadow-lg text-xs font-mono transition-all hover:bg-black/5 dark:hover:bg-white/10 hover:scale-[1.01] active:scale-[0.99] text-inherit group flex-shrink-0"
           title={`Проект: ${activeProject?.title || 'Retention'} | Статус БД: ${
             cloudSyncStatus === 'syncing'
               ? 'Сохранение в Supabase Postgres...'
@@ -182,7 +180,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <svg className="w-3.5 h-3.5 opacity-65 group-hover:opacity-100 flex-shrink-0 transition-opacity" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
           </svg>
-          <span className="max-w-[120px] sm:max-w-[160px] truncate opacity-85 group-hover:opacity-100 font-medium transition-opacity">
+          <span className="max-w-[100px] sm:max-w-[140px] truncate opacity-90 group-hover:opacity-100 font-semibold transition-opacity">
             {activeProject?.title || 'Проекты'}
           </span>
           {cloudSyncStatus === 'syncing' ? (
@@ -199,66 +197,66 @@ export const Navbar: React.FC<NavbarProps> = ({
         </button>
       </div>
 
-      {/* Island 2 (Center): Frameless Layout Mode Switcher */}
-      <div className="pointer-events-auto flex items-center p-1 rounded-2xl liquid-glass shadow-2xl gap-1">
+      {/* Island 2 (Center): Compact Layout Mode Switcher (Icon-only with tooltips) */}
+      <div className="pointer-events-auto flex items-center p-1 rounded-xl liquid-glass shadow-lg gap-0.5 flex-shrink-0">
         <button
           onClick={() => setLayoutMode('freeform')}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-mono transition-all ${
+          className={`p-1.5 rounded-lg text-xs transition-all ${
             layoutMode === 'freeform'
-              ? 'liquid-pill-active font-semibold'
-              : 'opacity-70 hover:opacity-100'
+              ? 'liquid-pill-active'
+              : 'opacity-65 hover:opacity-100 hover:bg-black/5 dark:hover:bg-white/5'
           }`}
-          title="Свободный холст (Miro style)"
+          title="Свободный холст (Freeform)"
+          aria-label="Свободный холст"
         >
-          <IconFreeform className="w-3.5 h-3.5" />
-          <span className="hidden md:inline">Freeform</span>
+          <IconFreeform className="w-4 h-4" />
         </button>
 
         <button
           onClick={() => setLayoutMode('pyramid')}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-mono transition-all ${
+          className={`p-1.5 rounded-lg text-xs transition-all ${
             layoutMode === 'pyramid'
-              ? 'liquid-pill-active font-semibold'
-              : 'opacity-70 hover:opacity-100'
+              ? 'liquid-pill-active'
+              : 'opacity-65 hover:opacity-100 hover:bg-black/5 dark:hover:bg-white/5'
           }`}
-          title="Пирамида уровней (Dagre Auto-Layout)"
+          title="Пирамида уровней (Pyramid Auto-Layout)"
+          aria-label="Пирамида уровней"
         >
-          <IconPyramidLayout className="w-3.5 h-3.5" />
-          <span className="hidden md:inline">Pyramid</span>
+          <IconPyramidLayout className="w-4 h-4" />
         </button>
 
         <button
           onClick={() => setLayoutMode('flywheel')}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-mono transition-all ${
+          className={`p-1.5 rounded-lg text-xs transition-all ${
             layoutMode === 'flywheel'
-              ? 'liquid-pill-active font-semibold'
-              : 'opacity-70 hover:opacity-100'
+              ? 'liquid-pill-active'
+              : 'opacity-65 hover:opacity-100 hover:bg-black/5 dark:hover:bg-white/5'
           }`}
           title="Круговой маховик системы (Flywheel loop)"
+          aria-label="Маховик системы"
         >
-          <IconFlywheelLayout className="w-3.5 h-3.5" />
-          <span className="hidden md:inline">Flywheel</span>
+          <IconFlywheelLayout className="w-4 h-4" />
         </button>
       </div>
 
       {/* Island 3 (Right): Theme Switcher, Actions & Settings */}
-      <div className="pointer-events-auto flex items-center gap-1.5 p-1 rounded-2xl liquid-glass shadow-2xl">
+      <div className="pointer-events-auto flex items-center gap-1 p-1 rounded-xl liquid-glass shadow-lg flex-shrink-0">
         {/* Theme Dropdown Toggle */}
         <div className="relative">
           <button
             onClick={() => setIsThemeMenuOpen(!isThemeMenuOpen)}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl liquid-pill text-xs font-mono transition-all"
+            className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg liquid-pill text-xs font-mono transition-all"
             title="Переключить тему оформления"
           >
             <IconThemeSwitch className="w-3.5 h-3.5 opacity-80" />
-            <span className="hidden md:inline opacity-90 truncate max-w-[110px]">
+            <span className="hidden xl:inline opacity-90 truncate max-w-[100px] font-medium">
               {themeOptions.find((t) => t.id === theme)?.label || theme}
             </span>
           </button>
 
           {isThemeMenuOpen && (
             <div 
-              className="absolute top-11 right-0 w-64 p-1.5 rounded-2xl liquid-glass shadow-2xl z-50 flex flex-col gap-0.5 animate-in fade-in zoom-in-95 max-h-[85vh] overflow-y-auto"
+              className="absolute top-10 right-0 w-64 p-1.5 rounded-2xl minimal-modal shadow-2xl z-50 flex flex-col gap-0.5 animate-in fade-in zoom-in-95 max-h-[85vh] overflow-y-auto"
               onMouseLeave={() => setIsThemeMenuOpen(false)}
             >
               {/* Dark & Neutral Group */}
@@ -368,10 +366,10 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Share Project Button */}
         <button
           onClick={() => setIsShareModalOpen(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-600/90 hover:bg-emerald-600 text-white text-xs font-medium shadow-sm transition-all active:scale-95"
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-md shadow-blue-500/20 transition-all active:scale-95 flex-shrink-0"
           title="Поделиться проектом по ссылке (⌘⇧S)"
         >
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <circle cx="18" cy="5" r="3" />
             <circle cx="6" cy="12" r="3" />
             <circle cx="18" cy="19" r="3" />
@@ -384,14 +382,14 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Version History Checkpoints Button */}
         <button
           onClick={() => setIsVersionHistoryModalOpen(true)}
-          className="p-2 rounded-xl liquid-pill opacity-75 hover:opacity-100 transition-opacity relative"
+          className="p-1.5 rounded-lg liquid-pill opacity-75 hover:opacity-100 transition-opacity relative flex-shrink-0"
           title="История версий и откат схемы"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M12 20v-6M6 20V10M18 20V4" />
           </svg>
           {versions.length > 0 && (
-            <span className="absolute -top-1 -right-1 min-w-[15px] h-[15px] px-1 rounded-full bg-indigo-500 text-[8px] font-mono font-bold text-white flex items-center justify-center">
+            <span className="absolute -top-1 -right-1 min-w-[15px] h-[15px] px-1 rounded-full bg-blue-500 text-[8px] font-mono font-bold text-white flex items-center justify-center">
               {versions.length}
             </span>
           )}
@@ -400,7 +398,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Audit Log Activity Feed Button */}
         <button
           onClick={() => setIsAuditDrawerOpen(true)}
-          className="p-2 rounded-xl liquid-pill opacity-75 hover:opacity-100 transition-opacity relative"
+          className="p-1.5 rounded-lg liquid-pill opacity-75 hover:opacity-100 transition-opacity relative flex-shrink-0"
           title="Журнал действий команды (⌘L)"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -408,30 +406,26 @@ export const Navbar: React.FC<NavbarProps> = ({
             <polyline points="12 6 12 12 16 14" />
           </svg>
           {auditLogs.length > 0 && (
-            <span className="absolute -top-1 -right-1 min-w-[15px] h-[15px] px-1 rounded-full bg-emerald-500 text-[8px] font-mono font-bold text-white flex items-center justify-center">
+            <span className="absolute -top-1 -right-1 min-w-[15px] h-[15px] px-1 rounded-full bg-blue-500 text-[8px] font-mono font-bold text-white flex items-center justify-center">
               {auditLogs.length > 99 ? '99+' : auditLogs.length}
             </span>
           )}
         </button>
 
-        {/* Search */}
+        {/* Search (Compact Icon) */}
         <button
           onClick={onOpenSearchModal}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl liquid-pill text-xs font-mono transition-all"
-          title="Поиск узлов (Cmd+K)"
+          className="p-1.5 rounded-lg liquid-pill opacity-80 hover:opacity-100 transition-opacity flex-shrink-0"
+          title="Поиск узлов (⌘K)"
         >
-          <IconSearchMinimal className="w-3.5 h-3.5 opacity-70" />
-          <span className="hidden 2xl:inline opacity-70">Search</span>
-          <kbd className="hidden sm:inline-block text-[9px] px-1.5 py-0.5 rounded-md liquid-pill opacity-60">
-            ⌘K
-          </kbd>
+          <IconSearchMinimal className="w-4 h-4" />
         </button>
 
         {/* Export / Reset Buttons */}
-        <div className="flex items-center gap-0.5">
+        <div className="flex items-center gap-0.5 flex-shrink-0">
           <button
             onClick={handleExportPng}
-            className="p-2 rounded-xl liquid-pill opacity-75 hover:opacity-100 transition-opacity"
+            className="p-1.5 rounded-lg liquid-pill opacity-75 hover:opacity-100 transition-opacity"
             title="Экспортировать в PNG"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
@@ -441,7 +435,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <button
             onClick={handleExportJson}
-            className="p-2 rounded-xl liquid-pill opacity-75 hover:opacity-100 transition-opacity"
+            className="p-1.5 rounded-lg liquid-pill opacity-75 hover:opacity-100 transition-opacity"
             title="Экспортировать JSON проекта"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
@@ -453,7 +447,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <>
               <button
                 onClick={handleImportJsonClick}
-                className="p-2 rounded-xl liquid-pill opacity-75 hover:opacity-100 transition-opacity"
+                className="p-1.5 rounded-lg liquid-pill opacity-75 hover:opacity-100 transition-opacity"
                 title="Импортировать по коду JSON или AI-промпту (⌘I)"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
@@ -463,7 +457,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
               <button
                 onClick={handleResetConfirm}
-                className="p-2 rounded-xl liquid-pill opacity-50 hover:opacity-100 transition-opacity"
+                className="p-1.5 rounded-lg liquid-pill opacity-50 hover:opacity-100 transition-opacity"
                 title="Сбросить холст к исходной структуре Gennety Canvas"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
@@ -473,10 +467,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             </>
           )}
 
-          {/* MCP Bridge Button */}
+          {/* MCP Bridge Button (Accent Color) */}
           <button
             onClick={() => setIsAiBridgeModalOpen(true)}
-            className="px-3 py-1.5 rounded-xl liquid-pill font-mono font-bold text-xs tracking-wider opacity-85 hover:opacity-100 transition-all active:scale-95"
+            className="px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-mono font-bold text-xs tracking-wider shadow-sm transition-all active:scale-95 border border-indigo-400/30 flex-shrink-0"
             title="MCP & AI-Агент: системный промпт со всеми адресами, MCP-сервер и API (⌘J)"
           >
             MCP
@@ -485,7 +479,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Settings Button (Access Key, Account, Backup) */}
           <button
             onClick={onOpenSettings}
-            className="p-2 rounded-xl liquid-pill opacity-75 hover:opacity-100 transition-opacity"
+            className="p-1.5 rounded-lg liquid-pill opacity-75 hover:opacity-100 transition-opacity"
             title="Настройки ключа доступа и аккаунта"
           >
             <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -496,7 +490,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <button
             onClick={onOpenHelpModal}
-            className="p-2 rounded-xl liquid-pill opacity-50 hover:opacity-100 transition-opacity"
+            className="p-1.5 rounded-lg liquid-pill opacity-50 hover:opacity-100 transition-opacity"
             title="Подсказки и горячие клавиши"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">

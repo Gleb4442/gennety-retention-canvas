@@ -135,7 +135,7 @@ export const PersonalCabinetModal: React.FC<PersonalCabinetModalProps> = ({
       />
 
       <div 
-        className="relative w-full max-w-5xl max-h-[90vh] flex flex-col rounded-3xl liquid-glass shadow-2xl border border-black/15 dark:border-white/10 overflow-hidden animate-in zoom-in-95 duration-200 text-zinc-900 dark:text-zinc-100"
+        className="relative w-full max-w-5xl max-h-[90vh] flex flex-col rounded-3xl minimal-modal shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 text-zinc-900 dark:text-zinc-100"
         onClick={(e) => e.stopPropagation()}
       >
         {/* ================= TOP HEADER ================= */}

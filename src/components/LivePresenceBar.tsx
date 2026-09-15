@@ -113,7 +113,7 @@ export const LivePresenceBar: React.FC = () => {
       {/* User Profile Modal */}
       {isProfileModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="w-full max-w-sm rounded-2xl liquid-card p-6 shadow-2xl border border-white/20 dark:border-white/10 space-y-4 animate-in fade-in zoom-in-95 duration-150">
+          <div className="w-full max-w-sm rounded-2xl minimal-modal p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between pb-2 border-b border-black/10 dark:border-white/10">
               <div>
                 <h3 className="text-sm font-semibold tracking-tight">Ваш профиль в команде</h3>

@@ -178,7 +178,7 @@ export const ImportJsonModal: React.FC<ImportJsonModalProps> = ({ isOpen, onClos
       onClick={onClose}
     >
       <div 
-        className="relative w-full max-w-3xl max-h-[92vh] flex flex-col rounded-3xl liquid-glass shadow-2xl z-10 border border-black/15 dark:border-white/10 animate-in zoom-in-95 duration-150 overflow-hidden text-zinc-900 dark:text-zinc-100"
+        className="relative w-full max-w-3xl max-h-[92vh] flex flex-col rounded-3xl minimal-modal shadow-2xl z-10 animate-in zoom-in-95 duration-150 overflow-hidden text-zinc-900 dark:text-zinc-100"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Hidden file input */}

@@ -38,7 +38,7 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-150 select-none">
       <div 
-        className="relative w-full max-w-lg p-6 rounded-3xl liquid-glass shadow-2xl z-10 border border-black/10 dark:border-white/10 text-zinc-900 dark:text-zinc-100 animate-in zoom-in-95 duration-150"
+        className="relative w-full max-w-lg p-6 rounded-3xl minimal-modal shadow-2xl z-10 text-zinc-900 dark:text-zinc-100 animate-in zoom-in-95 duration-150"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}

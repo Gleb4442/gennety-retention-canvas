@@ -101,7 +101,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-xl liquid-glass rounded-3xl shadow-2xl overflow-hidden flex flex-col"
+        className="w-full max-w-xl minimal-modal rounded-3xl shadow-2xl overflow-hidden flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Search Bar */}
