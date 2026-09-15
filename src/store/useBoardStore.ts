@@ -42,6 +42,15 @@ import {
 } from '../lib/projectStorage';
 import { parseCanvasJson } from '../lib/jsonProjectImporter';
 import { pushLocalWorkspaceToApi, fetchRemoteWorkspace, type CloudSyncStatus } from '../lib/apiSync';
+import type {
+  CollabUser,
+  CollabCursor,
+  AuditLogEntry,
+  ProjectVersion,
+  UserRole,
+} from '../types';
+import { getShareParamsFromUrl } from '../lib/auth';
+import { collabManager } from '../lib/collaborationManager';
 
 const MAX_HISTORY = 30;
 
@@ -164,11 +173,64 @@ export interface BoardStore {
   resetToDefault: () => void;
   exportJson: () => string;
   importJson: (jsonString: string) => { success: boolean; error?: string };
+
+  // ==================== COLLABORATION & MULTIPLAYER ====================
+  collabUser: CollabUser;
+  collabPeers: CollabUser[];
+  collabCursors: Record<string, CollabCursor>;
+  collabSelections: Record<string, { userId: string; userName: string; color: string }>;
+  userRole: UserRole;
+  isViewerMode: boolean;
+
+  // Modals & Panels for Team Features
+  isAuditDrawerOpen: boolean;
+  isVersionHistoryModalOpen: boolean;
+  isShareModalOpen: boolean;
+  previewingVersion: ProjectVersion | null;
+
+  // Audit Logs & Versions
+  auditLogs: AuditLogEntry[];
+  versions: ProjectVersion[];
+
+  // Collaboration Actions
+  setCollabUserName: (name: string) => void;
+  setCollabUserColor: (color: string) => void;
+  setUserRole: (role: UserRole) => void;
+  setIsAuditDrawerOpen: (open: boolean) => void;
+  setIsVersionHistoryModalOpen: (open: boolean) => void;
+  setIsShareModalOpen: (open: boolean) => void;
+  setPreviewingVersion: (version: ProjectVersion | null) => void;
+  fetchAuditLogs: () => Promise<void>;
+  fetchVersions: () => Promise<void>;
+  createVersionCheckpoint: (label?: string) => Promise<void>;
+  restoreVersionCheckpoint: (versionId: string) => Promise<void>;
+  initCollaboration: (projectId: string, role?: UserRole) => void;
+  broadcastCursor: (x: number, y: number, activeNodeId?: string | null) => void;
 }
 
-// Initial bootstrap from stored key or demo
+// Initial bootstrap from stored key, shared link, or demo
 function bootstrap() {
+  const shareParams = getShareParamsFromUrl();
   const storedKey = getStoredKey();
+
+  // If entering via direct project share link
+  if (shareParams.shareToken || (shareParams.projectId && shareParams.role)) {
+    const role: UserRole = shareParams.role === 'viewer' ? 'viewer' : 'editor';
+    return {
+      accessKey: storedKey || 'guest_shared',
+      isAuthenticated: true,
+      projects: [],
+      currentProjectId: shareParams.projectId || '',
+      nodes: [],
+      edges: [],
+      drawings: [],
+      layoutMode: 'freeform' as LayoutMode,
+      theme: 'dark' as ThemeMode,
+      userRole: role,
+      isViewerMode: role === 'viewer',
+    };
+  }
+
   if (!storedKey) {
     return {
       accessKey: null,
@@ -180,6 +242,8 @@ function bootstrap() {
       drawings: [],
       layoutMode: 'freeform' as LayoutMode,
       theme: 'dark' as ThemeMode,
+      userRole: 'editor' as UserRole,
+      isViewerMode: false,
     };
   }
 
@@ -196,10 +260,20 @@ function bootstrap() {
     drawings: activeProj ? (activeProj.drawings || []) : [],
     layoutMode: (activeProj ? activeProj.layoutMode : 'freeform') as LayoutMode,
     theme: (activeProj ? activeProj.theme : 'dark') as ThemeMode,
+    userRole: (isOwnerAccessKey(storedKey) ? 'owner' : 'editor') as UserRole,
+    isViewerMode: false,
   };
 }
 
 const initialBoot = bootstrap();
+
+let originalStateBeforePreview: {
+  nodes: (StrategyNode | ImageNode)[];
+  edges: StrategyEdge[];
+  drawings: DrawingStroke[];
+  layoutMode: LayoutMode;
+  theme: ThemeMode;
+} | null = null;
 
 export const useBoardStore = create<BoardStore>((set, get) => {
   // Helper to persist current active project into projects list and localStorage
@@ -240,12 +314,40 @@ export const useBoardStore = create<BoardStore>((set, get) => {
     pushLocalWorkspaceToApi(accessKey, updatedProjects, currentProjectId, 800, (status) => {
       set({ cloudSyncStatus: status });
     });
+
+    // Also sync individual project to canvas_projects table for live collaboration
+    const currentProj = updatedProjects.find((p) => p.id === currentProjectId);
+    if (currentProj) {
+      fetch('/api/collaboration?action=sync_project', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ project: currentProj, ownerKey: accessKey }),
+      }).catch(() => {});
+    }
   };
 
   return {
     // Auth State
     accessKey: initialBoot.accessKey,
     isAuthenticated: initialBoot.isAuthenticated,
+
+    // Collaboration & Multiplayer State
+    collabUser: collabManager.getCurrentUser(),
+    collabPeers: [],
+    collabCursors: {},
+    collabSelections: {},
+    userRole: initialBoot.userRole,
+    isViewerMode: initialBoot.isViewerMode,
+
+    // Collaboration Drawers & Modals
+    isAuditDrawerOpen: false,
+    isVersionHistoryModalOpen: false,
+    isShareModalOpen: false,
+    previewingVersion: null,
+
+    // Audit Logs & Versions Data
+    auditLogs: [],
+    versions: [],
 
     // Cloud Database Sync State
     cloudSyncStatus: 'idle' as CloudSyncStatus,
@@ -767,6 +869,13 @@ export const useBoardStore = create<BoardStore>((set, get) => {
     },
 
     onNodesChange: (changes) => {
+      if (get().isViewerMode) {
+        // In viewer mode, allow only node selection, reject dragging and layout alterations
+        const selectChanges = changes.filter((c) => c.type === 'select');
+        if (selectChanges.length === 0) return;
+        changes = selectChanges;
+      }
+
       set((state) => {
         const updatedNodes = applyNodeChanges(changes, state.nodes);
         
@@ -782,10 +891,26 @@ export const useBoardStore = create<BoardStore>((set, get) => {
           newSelectedId = null;
         }
 
+        // Live broadcast position during dragging
+        const movedPositions: Array<{ id: string; position: { x: number; y: number } }> = [];
+        changes.forEach((c) => {
+          if (c.type === 'position' && c.position) {
+            movedPositions.push({ id: c.id, position: c.position });
+          }
+        });
+        if (movedPositions.length > 0) {
+          collabManager.broadcastNodesMoved(movedPositions);
+        }
+
         const hasPosChange = changes.some((c) => c.type === 'position' && !c.dragging);
         if (hasPosChange) {
           get().saveSnapshot();
           syncAndPersist(updatedNodes, state.edges, state.layoutMode, state.theme, state.drawings);
+          const user = collabManager.getCurrentUser();
+          collabManager.broadcastMutation(
+            { type: 'nodes_moved', nodePositions: movedPositions, user },
+            { actionType: 'nodes_move', summary: `${user.name} переместил карточки на холсте` }
+          );
         }
 
         return {
@@ -798,6 +923,12 @@ export const useBoardStore = create<BoardStore>((set, get) => {
     },
 
     onEdgesChange: (changes) => {
+      if (get().isViewerMode) {
+        const selectChanges = changes.filter((c) => c.type === 'select');
+        if (selectChanges.length === 0) return;
+        changes = selectChanges;
+      }
+
       set((state) => {
         const updatedEdges = applyEdgeChanges(changes, state.edges);
         
@@ -820,6 +951,7 @@ export const useBoardStore = create<BoardStore>((set, get) => {
     },
 
     onConnect: (connection) => {
+      if (get().isViewerMode) return;
       get().saveSnapshot();
       const newEdge: StrategyEdge = {
         ...connection,
@@ -837,6 +969,12 @@ export const useBoardStore = create<BoardStore>((set, get) => {
         syncAndPersist(state.nodes, updatedEdges, state.layoutMode, state.theme);
         return { edges: updatedEdges };
       });
+
+      const user = collabManager.getCurrentUser();
+      collabManager.broadcastMutation(
+        { type: 'edge_add', edge: newEdge, user, summary: 'Создал связь' },
+        { actionType: 'edge_create', summary: 'Создал новую связь на холсте', targetId: newEdge.id }
+      );
     },
 
     setSelectedNodeId: (id) => {
@@ -845,6 +983,7 @@ export const useBoardStore = create<BoardStore>((set, get) => {
         selectedEdgeId: id ? null : state.selectedEdgeId,
         isInspectorOpen: Boolean(id),
       }));
+      collabManager.broadcastNodeSelection(id);
     },
 
     setSelectedEdgeId: (id) => {
@@ -864,6 +1003,7 @@ export const useBoardStore = create<BoardStore>((set, get) => {
     },
 
     addNode: (nodeData, position) => {
+      if (get().isViewerMode) return '';
       get().saveSnapshot();
       const id = `node_${Date.now()}`;
       const defaultPosition = position || {
@@ -898,11 +1038,19 @@ export const useBoardStore = create<BoardStore>((set, get) => {
         };
       });
 
+      const user = collabManager.getCurrentUser();
+      collabManager.broadcastMutation(
+        { type: 'node_add', node: newNode, user, summary: `Создал карточку "${newNode.data.title}"` },
+        { actionType: 'node_create', summary: `Создал карточку "${newNode.data.title}"`, targetId: id }
+      );
+
       return id;
     },
 
     updateNode: (id, data) => {
+      if (get().isViewerMode) return;
       get().saveSnapshot();
+      let nodeTitle = '';
       set((state) => {
         const updatedNodes: (StrategyNode | ImageNode)[] = state.nodes.map((node) => {
           if (node.id === id) {
@@ -915,6 +1063,7 @@ export const useBoardStore = create<BoardStore>((set, get) => {
                 },
               } as ImageNode;
             } else {
+              nodeTitle = (data as any).title || (node.data as any).title || '';
               return {
                 ...node,
                 data: {
@@ -929,10 +1078,20 @@ export const useBoardStore = create<BoardStore>((set, get) => {
         syncAndPersist(updatedNodes, state.edges, state.layoutMode, state.theme);
         return { nodes: updatedNodes };
       });
+
+      const user = collabManager.getCurrentUser();
+      collabManager.broadcastMutation(
+        { type: 'node_update', id, data, user, summary: `Изменил карточку "${nodeTitle || id}"` },
+        { actionType: 'node_update', summary: `Изменил карточку "${nodeTitle || id}"`, targetId: id, diff: data }
+      );
     },
 
     deleteNode: (id) => {
+      if (get().isViewerMode) return;
       get().saveSnapshot();
+      const nodeToDelete = get().nodes.find((n) => n.id === id);
+      const title = (nodeToDelete?.data as any)?.title || id;
+
       set((state) => {
         const updatedNodes = state.nodes.filter((node) => node.id !== id);
         const updatedEdges = state.edges.filter(
@@ -946,6 +1105,12 @@ export const useBoardStore = create<BoardStore>((set, get) => {
           isInspectorOpen: state.selectedNodeId === id ? false : state.isInspectorOpen,
         };
       });
+
+      const user = collabManager.getCurrentUser();
+      collabManager.broadcastMutation(
+        { type: 'node_delete', id, user, summary: `Удалил карточку "${title}"` },
+        { actionType: 'node_delete', summary: `Удалил карточку "${title}"`, targetId: id }
+      );
     },
 
     duplicateNode: (id) => {
@@ -1206,6 +1371,251 @@ export const useBoardStore = create<BoardStore>((set, get) => {
 
     importJson: (jsonString) => {
       return get().importProjectFromJson(jsonString);
+    },
+
+    // ==================== COLLABORATION & MULTIPLAYER ACTIONS ====================
+    setCollabUserName: (name: string) => {
+      const updated = collabManager.updateUser({ name });
+      set({ collabUser: updated });
+    },
+
+    setCollabUserColor: (color: string) => {
+      const updated = collabManager.updateUser({ color });
+      set({ collabUser: updated });
+    },
+
+    setUserRole: (role: UserRole) => {
+      set({ userRole: role, isViewerMode: role === 'viewer' });
+      collabManager.updateUser({ role });
+    },
+
+    setIsAuditDrawerOpen: (open: boolean) => {
+      set({ isAuditDrawerOpen: open });
+      if (open) get().fetchAuditLogs();
+    },
+
+    setIsVersionHistoryModalOpen: (open: boolean) => {
+      set({ isVersionHistoryModalOpen: open });
+      if (open) get().fetchVersions();
+    },
+
+    setIsShareModalOpen: (open: boolean) => {
+      set({ isShareModalOpen: open });
+    },
+
+    broadcastCursor: (x: number, y: number, activeNodeId?: string | null) => {
+      collabManager.broadcastCursor(x, y, activeNodeId);
+    },
+
+    fetchAuditLogs: async () => {
+      const logs = await collabManager.fetchAuditLogs();
+      set({ auditLogs: logs });
+    },
+
+    fetchVersions: async () => {
+      const versions = await collabManager.fetchVersions();
+      set({ versions });
+    },
+
+    createVersionCheckpoint: async (label?: string) => {
+      const { currentProjectId, nodes, edges, drawings, layoutMode, theme } = get();
+      if (!currentProjectId) return;
+      const snapshot = {
+        nodes: JSON.parse(JSON.stringify(nodes)),
+        edges: JSON.parse(JSON.stringify(edges)),
+        drawings: JSON.parse(JSON.stringify(drawings || [])),
+        layoutMode,
+        theme,
+      };
+      const ver = await collabManager.createVersionCheckpoint(label || 'Контрольная точка', snapshot, true);
+      if (ver) {
+        set((state) => ({ versions: [ver, ...state.versions] }));
+        get().fetchAuditLogs();
+      }
+    },
+
+    restoreVersionCheckpoint: async (versionId: string) => {
+      const res = await collabManager.restoreVersion(versionId);
+      if (res.success && res.snapshot) {
+        const snap = res.snapshot;
+        const newNodes = snap.nodes || [];
+        const newEdges = snap.edges || [];
+        const newDrawings = snap.drawings || [];
+        const newLayout = (snap.layoutMode as LayoutMode) || get().layoutMode;
+        const newTheme = (snap.theme as ThemeMode) || get().theme;
+
+        set({
+          nodes: newNodes,
+          edges: newEdges,
+          drawings: newDrawings,
+          layoutMode: newLayout,
+          theme: newTheme,
+          previewingVersion: null,
+          isViewerMode: get().userRole === 'viewer',
+          undoStack: [],
+          redoStack: [],
+        });
+
+        syncAndPersist(newNodes, newEdges, newLayout, newTheme, newDrawings);
+        get().fetchAuditLogs();
+        get().fetchVersions();
+      }
+    },
+
+    setPreviewingVersion: (version: ProjectVersion | null) => {
+      if (version) {
+        if (!originalStateBeforePreview) {
+          originalStateBeforePreview = {
+            nodes: get().nodes,
+            edges: get().edges,
+            drawings: get().drawings,
+            layoutMode: get().layoutMode,
+            theme: get().theme,
+          };
+        }
+        set({
+          previewingVersion: version,
+          nodes: version.snapshot.nodes || [],
+          edges: version.snapshot.edges || [],
+          drawings: version.snapshot.drawings || [],
+          layoutMode: (version.snapshot.layoutMode as LayoutMode) || 'freeform',
+          theme: (version.snapshot.theme as ThemeMode) || 'dark',
+          isViewerMode: true,
+        });
+      } else {
+        if (originalStateBeforePreview) {
+          set({
+            nodes: originalStateBeforePreview.nodes,
+            edges: originalStateBeforePreview.edges,
+            drawings: originalStateBeforePreview.drawings,
+            layoutMode: originalStateBeforePreview.layoutMode,
+            theme: originalStateBeforePreview.theme,
+            previewingVersion: null,
+            isViewerMode: get().userRole === 'viewer',
+          });
+          originalStateBeforePreview = null;
+        } else {
+          set({
+            previewingVersion: null,
+            isViewerMode: get().userRole === 'viewer',
+          });
+        }
+      }
+    },
+
+    initCollaboration: (projectId: string, role?: UserRole) => {
+      if (!projectId) return;
+      const currentRole = role || get().userRole;
+      collabManager.init(projectId, currentRole);
+
+      collabManager.subscribePresence((peers) => {
+        set({ collabPeers: peers });
+      });
+
+      collabManager.subscribeCursors((cursors) => {
+        set({ collabCursors: cursors });
+      });
+
+      collabManager.subscribeSelections((selections) => {
+        set({ collabSelections: selections });
+      });
+
+      collabManager.subscribe((msg) => {
+        const state = get();
+        if (state.previewingVersion) return;
+
+        switch (msg.type) {
+          case 'nodes_moved': {
+            const posMap = new Map(msg.nodePositions.map((p) => [p.id, p.position]));
+            const updated = state.nodes.map((node) => {
+              const newPos = posMap.get(node.id);
+              if (newPos) {
+                return { ...node, position: newPos };
+              }
+              return node;
+            });
+            set({ nodes: updated });
+            break;
+          }
+
+          case 'node_update': {
+            const updated = state.nodes.map((node) => {
+              if (node.id === msg.id) {
+                return {
+                  ...node,
+                  data: {
+                    ...node.data,
+                    ...msg.data,
+                  },
+                };
+              }
+              return node;
+            });
+            set({ nodes: updated as (StrategyNode | ImageNode)[] });
+            break;
+          }
+
+          case 'node_add': {
+            if (!state.nodes.some((n) => n.id === msg.node.id)) {
+              set({ nodes: [...state.nodes, msg.node] });
+            }
+            break;
+          }
+
+          case 'node_delete': {
+            set({
+              nodes: state.nodes.filter((n) => n.id !== msg.id),
+              edges: state.edges.filter((e) => e.source !== msg.id && e.target !== msg.id),
+              selectedNodeId: state.selectedNodeId === msg.id ? null : state.selectedNodeId,
+            });
+            break;
+          }
+
+          case 'edge_add': {
+            if (!state.edges.some((e) => e.id === msg.edge.id)) {
+              set({ edges: [...state.edges, msg.edge] });
+            }
+            break;
+          }
+
+          case 'edge_delete': {
+            set({
+              edges: state.edges.filter((e) => e.id !== msg.id),
+              selectedEdgeId: state.selectedEdgeId === msg.id ? null : state.selectedEdgeId,
+            });
+            break;
+          }
+
+          case 'drawing_add': {
+            set({ drawings: [...state.drawings, msg.stroke] });
+            break;
+          }
+
+          case 'drawings_clear': {
+            set({ drawings: [] });
+            break;
+          }
+
+          case 'version_restored': {
+            if (msg.snapshot) {
+              set({
+                nodes: msg.snapshot.nodes || [],
+                edges: msg.snapshot.edges || [],
+                drawings: msg.snapshot.drawings || [],
+                layoutMode: (msg.snapshot.layoutMode as LayoutMode) || state.layoutMode,
+                theme: (msg.snapshot.theme as ThemeMode) || state.theme,
+                previewingVersion: null,
+              });
+              get().fetchAuditLogs();
+              get().fetchVersions();
+            }
+            break;
+          }
+        }
+      });
+
+      get().fetchAuditLogs();
+      get().fetchVersions();
     },
   };
 });

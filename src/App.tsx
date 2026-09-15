@@ -11,6 +11,9 @@ import { NewProjectModal } from './components/NewProjectModal';
 import { SettingsModal } from './components/SettingsModal';
 import { ImportJsonModal } from './components/ImportJsonModal';
 import { AiAgentBridgeModal } from './components/AiAgentBridgeModal';
+import { AuditLogDrawer } from './components/AuditLogDrawer';
+import { VersionHistoryModal } from './components/VersionHistoryModal';
+import { ShareProjectModal } from './components/ShareProjectModal';
 import { useBoardStore } from './store/useBoardStore';
 
 export const App: React.FC = () => {
@@ -29,6 +32,15 @@ export const App: React.FC = () => {
   const setIsImportJsonModalOpen = useBoardStore((s) => s.setIsImportJsonModalOpen);
   const isAiBridgeModalOpen = useBoardStore((s) => s.isAiBridgeModalOpen);
   const setIsAiBridgeModalOpen = useBoardStore((s) => s.setIsAiBridgeModalOpen);
+
+  const isAuditDrawerOpen = useBoardStore((s) => s.isAuditDrawerOpen);
+  const setIsAuditDrawerOpen = useBoardStore((s) => s.setIsAuditDrawerOpen);
+  const isVersionHistoryModalOpen = useBoardStore((s) => s.isVersionHistoryModalOpen);
+  const setIsVersionHistoryModalOpen = useBoardStore((s) => s.setIsVersionHistoryModalOpen);
+  const isShareModalOpen = useBoardStore((s) => s.isShareModalOpen);
+  const setIsShareModalOpen = useBoardStore((s) => s.setIsShareModalOpen);
+  const fetchAuditLogs = useBoardStore((s) => s.fetchAuditLogs);
+  const fetchVersions = useBoardStore((s) => s.fetchVersions);
 
   const theme = useBoardStore((s) => s.theme);
   const setSelectedNodeId = useBoardStore((s) => s.setSelectedNodeId);
@@ -85,11 +97,50 @@ export const App: React.FC = () => {
         e.preventDefault();
         setIsAiBridgeModalOpen(!isAiBridgeModalOpen);
       }
+
+      // Cmd+L -> Toggle Audit Log Drawer
+      if ((e.metaKey || e.ctrlKey) && !e.shiftKey && e.key.toLowerCase() === 'l') {
+        e.preventDefault();
+        const next = !isAuditDrawerOpen;
+        setIsAuditDrawerOpen(next);
+        if (next) fetchAuditLogs();
+      }
+
+      // Cmd+Shift+S -> Toggle Share Project Modal
+      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key.toLowerCase() === 's') {
+        e.preventDefault();
+        setIsShareModalOpen(!isShareModalOpen);
+      }
+
+      // Cmd+Shift+H -> Toggle Version History Modal
+      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key.toLowerCase() === 'h') {
+        e.preventDefault();
+        const next = !isVersionHistoryModalOpen;
+        setIsVersionHistoryModalOpen(next);
+        if (next) fetchVersions();
+      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isCabinetOpen, setIsCabinetOpen, isSettingsOpen, setIsSettingsOpen, isImportJsonModalOpen, setIsImportJsonModalOpen, isAiBridgeModalOpen, setIsAiBridgeModalOpen]);
+  }, [
+    isCabinetOpen,
+    setIsCabinetOpen,
+    isSettingsOpen,
+    setIsSettingsOpen,
+    isImportJsonModalOpen,
+    setIsImportJsonModalOpen,
+    isAiBridgeModalOpen,
+    setIsAiBridgeModalOpen,
+    isAuditDrawerOpen,
+    setIsAuditDrawerOpen,
+    isShareModalOpen,
+    setIsShareModalOpen,
+    isVersionHistoryModalOpen,
+    setIsVersionHistoryModalOpen,
+    fetchAuditLogs,
+    fetchVersions,
+  ]);
 
   const handleSelectSearchedNode = (nodeId: string) => {
     setSelectedNodeId(nodeId);
@@ -182,6 +233,11 @@ export const App: React.FC = () => {
           isOpen={isAiBridgeModalOpen}
           onClose={() => setIsAiBridgeModalOpen(false)}
         />
+
+        {/* Collaborative Team Mode Modals & Panels */}
+        <AuditLogDrawer />
+        <VersionHistoryModal />
+        <ShareProjectModal />
       </div>
     </ReactFlowProvider>
   );

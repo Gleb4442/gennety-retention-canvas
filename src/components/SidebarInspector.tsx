@@ -38,6 +38,7 @@ export const SidebarInspector: React.FC<SidebarInspectorProps> = ({ onFocusNode 
   const setIsInspectorOpen = useBoardStore((s) => s.setIsInspectorOpen);
   const setSelectedNodeId = useBoardStore((s) => s.setSelectedNodeId);
   const setSelectedEdgeId = useBoardStore((s) => s.setSelectedEdgeId);
+  const isViewerMode = useBoardStore((s) => s.isViewerMode);
 
   const updateNode = useBoardStore((s) => s.updateNode);
   const deleteNode = useBoardStore((s) => s.deleteNode);
@@ -173,6 +174,14 @@ export const SidebarInspector: React.FC<SidebarInspectorProps> = ({ onFocusNode 
           </svg>
         </button>
       </div>
+
+      {/* Read-Only Mode Banner */}
+      {isViewerMode && (
+        <div className="px-5 py-2 bg-amber-500/10 border-b border-amber-500/20 text-amber-300 text-[11px] font-mono flex items-center gap-2">
+          <span>👁</span>
+          <span>Режим просмотра: редактирование заблокировано</span>
+        </div>
+      )}
 
       {/* Body */}
       <div className="flex-1 overflow-y-auto p-5 space-y-5 text-xs">

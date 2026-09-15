@@ -37,6 +37,8 @@ export const CustomNode = memo(({ id, data, selected }: NodeProps & { data: Stra
   const updateNode = useBoardStore((s) => s.updateNode);
   const setSelectedNodeId = useBoardStore((s) => s.setSelectedNodeId);
   const openLightbox = useBoardStore((s) => s.openLightbox);
+  const peerSelecting = useBoardStore((s) => s.collabSelections[id]);
+  const isViewerMode = useBoardStore((s) => s.isViewerMode);
 
   const categoryDef = CATEGORIES[data.category] || CATEGORIES.custom;
   const AbstractIcon = ABSTRACT_ICON_MAP[data.category] || IconCustomNode;
@@ -119,7 +121,9 @@ export const CustomNode = memo(({ id, data, selected }: NodeProps & { data: Stra
           : 'hover:-translate-y-1'
       } ${isDragOverCard ? 'ring-2 ring-white/60 scale-[1.02]' : ''}`}
       style={{
-        boxShadow: selected
+        boxShadow: peerSelecting
+          ? `0 0 0 2px ${peerSelecting.color}, 0 0 24px ${peerSelecting.color}66`
+          : selected
           ? '0 30px 60px -15px rgba(0,0,0,0.55), inset 0 1px 2px 0 rgba(255,255,255,0.3), 0 0 0 1.5px var(--text-primary)'
           : undefined,
       }}
@@ -128,6 +132,17 @@ export const CustomNode = memo(({ id, data, selected }: NodeProps & { data: Stra
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
     >
+      {/* Remote Peer Selection Indicator */}
+      {peerSelecting && (
+        <div
+          className="absolute -top-6 left-3 px-2 py-0.5 rounded-full text-[10px] font-medium tracking-wide shadow-md whitespace-nowrap select-none backdrop-blur-md border border-white/20 text-white flex items-center gap-1 z-30 animate-pulse"
+          style={{ backgroundColor: peerSelecting.color }}
+        >
+          <span className="w-1.5 h-1.5 rounded-full bg-white" />
+          <span>{peerSelecting.userName} редактирует</span>
+        </div>
+      )}
+
       {/* Hidden file input for photo attachment */}
       <input
         type="file"
@@ -146,45 +161,47 @@ export const CustomNode = memo(({ id, data, selected }: NodeProps & { data: Stra
       />
 
       {/* Floating Action Menu on hover / select */}
-      <div className="absolute -top-10 right-3 opacity-0 group-hover:opacity-100 transition-all duration-200 flex items-center gap-1.5 liquid-pill px-2 py-1 rounded-xl shadow-lg z-20">
-        <button
-          onClick={handlePhotoClick}
-          disabled={isUploading}
-          title={data.imageUrl ? "Заменить фото карточки" : "Прикрепить фото к карточке"}
-          className="p-1 rounded-lg hover:bg-white/15 text-inherit opacity-70 hover:opacity-100 transition-opacity"
-        >
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
-          </svg>
-        </button>
-        <button
-          onClick={handleEdit}
-          title="Редактировать"
-          className="p-1 rounded-lg hover:bg-white/15 text-inherit opacity-70 hover:opacity-100 transition-opacity"
-        >
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
-          </svg>
-        </button>
-        <button
-          onClick={handleDuplicate}
-          title="Дублировать (Cmd+D)"
-          className="p-1 rounded-lg hover:bg-white/15 text-inherit opacity-70 hover:opacity-100 transition-opacity"
-        >
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
-          </svg>
-        </button>
-        <button
-          onClick={handleDelete}
-          title="Удалить карточку"
-          className="p-1 rounded-lg hover:bg-rose-500/20 hover:text-rose-400 opacity-70 hover:opacity-100 transition-opacity"
-        >
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
-          </svg>
-        </button>
-      </div>
+      {!isViewerMode && (
+        <div className="absolute -top-10 right-3 opacity-0 group-hover:opacity-100 transition-all duration-200 flex items-center gap-1.5 liquid-pill px-2 py-1 rounded-xl shadow-lg z-20">
+          <button
+            onClick={handlePhotoClick}
+            disabled={isUploading}
+            title={data.imageUrl ? "Заменить фото карточки" : "Прикрепить фото к карточке"}
+            className="p-1 rounded-lg hover:bg-white/15 text-inherit opacity-70 hover:opacity-100 transition-opacity"
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
+            </svg>
+          </button>
+          <button
+            onClick={handleEdit}
+            title="Редактировать"
+            className="p-1 rounded-lg hover:bg-white/15 text-inherit opacity-70 hover:opacity-100 transition-opacity"
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+            </svg>
+          </button>
+          <button
+            onClick={handleDuplicate}
+            title="Дублировать (Cmd+D)"
+            className="p-1 rounded-lg hover:bg-white/15 text-inherit opacity-70 hover:opacity-100 transition-opacity"
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
+            </svg>
+          </button>
+          <button
+            onClick={handleDelete}
+            title="Удалить карточку"
+            className="p-1 rounded-lg hover:bg-rose-500/20 hover:text-rose-400 opacity-70 hover:opacity-100 transition-opacity"
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+            </svg>
+          </button>
+        </div>
+      )}
 
       <div className="p-5 flex flex-col gap-3.5">
         {/* Header: Neutral Abstract Icon & Minimalist Pill Badge */}

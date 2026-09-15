@@ -38,6 +38,31 @@ export function validateAccessKey(rawKey: string): { valid: boolean; error?: str
   return { valid: true, formattedKey: trimmed };
 }
 
+export function getShareParamsFromUrl(): {
+  shareToken: string | null;
+  projectId: string | null;
+  role: 'viewer' | 'editor' | null;
+} {
+  try {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const shareToken = params.get('share') || params.get('token');
+      const projectId = params.get('p') || params.get('project') || params.get('projectId');
+      const roleParam = params.get('role')?.toLowerCase();
+      const role = roleParam === 'viewer' ? 'viewer' : (roleParam === 'editor' ? 'editor' : null);
+
+      return {
+        shareToken: shareToken ? shareToken.trim() : null,
+        projectId: projectId ? projectId.trim() : null,
+        role,
+      };
+    }
+  } catch {
+    // ignore
+  }
+  return { shareToken: null, projectId: null, role: null };
+}
+
 /**
  * Returns the stored access key or null if not authenticated.
  * Also checks URL query parameters (?key=... or ?accessKey=...) for instant one-click login.
@@ -46,7 +71,7 @@ export function getStoredKey(): string | null {
   try {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
-      const urlKey = params.get('key') || params.get('accessKey') || params.get('token');
+      const urlKey = params.get('key') || params.get('accessKey');
       if (urlKey && urlKey.trim().length >= 4) {
         const cleanKey = urlKey.trim();
         setStoredKey(cleanKey);

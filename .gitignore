@@ -24,3 +24,8 @@ dist-ssr
 *.sw?
 .vercel
 .env*
+.neon
+.agents
+skills-lock.json
+recovered_chrome_projects.json
+

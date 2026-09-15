@@ -122,3 +122,5 @@ export interface UserWorkspaceBackup {
   activeProjectId: string;
   projects: CanvasProject[];
 }
+
+export * from './collaboration';
