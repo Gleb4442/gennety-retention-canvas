@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import { useBoardStore } from '../store/useBoardStore';
 import { 
   parseCanvasJson, 
@@ -60,27 +60,24 @@ const SAMPLE_MINIMAL_JSON = `{
       "id": "e_1_2",
       "source": "step_1",
       "target": "step_2",
-      "label": "Анкета одобрена",
-      "animated": true,
-      "styleType": "bezier"
+      "type": "customEdge",
+      "data": { "label": "переход" }
     },
     {
       "id": "e_2_3",
       "source": "step_2",
       "target": "step_3",
-      "label": "Активация статуса",
-      "animated": true,
-      "styleType": "bezier"
+      "type": "customEdge",
+      "data": { "label": "закрепление" }
     }
   ]
 }`;
 
 export const ImportJsonModal: React.FC<ImportJsonModalProps> = ({ isOpen, onClose }) => {
-  const [jsonText, setJsonText] = useState('');
+  const [jsonText, setJsonText] = useState(SAMPLE_MINIMAL_JSON);
   const [titleOverride, setTitleOverride] = useState('');
   const [activeTab, setActiveTab] = useState<'editor' | 'prompt' | 'spec'>('editor');
   const [copiedPrompt, setCopiedPrompt] = useState(false);
-  const [parseResult, setParseResult] = useState<ParseResult | null>(null);
   const [replaceCurrentCanvas, setReplaceCurrentCanvas] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -94,14 +91,10 @@ export const ImportJsonModal: React.FC<ImportJsonModalProps> = ({ isOpen, onClos
   const saveSnapshot = useBoardStore((s) => s.saveSnapshot);
   const setIsAiBridgeModalOpen = useBoardStore((s) => s.setIsAiBridgeModalOpen);
 
-  // Validate on text change
-  useEffect(() => {
-    if (!jsonText.trim()) {
-      setParseResult(null);
-      return;
-    }
-    const res = parseCanvasJson(jsonText, titleOverride.trim() || undefined);
-    setParseResult(res);
+  // Validate on text change via memoized derivation
+  const parseResult = useMemo<ParseResult | null>(() => {
+    if (!jsonText.trim()) return null;
+    return parseCanvasJson(jsonText, titleOverride.trim() || undefined);
   }, [jsonText, titleOverride]);
 
   if (!isOpen) return null;

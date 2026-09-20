@@ -4,6 +4,7 @@ import { viteSingleFile } from 'vite-plugin-singlefile'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import crypto from 'node:crypto'
 import pg from 'pg'
 
 const { Pool } = pg
@@ -29,6 +30,8 @@ function getDevDbPool() {
   }
   return devPool
 }
+
+const devEvents: Record<string, any[]> = {}
 
 function gennetyApiPlugin() {
   return {
@@ -434,7 +437,7 @@ function gennetyApiPlugin() {
               if (req.method === 'POST' && action === 'create_share') {
                 const { projectId, role } = bodyData
                 const cleanRole = role === 'viewer' ? 'viewer' : 'editor'
-                const token = `sh_${cleanRole}_${Math.random().toString(36).slice(2, 10)}${Math.random().toString(36).slice(2, 10)}`
+                const token = `sh_${cleanRole}_${crypto.randomBytes(16).toString('hex')}`
                 if (db && projectId) {
                   const ins = await db.query(
                     `INSERT INTO canvas_project_shares (project_id, share_token, role, is_active, created_at)
@@ -462,12 +465,61 @@ function gennetyApiPlugin() {
               }
 
               if (req.method === 'POST' && action === 'revoke_share') {
-                const { shareToken } = bodyData
+                const { shareToken, ownerKey } = bodyData
                 if (db && shareToken) {
+                  if (ownerKey) {
+                    const shareCheck = await db.query(
+                      `SELECT s.id, p.owner_key 
+                       FROM canvas_project_shares s
+                       JOIN canvas_projects p ON s.project_id = p.id
+                       WHERE s.share_token = $1`,
+                      [shareToken]
+                    )
+                    if (shareCheck.rows.length > 0) {
+                      const row = shareCheck.rows[0]
+                      if (row.owner_key && row.owner_key !== 'anonymous' && row.owner_key !== ownerKey) {
+                        res.statusCode = 403
+                        res.end(JSON.stringify({ success: false, error: 'Недостаточно прав' }))
+                        return
+                      }
+                    }
+                  }
                   await db.query(`UPDATE canvas_project_shares SET is_active = false WHERE share_token = $1`, [shareToken])
                 }
                 res.statusCode = 200
                 res.end(JSON.stringify({ success: true }))
+                return
+              }
+
+              if (req.method === 'POST' && action === 'publish_event') {
+                const { projectId, event } = bodyData
+                if (!projectId || !event) {
+                  res.statusCode = 400
+                  res.end(JSON.stringify({ success: false, error: 'projectId and event required' }))
+                  return
+                }
+                if (!devEvents[projectId]) devEvents[projectId] = []
+                devEvents[projectId].push({ ...event, _ts: Date.now() })
+                if (devEvents[projectId].length > 200) {
+                  devEvents[projectId] = devEvents[projectId].slice(-150)
+                }
+                res.statusCode = 200
+                res.end(JSON.stringify({ success: true }))
+                return
+              }
+
+              if (req.method === 'GET' && action === 'poll_events') {
+                const projectId = url.searchParams.get('project_id')?.trim()
+                const since = parseInt(url.searchParams.get('since') || '0', 10)
+                if (!projectId) {
+                  res.statusCode = 400
+                  res.end(JSON.stringify({ success: false, error: 'project_id required' }))
+                  return
+                }
+                const events = devEvents[projectId] || []
+                const recent = events.filter((e: any) => e._ts > since)
+                res.statusCode = 200
+                res.end(JSON.stringify({ success: true, events: recent, now: Date.now() }))
                 return
               }
 

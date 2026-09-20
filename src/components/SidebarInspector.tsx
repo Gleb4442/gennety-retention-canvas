@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useBoardStore } from '../store/useBoardStore';
 import { CATEGORIES } from '../constants/categories';
 import type { CategoryType, EdgeLabelSize, StrategyNodeData, ImageNodeData } from '../types';
@@ -23,6 +23,108 @@ const ABSTRACT_ICONS: Record<string, React.ElementType> = {
   lifecycle: IconLifecycle,
   outcome: IconOutcome,
   custom: IconCustomNode,
+};
+
+interface DebouncedInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
+  value: string;
+  onDebouncedChange: (val: string) => void;
+  debounceMs?: number;
+}
+
+const DebouncedInput: React.FC<DebouncedInputProps> = ({
+  value,
+  onDebouncedChange,
+  debounceMs = 300,
+  onBlur,
+  ...props
+}) => {
+  const [localValue, setLocalValue] = useState(value);
+  const [prevValue, setPrevValue] = useState(value);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  if (prevValue !== value) {
+    setPrevValue(value);
+    setLocalValue(value);
+  }
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const next = e.target.value;
+    setLocalValue(next);
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
+      onDebouncedChange(next);
+    }, debounceMs);
+  };
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+    if (localValue !== value) {
+      onDebouncedChange(localValue);
+    }
+    onBlur?.(e);
+  };
+
+  return <input {...props} value={localValue} onChange={handleChange} onBlur={handleBlur} />;
+};
+
+interface DebouncedTextareaProps extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'onChange'> {
+  value: string;
+  onDebouncedChange: (val: string) => void;
+  debounceMs?: number;
+}
+
+const DebouncedTextarea: React.FC<DebouncedTextareaProps> = ({
+  value,
+  onDebouncedChange,
+  debounceMs = 300,
+  onBlur,
+  ...props
+}) => {
+  const [localValue, setLocalValue] = useState(value);
+  const [prevValue, setPrevValue] = useState(value);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  if (prevValue !== value) {
+    setPrevValue(value);
+    setLocalValue(value);
+  }
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const next = e.target.value;
+    setLocalValue(next);
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
+      onDebouncedChange(next);
+    }, debounceMs);
+  };
+
+  const handleBlur = (e: React.FocusEvent<HTMLTextAreaElement>) => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+    if (localValue !== value) {
+      onDebouncedChange(localValue);
+    }
+    onBlur?.(e);
+  };
+
+  return <textarea {...props} value={localValue} onChange={handleChange} onBlur={handleBlur} />;
 };
 
 interface SidebarInspectorProps {
@@ -279,11 +381,11 @@ export const SidebarInspector: React.FC<SidebarInspectorProps> = ({ onFocusNode 
                 <label className="text-[10px] font-mono opacity-60 uppercase tracking-wider">
                   Заголовок (необязательно)
                 </label>
-                <input
+                <DebouncedInput
                   type="text"
                   value={imgData.title || ''}
                   placeholder="Название схемы, макета или фото..."
-                  onChange={(e) => updateNode(selectedNode.id, { title: e.target.value })}
+                  onDebouncedChange={(val) => updateNode(selectedNode.id, { title: val })}
                   className="w-full liquid-pill px-3 py-2 rounded-xl text-inherit font-semibold outline-none text-xs"
                 />
               </div>
@@ -293,11 +395,11 @@ export const SidebarInspector: React.FC<SidebarInspectorProps> = ({ onFocusNode 
                 <label className="text-[10px] font-mono opacity-60 uppercase tracking-wider">
                   Подпись / Контекст
                 </label>
-                <textarea
+                <DebouncedTextarea
                   rows={3}
                   value={imgData.caption || ''}
                   placeholder="Добавьте пояснение к изображению..."
-                  onChange={(e) => updateNode(selectedNode.id, { caption: e.target.value })}
+                  onDebouncedChange={(val) => updateNode(selectedNode.id, { caption: val })}
                   className="w-full liquid-pill px-3 py-2 rounded-xl text-inherit outline-none leading-relaxed resize-none text-xs"
                 />
               </div>
@@ -354,10 +456,10 @@ export const SidebarInspector: React.FC<SidebarInspectorProps> = ({ onFocusNode 
                 <label className="text-[10px] font-mono opacity-60 uppercase tracking-wider">
                   Метка / Бейдж
                 </label>
-                <input
+                <DebouncedInput
                   type="text"
                   value={stratData.badge}
-                  onChange={(e) => updateNode(selectedNode.id, { badge: e.target.value })}
+                  onDebouncedChange={(val) => updateNode(selectedNode.id, { badge: val })}
                   className="w-full liquid-pill px-3 py-2 rounded-xl text-inherit font-mono outline-none font-medium"
                 />
               </div>
@@ -367,10 +469,10 @@ export const SidebarInspector: React.FC<SidebarInspectorProps> = ({ onFocusNode 
                 <label className="text-[10px] font-mono opacity-60 uppercase tracking-wider">
                   Название блока
                 </label>
-                <input
+                <DebouncedInput
                   type="text"
                   value={stratData.title}
-                  onChange={(e) => updateNode(selectedNode.id, { title: e.target.value })}
+                  onDebouncedChange={(val) => updateNode(selectedNode.id, { title: val })}
                   className="w-full liquid-pill px-3 py-2 rounded-xl text-inherit font-semibold outline-none text-xs"
                 />
               </div>
@@ -446,10 +548,10 @@ export const SidebarInspector: React.FC<SidebarInspectorProps> = ({ onFocusNode 
                 <label className="text-[10px] font-mono opacity-60 uppercase tracking-wider">
                   Описание механизма
                 </label>
-                <textarea
+                <DebouncedTextarea
                   rows={4}
                   value={stratData.description}
-                  onChange={(e) => updateNode(selectedNode.id, { description: e.target.value })}
+                  onDebouncedChange={(val) => updateNode(selectedNode.id, { description: val })}
                   className="w-full liquid-pill px-3 py-2 rounded-xl text-inherit outline-none leading-relaxed resize-none text-xs"
                 />
               </div>
@@ -460,11 +562,11 @@ export const SidebarInspector: React.FC<SidebarInspectorProps> = ({ onFocusNode 
                   <label className="text-[10px] font-mono opacity-70 uppercase tracking-wider">
                     Целевая метрика (Key Metric)
                   </label>
-                  <input
+                  <DebouncedInput
                     type="text"
                     placeholder="Например: Цель — Top-1 Retention"
                     value={stratData.keyMetric || ''}
-                    onChange={(e) => updateNode(selectedNode.id, { keyMetric: e.target.value })}
+                    onDebouncedChange={(val) => updateNode(selectedNode.id, { keyMetric: val })}
                     className="w-full liquid-pill px-3 py-2 rounded-xl text-inherit outline-none text-xs"
                   />
                 </div>
@@ -473,11 +575,11 @@ export const SidebarInspector: React.FC<SidebarInspectorProps> = ({ onFocusNode 
                   <label className="text-[10px] font-mono opacity-70 uppercase tracking-wider">
                     Результат (Outcome)
                   </label>
-                  <input
+                  <DebouncedInput
                     type="text"
                     placeholder="Например: Рождает эмоцию отличности"
                     value={stratData.outcome || ''}
-                    onChange={(e) => updateNode(selectedNode.id, { outcome: e.target.value })}
+                    onDebouncedChange={(val) => updateNode(selectedNode.id, { outcome: val })}
                     className="w-full liquid-pill px-3 py-2 rounded-xl text-inherit outline-none text-xs"
                   />
                 </div>
@@ -488,11 +590,11 @@ export const SidebarInspector: React.FC<SidebarInspectorProps> = ({ onFocusNode 
                 <label className="text-[10px] font-mono opacity-60 uppercase tracking-wider">
                   Заметки и Контекст
                 </label>
-                <textarea
+                <DebouncedTextarea
                   rows={3}
                   placeholder="Инсайты команды..."
                   value={stratData.notes || ''}
-                  onChange={(e) => updateNode(selectedNode.id, { notes: e.target.value })}
+                  onDebouncedChange={(val) => updateNode(selectedNode.id, { notes: val })}
                   className="w-full liquid-pill px-3 py-2 rounded-xl text-inherit outline-none leading-relaxed resize-none text-xs"
                 />
               </div>
@@ -586,10 +688,10 @@ export const SidebarInspector: React.FC<SidebarInspectorProps> = ({ onFocusNode 
               <label className="text-[10px] font-mono opacity-60 uppercase tracking-wider">
                 Подпись связи (отношение)
               </label>
-              <input
+              <DebouncedInput
                 type="text"
                 value={selectedEdge.data?.label || ''}
-                onChange={(e) => updateEdge(selectedEdge.id, { label: e.target.value })}
+                onDebouncedChange={(val) => updateEdge(selectedEdge.id, { label: val })}
                 className="w-full liquid-pill px-3 py-2 rounded-xl text-inherit font-mono outline-none"
               />
             </div>

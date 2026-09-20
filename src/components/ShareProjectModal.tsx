@@ -8,6 +8,7 @@ export const ShareProjectModal: React.FC = () => {
   const setIsOpen = useBoardStore((s) => s.setIsShareModalOpen);
   const currentProjectId = useBoardStore((s) => s.currentProjectId);
   const projects = useBoardStore((s) => s.projects);
+  const accessKey = useBoardStore((s) => s.accessKey);
 
   const [shares, setShares] = useState<ProjectShareLink[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -66,7 +67,7 @@ export const ShareProjectModal: React.FC = () => {
 
   const handleRevokeShare = async (token: string) => {
     if (!window.confirm('Отозвать эту ссылку? Пользователи с этой ссылкой потеряют доступ.')) return;
-    await collabManager.revokeShare(token);
+    await collabManager.revokeShare(token, accessKey || undefined);
     setShares((prev) => prev.filter((s) => s.shareToken !== token));
   };
 

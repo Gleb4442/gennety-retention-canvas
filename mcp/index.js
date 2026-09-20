@@ -26,7 +26,13 @@ function loadStorage() {
   try {
     if (fs.existsSync(STORAGE_FILE)) {
       const raw = fs.readFileSync(STORAGE_FILE, 'utf-8');
-      return JSON.parse(raw);
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === 'object') {
+        if (!Array.isArray(parsed.projects)) {
+          parsed.projects = [];
+        }
+        return parsed;
+      }
     }
   } catch (err) {
     console.error(`[MCP] Failed to read ${STORAGE_FILE}:`, err.message);
@@ -301,29 +307,31 @@ async function executeTool(name, args) {
 
   switch (name) {
     case 'list_projects': {
-      const summary = storage.projects.map((p) => ({
+      const projects = Array.isArray(storage.projects) ? storage.projects : [];
+      const summary = projects.map((p) => ({
         id: p.id,
-        title: p.title,
+        title: p.title || 'Untitled',
         description: p.description || '',
         isActive: p.id === storage.activeProjectId,
         nodesCount: p.nodes?.length || 0,
         edgesCount: p.edges?.length || 0,
         tags: p.tags || [],
         layoutMode: p.layoutMode || 'freeform',
-        updatedAt: new Date(p.updatedAt).toISOString(),
+        updatedAt: p.updatedAt ? new Date(p.updatedAt).toISOString() : new Date().toISOString(),
       }));
 
       return {
         totalProjects: summary.length,
-        activeProjectId: storage.activeProjectId,
+        activeProjectId: storage.activeProjectId || (projects[0]?.id ?? ''),
         accessKey: storage.accessKey,
         projects: summary,
       };
     }
 
     case 'get_project_canvas': {
+      const projects = Array.isArray(storage.projects) ? storage.projects : [];
       const pId = args.projectId || storage.activeProjectId;
-      const project = storage.projects.find((p) => p.id === pId) || storage.projects[0];
+      const project = projects.find((p) => p.id === pId) || projects[0];
       if (!project) {
         throw new Error(`Project "${pId}" not found in account.`);
       }
@@ -371,9 +379,10 @@ async function executeTool(name, args) {
       const q = (args.query || '').toLowerCase().trim();
       if (!q) throw new Error('Search query must not be empty.');
 
+      const allProjects = Array.isArray(storage.projects) ? storage.projects : [];
       const targetProjects = args.projectId
-        ? storage.projects.filter((p) => p.id === args.projectId)
-        : storage.projects;
+        ? allProjects.filter((p) => p.id === args.projectId)
+        : allProjects;
 
       const matches = [];
       for (const proj of targetProjects) {
@@ -417,8 +426,9 @@ async function executeTool(name, args) {
     }
 
     case 'analyze_retention_flow': {
+      const projects = Array.isArray(storage.projects) ? storage.projects : [];
       const pId = args.projectId || storage.activeProjectId;
-      const project = storage.projects.find((p) => p.id === pId) || storage.projects[0];
+      const project = projects.find((p) => p.id === pId) || projects[0];
       if (!project) throw new Error(`Project "${pId}" not found.`);
 
       const nodes = project.nodes || [];
@@ -436,32 +446,35 @@ async function executeTool(name, args) {
         if (inDegree[e.target] !== undefined) inDegree[e.target]++;
       }
 
-      const orphanNodes = nodes.filter((n) => inDegree[n.id] === 0 && outDegree[n.id] === 0).map((n) => n.id);
-      const startingNodes = nodes.filter((n) => inDegree[n.id] === 0 && outDegree[n.id] > 0).map((n) => n.id);
-      const deadEndNodes = nodes.filter((n) => inDegree[n.id] > 0 && outDegree[n.id] === 0).map((n) => n.id);
+      // Detect orphan nodes (no incoming and no outgoing)
+      const orphanNodes = nodes
+        .filter((n) => inDegree[n.id] === 0 && outDegree[n.id] === 0)
+        .map((n) => n.data?.title || n.id);
 
-      // Check category coverage
-      const allCategories = ['foundation', 'psychology', 'hardware', 'retention', 'event', 'lifecycle', 'outcome'];
-      const presentCategories = new Set(nodes.map((n) => n.data?.category));
-      const missingCategories = allCategories.filter((c) => !presentCategories.has(c));
+      // Detect dead-end nodes (incoming connections, but no outgoing ones and not in outcome category)
+      const deadEndNodes = nodes
+        .filter((n) => inDegree[n.id] > 0 && outDegree[n.id] === 0 && n.data?.category !== 'outcome')
+        .map((n) => n.data?.title || n.id);
 
-      // Check metrics coverage
-      const nodesWithoutMetric = nodes.filter((n) => !n.data?.keyMetric).map((n) => n.id);
-      const nodesWithoutOutcome = nodes.filter((n) => !n.data?.outcome).map((n) => n.id);
+      // Category distribution
+      const categoryCounts = {};
+      for (const n of nodes) {
+        const cat = n.data?.category || 'custom';
+        categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+      }
+
+      const standardCategories = ['foundation', 'psychology', 'hardware', 'retention', 'event', 'lifecycle', 'outcome'];
+      const missingCategories = standardCategories.filter((c) => !categoryCounts[c]);
 
       return {
+        projectId: project.id,
         projectTitle: project.title,
         totalNodes: nodes.length,
         totalEdges: edges.length,
-        analysis: {
-          hasFlywheelLoop: deadEndNodes.length === 0 && edges.length >= nodes.length,
-          startingNodes,
-          deadEndNodes,
-          orphanNodes,
-          missingStrategicCategories: missingCategories,
-          nodesMissingKeyMetric: nodesWithoutMetric,
-          nodesMissingOutcome: nodesWithoutOutcome,
-        },
+        categoryCounts,
+        orphanNodes,
+        deadEndNodes,
+        missingCategories,
         recommendations: [
           orphanNodes.length > 0 ? `Подключите изолированные узлы: ${orphanNodes.join(', ')}` : 'Все узлы соединены связями.',
           missingCategories.length > 0 ? `Добавьте отсутствующие слои архитектуры: ${missingCategories.join(', ')}` : 'Все 7 ключевых категорий удержания присутствуют.',
@@ -471,14 +484,34 @@ async function executeTool(name, args) {
     }
 
     case 'create_or_update_node': {
+      if (!Array.isArray(storage.projects)) {
+        storage.projects = [];
+      }
       const pId = args.projectId || storage.activeProjectId;
       let project = storage.projects.find((p) => p.id === pId);
-      if (!project) {
+      if (!project && storage.projects.length > 0) {
         project = storage.projects[0];
+      }
+      if (!project) {
+        project = {
+          id: pId || `proj_${Date.now()}`,
+          title: 'Новый проект',
+          description: 'Проект создан агентом MCP',
+          nodes: [],
+          edges: [],
+          drawings: [],
+          layoutMode: 'freeform',
+          theme: 'dark',
+          createdAt: Date.now(),
+          updatedAt: Date.now(),
+        };
+        storage.projects.push(project);
+        storage.activeProjectId = project.id;
       }
 
       const nodeId = args.nodeId || `node_${Date.now()}`;
-      const existingIdx = (project.nodes || []).findIndex((n) => n.id === nodeId);
+      if (!Array.isArray(project.nodes)) project.nodes = [];
+      const existingIdx = project.nodes.findIndex((n) => n.id === nodeId);
 
       const nodeData = {
         title: args.title,

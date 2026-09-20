@@ -21,10 +21,12 @@ export const ImageLightboxModal: React.FC<ImageLightboxModalProps> = ({
   const onClose = propClose || storeClose;
 
   const [zoom, setZoom] = useState(1);
+  const [prevUrl, setPrevUrl] = useState(imageUrl);
 
-  useEffect(() => {
+  if (prevUrl !== imageUrl) {
+    setPrevUrl(imageUrl);
     setZoom(1);
-  }, [imageUrl]);
+  }
 
   useEffect(() => {
     if (!imageUrl) return;

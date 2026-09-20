@@ -64,6 +64,7 @@ export const Canvas: React.FC<CanvasProps> = ({ onOpenSearchModal, onOpenAddModa
   const isViewerMode = useBoardStore((s) => s.isViewerMode);
   const currentProjectId = useBoardStore((s) => s.currentProjectId);
   const initCollaboration = useBoardStore((s) => s.initCollaboration);
+  const cleanupCollaboration = useBoardStore((s) => s.cleanupCollaboration);
   const broadcastCursor = useBoardStore((s) => s.broadcastCursor);
 
   const [isLocked, setIsLocked] = useState(false);
@@ -71,12 +72,15 @@ export const Canvas: React.FC<CanvasProps> = ({ onOpenSearchModal, onOpenAddModa
 
   const themeTokens = THEME_CONFIG[theme] || THEME_CONFIG.dark;
 
-  // Initialize room collaboration whenever active project changes
+  // Initialize room collaboration whenever active project changes, and clean up previous
   useEffect(() => {
     if (currentProjectId) {
       initCollaboration(currentProjectId);
     }
-  }, [currentProjectId, initCollaboration]);
+    return () => {
+      cleanupCollaboration();
+    };
+  }, [currentProjectId, initCollaboration, cleanupCollaboration]);
 
   const handleCanvasMouseMove = useCallback(
     (e: React.MouseEvent) => {

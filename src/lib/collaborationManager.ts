@@ -169,6 +169,10 @@ export class CollaborationManager {
     this.activePeers.clear();
     this.remoteCursors.clear();
     this.remoteSelections.clear();
+    this.onEventCallbacks.clear();
+    this.onPresenceCallbacks.clear();
+    this.onCursorsCallbacks.clear();
+    this.onSelectionsCallbacks.clear();
   }
 
   public updateUser(updates: Partial<CollabUser>): CollabUser {
@@ -417,7 +421,7 @@ export class CollaborationManager {
         this.lastPollTs = data.now || Date.now();
         for (const ev of data.events) {
           // If the event came from another device, apply it
-          if (ev.user?.id !== this.user.id) {
+          if (ev.user?.id !== this.user.id && ev.userId !== this.user.id) {
             this.handleIncomingMessage(ev);
           }
         }
@@ -586,17 +590,44 @@ export class CollaborationManager {
     return null;
   }
 
-  public async revokeShare(shareToken: string): Promise<boolean> {
+  public async revokeShare(shareToken: string, ownerKey?: string): Promise<boolean> {
     try {
       const res = await fetch(`/api/collaboration?action=revoke_share`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ shareToken }),
+        body: JSON.stringify({ shareToken, ownerKey }),
       });
       return res.ok;
     } catch {
       return false;
     }
+  }
+
+  public async fetchSharedProject(options: {
+    projectId?: string;
+    shareToken?: string;
+  }): Promise<{
+    project: any;
+    role: 'viewer' | 'editor';
+  } | null> {
+    try {
+      const params = new URLSearchParams();
+      if (options.shareToken) params.append('share_token', options.shareToken);
+      if (options.projectId) params.append('project_id', options.projectId);
+      const res = await fetch(`/api/collaboration?action=get_project&${params.toString()}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && data.project) {
+          return {
+            project: data.project,
+            role: data.role || 'editor',
+          };
+        }
+      }
+    } catch (e) {
+      console.warn('[Collab] Failed to fetch shared project:', e);
+    }
+    return null;
   }
 }
 

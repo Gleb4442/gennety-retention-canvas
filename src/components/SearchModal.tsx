@@ -44,12 +44,16 @@ export const SearchModal: React.FC<SearchModalProps> = ({
 
   useEffect(() => {
     if (isOpen) {
-      setTimeout(() => inputRef.current?.focus(), 50);
-    } else {
-      setQuery('');
-      setSearchQuery('');
+      const timer = setTimeout(() => inputRef.current?.focus(), 50);
+      return () => clearTimeout(timer);
     }
-  }, [isOpen, setSearchQuery]);
+  }, [isOpen]);
+
+  const handleClose = () => {
+    setQuery('');
+    setSearchQuery('');
+    onClose();
+  };
 
   const filteredNodes = nodes.filter((node) => {
     const q = query.toLowerCase().trim();
@@ -84,13 +88,13 @@ export const SearchModal: React.FC<SearchModalProps> = ({
         handleChoose(filteredNodes[selectedIndex].id);
       }
     } else if (e.key === 'Escape') {
-      onClose();
+      handleClose();
     }
   };
 
   const handleChoose = (id: string) => {
     onSelectNode(id);
-    onClose();
+    handleClose();
   };
 
   if (!isOpen) return null;
@@ -98,7 +102,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
   return (
     <div 
       className="fixed inset-0 z-50 flex items-start justify-center pt-24 px-4 bg-black/50 backdrop-blur-xl animate-in fade-in select-none"
-      onClick={onClose}
+      onClick={handleClose}
     >
       <div
         className="w-full max-w-xl minimal-modal rounded-3xl shadow-2xl overflow-hidden flex flex-col"

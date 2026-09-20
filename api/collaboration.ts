@@ -1,4 +1,5 @@
 import { Pool } from 'pg';
+import crypto from 'node:crypto';
 
 let pool: Pool | null = null;
 
@@ -7,15 +8,27 @@ function getDbPool(): Pool | null {
   if (!connectionString) return null;
 
   if (!pool) {
+    const isLocal = connectionString.includes('localhost') || connectionString.includes('127.0.0.1');
+    const rejectUnauthorized = process.env.NODE_ENV === 'production' && process.env.PG_REJECT_UNAUTHORIZED !== 'false';
     pool = new Pool({
       connectionString,
-      ssl: { rejectUnauthorized: false },
+      ssl: isLocal ? false : { rejectUnauthorized },
       max: 4,
       idleTimeoutMillis: 30000,
       connectionTimeoutMillis: 5000,
     });
   }
   return pool;
+}
+
+function safeJsonParse<T>(value: any, fallback: T): T {
+  if (value === null || value === undefined) return fallback;
+  if (typeof value !== 'string') return value as T;
+  try {
+    return JSON.parse(value);
+  } catch {
+    return fallback;
+  }
 }
 
 // In-memory caches for fast local fallback
@@ -80,9 +93,9 @@ export default async function handler(req: any, res: any) {
               ownerKey: row.owner_key,
               title: row.title,
               description: row.description || '',
-              nodes: typeof row.nodes === 'string' ? JSON.parse(row.nodes) : row.nodes,
-              edges: typeof row.edges === 'string' ? JSON.parse(row.edges) : row.edges,
-              drawings: typeof row.drawings === 'string' ? JSON.parse(row.drawings) : (row.drawings || []),
+              nodes: safeJsonParse(row.nodes, []),
+              edges: safeJsonParse(row.edges, []),
+              drawings: safeJsonParse(row.drawings, []),
               layoutMode: row.layout_mode || 'freeform',
               theme: row.theme || 'dark',
               updatedAt: new Date(row.updated_at).getTime(),
@@ -123,7 +136,7 @@ export default async function handler(req: any, res: any) {
           actionType: r.action_type,
           targetId: r.target_id,
           summary: r.summary,
-          diff: typeof r.diff === 'string' ? JSON.parse(r.diff) : r.diff,
+          diff: safeJsonParse(r.diff, {}),
           createdAt: r.created_at,
         }));
 
@@ -135,7 +148,7 @@ export default async function handler(req: any, res: any) {
     }
 
     if (method === 'POST' && action === 'create_audit_log') {
-      const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+      const body = safeJsonParse(req.body, {});
       const { projectId, userId, userName, userColor, actionType, targetId, summary, diff } = body || {};
 
       if (!projectId || !summary) {
@@ -143,7 +156,7 @@ export default async function handler(req: any, res: any) {
       }
 
       const newLog = {
-        id: `log_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+        id: `log_${Date.now()}_${crypto.randomBytes(4).toString('hex')}`,
         projectId,
         userId: userId || 'anonymous',
         userName: userName || 'Пользователь',
@@ -198,7 +211,7 @@ export default async function handler(req: any, res: any) {
         );
 
         const versions = result.rows.map((r) => {
-          const snapshot = typeof r.snapshot === 'string' ? JSON.parse(r.snapshot) : r.snapshot;
+          const snapshot = safeJsonParse(r.snapshot, null);
           return {
             id: r.id,
             projectId: r.project_id,
@@ -223,7 +236,7 @@ export default async function handler(req: any, res: any) {
     }
 
     if (method === 'POST' && action === 'create_version') {
-      const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+      const body = safeJsonParse(req.body, {});
       const { projectId, label, isManual, snapshot, createdByName, createdById } = body || {};
 
       if (!projectId || !snapshot) {
@@ -288,7 +301,7 @@ export default async function handler(req: any, res: any) {
       }
 
       const verObj = {
-        id: `ver_${Date.now()}`,
+        id: `ver_${Date.now()}_${crypto.randomBytes(4).toString('hex')}`,
         projectId,
         versionNumber: (memoryVersions[projectId]?.length || 0) + 1,
         label: label || 'Контрольная точка',
@@ -308,7 +321,7 @@ export default async function handler(req: any, res: any) {
     }
 
     if (method === 'POST' && action === 'restore_version') {
-      const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+      const body = safeJsonParse(req.body, {});
       const { projectId, versionId, user } = body || {};
 
       if (!projectId || !versionId) {
@@ -326,7 +339,7 @@ export default async function handler(req: any, res: any) {
         }
 
         const targetVer = verRes.rows[0];
-        const snapshot = typeof targetVer.snapshot === 'string' ? JSON.parse(targetVer.snapshot) : targetVer.snapshot;
+        const snapshot = safeJsonParse(targetVer.snapshot, null);
 
         // Apply snapshot to canvas_projects
         await db.query(
@@ -420,7 +433,7 @@ export default async function handler(req: any, res: any) {
     }
 
     if (method === 'POST' && action === 'create_share') {
-      const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+      const body = safeJsonParse(req.body, {});
       const { projectId, role } = body || {};
 
       if (!projectId) {
@@ -428,8 +441,8 @@ export default async function handler(req: any, res: any) {
       }
 
       const cleanRole = role === 'viewer' ? 'viewer' : 'editor';
-      // Generate secure 16-hex char token
-      const shareToken = `sh_${cleanRole}_${Math.random().toString(36).slice(2, 10)}${Math.random().toString(36).slice(2, 10)}`;
+      // Generate cryptographically secure 32-hex char share token
+      const shareToken = `sh_${cleanRole}_${crypto.randomBytes(16).toString('hex')}`;
 
       if (db) {
         const insertRes = await db.query(
@@ -454,7 +467,7 @@ export default async function handler(req: any, res: any) {
       }
 
       const shareObj = {
-        id: `sh_${Date.now()}`,
+        id: `sh_${Date.now()}_${crypto.randomBytes(4).toString('hex')}`,
         projectId,
         shareToken,
         role: cleanRole,
@@ -468,14 +481,30 @@ export default async function handler(req: any, res: any) {
     }
 
     if (method === 'POST' && action === 'revoke_share') {
-      const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-      const { shareToken } = body || {};
+      const body = safeJsonParse(req.body, {});
+      const { shareToken, ownerKey } = body || {};
 
       if (!shareToken) {
         return res.status(400).json({ success: false, error: 'Параметр shareToken обязателен.' });
       }
 
       if (db) {
+        if (ownerKey) {
+          const shareCheck = await db.query(
+            `SELECT s.id, p.owner_key 
+             FROM canvas_project_shares s
+             JOIN canvas_projects p ON s.project_id = p.id
+             WHERE s.share_token = $1`,
+            [shareToken]
+          );
+          if (shareCheck.rows.length > 0) {
+            const row = shareCheck.rows[0];
+            if (row.owner_key && row.owner_key !== 'anonymous' && row.owner_key !== ownerKey) {
+              return res.status(403).json({ success: false, error: 'Недостаточно прав для отзыва ссылки.' });
+            }
+          }
+        }
+
         await db.query(
           `UPDATE canvas_project_shares SET is_active = false WHERE share_token = $1`,
           [shareToken]
@@ -489,7 +518,7 @@ export default async function handler(req: any, res: any) {
     // 5. EVENT STREAMING / POLLING BUS (MULTI-USER REALTIME)
     // -------------------------------------------------------------
     if (method === 'POST' && action === 'publish_event') {
-      const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+      const body = safeJsonParse(req.body, {});
       const { projectId, event } = body || {};
 
       if (!projectId || !event) {
@@ -526,7 +555,7 @@ export default async function handler(req: any, res: any) {
     // 6. SYNC INDIVIDUAL PROJECT TO DATABASE
     // -------------------------------------------------------------
     if (method === 'POST' && action === 'sync_project') {
-      const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+      const body = safeJsonParse(req.body, {});
       const { project, ownerKey } = body || {};
 
       if (!project || !project.id) {

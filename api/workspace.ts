@@ -13,11 +13,11 @@ function getDbPool(): Pool | null {
   }
 
   if (!pool) {
+    const isLocal = connectionString.includes('localhost') || connectionString.includes('127.0.0.1');
+    const rejectUnauthorized = process.env.NODE_ENV === 'production' && process.env.PG_REJECT_UNAUTHORIZED !== 'false';
     pool = new Pool({
       connectionString,
-      ssl: {
-        rejectUnauthorized: false,
-      },
+      ssl: isLocal ? false : { rejectUnauthorized },
       max: 4,
       idleTimeoutMillis: 30000,
       connectionTimeoutMillis: 5000,
@@ -25,6 +25,16 @@ function getDbPool(): Pool | null {
   }
 
   return pool;
+}
+
+function safeJsonParse<T>(value: any, fallback: T): T {
+  if (value === null || value === undefined) return fallback;
+  if (typeof value !== 'string') return value as T;
+  try {
+    return JSON.parse(value);
+  } catch {
+    return fallback;
+  }
 }
 
 export default async function handler(req: any, res: any) {
@@ -61,7 +71,7 @@ export default async function handler(req: any, res: any) {
 
         if (result.rows.length > 0) {
           const row = result.rows[0];
-          const projects = typeof row.projects === 'string' ? JSON.parse(row.projects) : row.projects;
+          const projects = safeJsonParse(row.projects, []);
 
           // Keep in-memory cache hot
           memoryStore[cleanKey] = {
@@ -108,7 +118,7 @@ export default async function handler(req: any, res: any) {
   // POST /api/workspace
   if (method === 'POST') {
     try {
-      const data = typeof body === 'string' ? JSON.parse(body) : body;
+      const data = safeJsonParse(body, body);
       const { accessKey, projects, activeProjectId } = data || {};
 
       if (!accessKey || !Array.isArray(projects)) {

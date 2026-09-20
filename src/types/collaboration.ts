@@ -33,6 +33,7 @@ export type AuditActionType =
   | 'edge_create'
   | 'edge_delete'
   | 'drawing_add'
+  | 'drawing_delete'
   | 'drawings_clear'
   | 'layout_change'
   | 'theme_change'
@@ -95,6 +96,7 @@ export type CollabEventMessage =
   | { type: 'edge_add'; edge: any; user: CollabUser; summary: string }
   | { type: 'edge_delete'; id: string; user: CollabUser; summary: string }
   | { type: 'drawing_add'; stroke: any; user: CollabUser }
+  | { type: 'drawing_delete'; id: string; user: CollabUser }
   | { type: 'drawings_clear'; user: CollabUser; summary: string }
   | { type: 'version_restored'; versionNumber: number; snapshot: ProjectVersionSnapshot; user: CollabUser }
   | { type: 'presence_heartbeat'; user: CollabUser }
