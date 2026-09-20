@@ -90,7 +90,11 @@ export default async function handler(req: any, res: any) {
         }
       } catch (err: any) {
         console.error('[API Workspace] Postgres GET error:', err.message);
-        // Fall back to memoryStore
+        return res.status(500).json({
+          success: false,
+          error: `Postgres GET error: ${err.message}`,
+          dbHost: process.env.DATABASE_URL ? process.env.DATABASE_URL.split('@')[1]?.split('/')[0] : 'NONE',
+        });
       }
     }
 
@@ -111,6 +115,8 @@ export default async function handler(req: any, res: any) {
       success: false,
       notFound: true,
       message: 'Workspace not found in database. Using local snapshot.',
+      dbConnected: Boolean(db),
+      dbHost: process.env.DATABASE_URL ? process.env.DATABASE_URL.split('@')[1]?.split('/')[0] : 'NONE',
     });
   }
 
