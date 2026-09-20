@@ -561,11 +561,12 @@ export const useBoardStore = create<BoardStore>((set, get) => {
           const remoteUpdated = remote.updatedAt || 0;
           const localMaxUpdated = localProjects.reduce((max, p) => Math.max(max, p.updatedAt || 0), 0);
 
-          // If remote has valid projects and is newer, or local was just an empty blank project
-          const isLocalBlank = localProjects.length === 0 ||
-            (localProjects.length === 1 && (localProjects[0].nodes?.length || 0) === 0);
+          // If remote has valid projects and is newer, or local was just an empty blank project, or remote has more projects
+          const isLocalEmptyOrFewer = localProjects.length === 0 ||
+            (localProjects.length === 1 && (localProjects[0].nodes?.length || 0) === 0) ||
+            (localProjects.length < remote.projects.length);
 
-          if (remoteUpdated >= localMaxUpdated || isLocalBlank) {
+          if (remoteUpdated >= localMaxUpdated || isLocalEmptyOrFewer) {
             const activeId = remote.activeProjectId && remote.projects.some((p) => p.id === remote.activeProjectId)
               ? remote.activeProjectId
               : remote.projects[0].id;

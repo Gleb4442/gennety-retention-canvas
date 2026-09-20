@@ -9,10 +9,9 @@ function getDbPool(): Pool | null {
 
   if (!pool) {
     const isLocal = connectionString.includes('localhost') || connectionString.includes('127.0.0.1');
-    const rejectUnauthorized = process.env.NODE_ENV === 'production' && process.env.PG_REJECT_UNAUTHORIZED !== 'false';
     pool = new Pool({
       connectionString,
-      ssl: isLocal ? false : { rejectUnauthorized },
+      ssl: isLocal ? false : { rejectUnauthorized: false },
       max: 4,
       idleTimeoutMillis: 30000,
       connectionTimeoutMillis: 5000,
