@@ -287,26 +287,68 @@ console.log('Projects:', workspace.projects);`;
           {activeTab === 'mcp' && (
             <div className="space-y-4">
               {/* Tools Chips */}
-              <div className="space-y-1.5">
-                <div className="text-[10px] uppercase tracking-wider font-semibold text-zinc-400 px-1">
-                  Инструменты сервера (Tools)
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-[10px] uppercase tracking-wider font-semibold text-zinc-400 px-1">
+                  <span>Инструменты MCP v2.0 (12 Tools)</span>
+                  <span className="text-emerald-500 font-mono">● Auto-Sync enabled</span>
                 </div>
-                <div className="flex flex-wrap gap-1.5">
-                  {[
-                    'list_projects',
-                    'get_project_canvas',
-                    'search_canvas',
-                    'analyze_retention_flow',
-                    'create_or_update_node',
-                    'export_workspace_backup',
-                  ].map((tool) => (
-                    <span
-                      key={tool}
-                      className="px-2.5 py-1 rounded-lg bg-black/[0.03] dark:bg-white/5 text-xs font-mono text-zinc-700 dark:text-zinc-300 border border-black/5 dark:border-white/5"
-                    >
-                      {tool}
+
+                <div className="space-y-1.5 text-xs">
+                  {/* Category 1: Workflows & Layout */}
+                  <div className="flex flex-wrap items-center gap-1.5 p-2 rounded-xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/5 dark:border-white/5">
+                    <span className="text-[10px] uppercase font-mono text-zinc-400 font-semibold px-1">Воркфлоу & Сетка:</span>
+                    <span className="px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-mono text-[11px] font-semibold" title="Генерация комплексного воркфлоу со стратегией, текстом и фото в 1 вызов">
+                      build_explanatory_workflow
                     </span>
-                  ))}
+                    <span className="px-2 py-0.5 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 font-mono text-[11px]" title="Автоматическое выравнивание карточек холста с равными отступами">
+                      auto_layout_project
+                    </span>
+                  </div>
+
+                  {/* Category 2: Content & Nodes */}
+                  <div className="flex flex-wrap items-center gap-1.5 p-2 rounded-xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/5 dark:border-white/5">
+                    <span className="text-[10px] uppercase font-mono text-zinc-400 font-semibold px-1">Узлы & Контент:</span>
+                    <span className="px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 font-mono text-[11px]" title="Создание или редактирование блока любого типа">
+                      create_or_update_node
+                    </span>
+                    <span className="px-2 py-0.5 rounded-md bg-purple-500/10 text-purple-600 dark:text-purple-400 font-mono text-[11px]" title="Добавление текстового блока с заметкой или гипотезой">
+                      create_text_block
+                    </span>
+                    <span className="px-2 py-0.5 rounded-md bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 font-mono text-[11px]" title="Добавление фото/макета с подписью">
+                      create_photo_card
+                    </span>
+                    <span className="px-2 py-0.5 rounded-md bg-zinc-500/10 text-zinc-600 dark:text-zinc-300 font-mono text-[11px]" title="Создание или настройка стрелки между блоками">
+                      create_or_update_edge
+                    </span>
+                  </div>
+
+                  {/* Category 3: Analysis & Search */}
+                  <div className="flex flex-wrap items-center gap-1.5 p-2 rounded-xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/5 dark:border-white/5">
+                    <span className="text-[10px] uppercase font-mono text-zinc-400 font-semibold px-1">Анализ & Поиск:</span>
+                    <span className="px-2 py-0.5 rounded-md bg-rose-500/10 text-rose-600 dark:text-rose-400 font-mono text-[11px]" title="Аудит воронки на разрывы и тупики">
+                      analyze_retention_flow
+                    </span>
+                    <span className="px-2 py-0.5 rounded-md bg-zinc-500/10 text-zinc-600 dark:text-zinc-300 font-mono text-[11px]" title="Поиск карточек по ключевым словам и категориям">
+                      search_canvas
+                    </span>
+                    <span className="px-2 py-0.5 rounded-md bg-zinc-500/10 text-zinc-600 dark:text-zinc-300 font-mono text-[11px]" title="Получение всей схемы проекта">
+                      get_project_canvas
+                    </span>
+                    <span className="px-2 py-0.5 rounded-md bg-zinc-500/10 text-zinc-600 dark:text-zinc-300 font-mono text-[11px]" title="Список всех проектов">
+                      list_projects
+                    </span>
+                  </div>
+
+                  {/* Category 4: Sync & Backup */}
+                  <div className="flex flex-wrap items-center gap-1.5 p-2 rounded-xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/5 dark:border-white/5">
+                    <span className="text-[10px] uppercase font-mono text-zinc-400 font-semibold px-1">Синхронизация:</span>
+                    <span className="px-2 py-0.5 rounded-md bg-zinc-500/10 text-zinc-600 dark:text-zinc-300 font-mono text-[11px]" title="Экспорт полного JSON-бэкапа">
+                      export_workspace_backup
+                    </span>
+                    <span className="px-2 py-0.5 rounded-md bg-zinc-500/10 text-zinc-600 dark:text-zinc-300 font-mono text-[11px]" title="Загрузка данных с сервера">
+                      fetch_remote_account
+                    </span>
+                  </div>
                 </div>
               </div>
 
