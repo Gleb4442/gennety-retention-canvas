@@ -1,7 +1,8 @@
 import type { 
   CanvasProject, 
-  StrategyNode, 
   ImageNode,
+  TextNode,
+  BoardNode,
   StrategyEdge, 
   CategoryType, 
   LayoutMode, 
@@ -117,9 +118,9 @@ export function extractJsonString(rawInput: string): string {
  * Automatically calculates visual layout coordinates for nodes that lack them or all start at (0, 0).
  */
 function autoLayoutNodes(
-  nodes: (StrategyNode | ImageNode)[], 
+  nodes: BoardNode[], 
   edges: StrategyEdge[]
-): (StrategyNode | ImageNode)[] {
+): BoardNode[] {
   // Check if nodes already have well-distributed positions
   const posKeys = new Set(nodes.map(n => `${Math.round(n.position.x)},${Math.round(n.position.y)}`));
   const needsLayout = posKeys.size <= 1 || nodes.some(n => n.position.x === 0 && n.position.y === 0);
@@ -293,7 +294,7 @@ export function parseCanvasJson(
   const categoryStats: Record<string, number> = {};
 
   // Process & Normalize Nodes
-  const nodes: (StrategyNode | ImageNode)[] = rawNodes.map((n: any, idx: number) => {
+  const nodes: BoardNode[] = rawNodes.map((n: any, idx: number) => {
     const rawId = String(n.id || n.nodeId || n.key || `node_${idx + 1}`).trim();
     const dataObj = n.data && typeof n.data === 'object' ? n.data : {};
 
@@ -324,6 +325,22 @@ export function parseCanvasJson(
           width: typeof dataObj.width === 'number' ? dataObj.width : (typeof n.width === 'number' ? n.width : 340),
         },
       } as ImageNode;
+    }
+
+    // Check if standalone TextNode
+    if (n.type === 'textNode') {
+      return {
+        id: rawId,
+        type: 'textNode' as const,
+        position: { x: posX, y: posY },
+        data: {
+          text: String(dataObj.text || n.text || dataObj.content || n.content || dataObj.description || n.description || '').trim(),
+          title: rawTitle && rawTitle !== `Шаг ${idx + 1}` ? rawTitle : undefined,
+          color: dataObj.color || n.color || 'default',
+          fontSize: dataObj.fontSize || n.fontSize || 'md',
+          width: typeof dataObj.width === 'number' ? dataObj.width : (typeof n.width === 'number' ? n.width : 340),
+        },
+      } as TextNode;
     }
 
     const category = normalizeCategory(dataObj.category || n.category || n.typeCategory || 'foundation');

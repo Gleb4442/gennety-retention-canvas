@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useBoardStore } from '../store/useBoardStore';
 import { CATEGORIES } from '../constants/categories';
+import type { StrategyNodeData, CategoryType } from '../types';
 import { 
   IconFoundation, 
   IconPsychology, 
@@ -11,6 +12,7 @@ import {
   IconOutcome, 
   IconCustomNode,
   IconSearchMinimal,
+  IconText,
 } from './AbstractIcons';
 
 const ABSTRACT_ICONS: Record<string, React.ElementType> = {
@@ -65,8 +67,14 @@ export const SearchModal: React.FC<SearchModalProps> = ({
       return title.includes(q) || caption.includes(q) || 'фото'.includes(q);
     }
 
-    const stratData = node.data;
-    const cat = (CATEGORIES[stratData.category]?.label || '').toLowerCase();
+    if (node.type === 'textNode') {
+      const title = (node.data.title || '').toLowerCase();
+      const text = (node.data.text || '').toLowerCase();
+      return title.includes(q) || text.includes(q) || 'текст'.includes(q) || 'заметка'.includes(q);
+    }
+
+    const stratData = node.data as StrategyNodeData;
+    const cat = (stratData.category && CATEGORIES[stratData.category as CategoryType]?.label || '').toLowerCase();
     return (
       (stratData.title || '').toLowerCase().includes(q) ||
       (stratData.badge || '').toLowerCase().includes(q) ||
@@ -152,13 +160,25 @@ export const SearchModal: React.FC<SearchModalProps> = ({
             filteredNodes.map((node, index) => {
               const isSelected = index === selectedIndex;
               const isImg = node.type === 'imageNode';
+              const isText = node.type === 'textNode';
               const imgData = isImg ? (node.data as import('../types').ImageNodeData) : null;
-              const stratData = !isImg ? (node.data as import('../types').StrategyNodeData) : null;
+              const textData = isText ? (node.data as import('../types').TextNodeData) : null;
+              const stratData = (!isImg && !isText) ? (node.data as import('../types').StrategyNodeData) : null;
 
-              const title = isImg ? (imgData?.title || imgData?.caption || 'Фото-карточка') : (stratData?.title || 'Карточка');
-              const badge = isImg ? 'Фото' : (stratData?.badge || 'Card');
-              const desc = isImg ? (imgData?.caption || 'Изображение на холсте') : (stratData?.description || '');
-              const NodeIcon = (!isImg && stratData) ? (ABSTRACT_ICONS[stratData.category] || IconCustomNode) : IconCustomNode;
+              const title = isImg 
+                ? (imgData?.title || imgData?.caption || 'Фото-карточка') 
+                : isText 
+                ? (textData?.title || textData?.text?.slice(0, 30) || 'Текстовый блок') 
+                : (stratData?.title || 'Карточка');
+
+              const badge = isImg ? 'Фото' : isText ? 'Текст' : (stratData?.badge || 'Card');
+              const desc = isImg 
+                ? (imgData?.caption || 'Изображение на холсте') 
+                : isText 
+                ? (textData?.text || 'Текстовый блок') 
+                : (stratData?.description || '');
+
+              const NodeIcon = isText ? IconText : (!isImg && stratData) ? (ABSTRACT_ICONS[stratData.category] || IconCustomNode) : IconCustomNode;
 
               return (
                 <div

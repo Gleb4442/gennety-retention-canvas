@@ -13,15 +13,17 @@ import '@xyflow/react/dist/style.css';
 
 import { CustomNode } from './CustomNode';
 import { ImageNode } from './ImageNode';
+import { TextNode } from './TextNode';
 import { CustomEdge } from './CustomEdge';
 import { CanvasControls } from './CanvasControls';
 import { SidebarInspector } from './SidebarInspector';
 import { DrawingLayer } from './DrawingLayer';
 import { DrawingToolbar } from './DrawingToolbar';
 import { ImageLightboxModal } from './ImageLightboxModal';
+import { AddTextModal } from './AddTextModal';
 import { LiveCursorsOverlay } from './LiveCursorsOverlay';
 import { ViewerModeBanner } from './ViewerModeBanner';
-import { IconAdd } from './AbstractIcons';
+import { IconAdd, IconText } from './AbstractIcons';
 import { useBoardStore } from '../store/useBoardStore';
 import { THEME_CONFIG } from '../constants/themeTokens';
 import { compressImageFile } from '../utils/imageCompressor';
@@ -35,6 +37,7 @@ interface CanvasProps {
 const NODE_TYPES = { 
   strategyNode: CustomNode,
   imageNode: ImageNode,
+  textNode: TextNode,
 };
 const EDGE_TYPES = { customEdge: CustomEdge };
 
@@ -56,6 +59,8 @@ export const Canvas: React.FC<CanvasProps> = ({ onOpenSearchModal, onOpenAddModa
   const undo = useBoardStore((s) => s.undo);
   const redo = useBoardStore((s) => s.redo);
   const addImageNode = useBoardStore((s) => s.addImageNode);
+  const isAddTextModalOpen = useBoardStore((s) => s.isAddTextModalOpen);
+  const setIsAddTextModalOpen = useBoardStore((s) => s.setIsAddTextModalOpen);
   const isDrawingMode = useBoardStore((s) => s.isDrawingMode);
   const setIsDrawingMode = useBoardStore((s) => s.setIsDrawingMode);
   const isSelectAreaMode = useBoardStore((s) => s.isSelectAreaMode);
@@ -261,6 +266,12 @@ export const Canvas: React.FC<CanvasProps> = ({ onOpenSearchModal, onOpenAddModa
         return;
       }
 
+      if (e.key.toLowerCase() === 't' && !isCmdOrCtrl && !e.shiftKey && !e.altKey) {
+        e.preventDefault();
+        setIsAddTextModalOpen(true);
+        return;
+      }
+
       if (e.key === 'Escape') {
         setSelectedNodeId(null);
         setSelectedEdgeId(null);
@@ -278,6 +289,7 @@ export const Canvas: React.FC<CanvasProps> = ({ onOpenSearchModal, onOpenAddModa
     deselectAllNodes,
     isSelectAreaMode,
     setIsSelectAreaMode,
+    setIsAddTextModalOpen,
     undo,
     redo,
     setSelectedNodeId,
@@ -289,6 +301,9 @@ export const Canvas: React.FC<CanvasProps> = ({ onOpenSearchModal, onOpenAddModa
   const nodeColor = useCallback((node: Node) => {
     if (node.type === 'imageNode') {
       return theme === 'light' ? '#71717A' : '#A1A1AA';
+    }
+    if (node.type === 'textNode') {
+      return theme === 'light' ? '#D97706' : '#F59E0B';
     }
     const strategyNode = node as StrategyNode;
     const isLight = ['light', 'sand', 'mist'].includes(theme);
@@ -399,12 +414,22 @@ export const Canvas: React.FC<CanvasProps> = ({ onOpenSearchModal, onOpenAddModa
             <button
               onClick={onOpenAddModal}
               className="flex items-center gap-2 px-3.5 py-2 rounded-xl liquid-pill-active text-xs font-semibold transition-all hover:scale-[1.02] shadow-sm active:scale-95"
-              title="Добавить новую карточку на холст"
+              title="Добавить новую стратегическую карточку на холст"
             >
               <IconAdd className="w-3.5 h-3.5" />
               <span>Добавить карточку</span>
             </button>
           )}
+
+          {/* Add Standalone Text Block Button */}
+          <button
+            onClick={() => setIsAddTextModalOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl liquid-pill text-xs font-medium transition-all hover:scale-[1.02] active:scale-95 opacity-85 hover:opacity-100"
+            title="Добавить блок с текстом на холст (T)"
+          >
+            <IconText className="w-3.5 h-3.5" />
+            <span>Текст</span>
+          </button>
 
           {/* Add Standalone Photo Card */}
           <button
@@ -526,6 +551,12 @@ export const Canvas: React.FC<CanvasProps> = ({ onOpenSearchModal, onOpenAddModa
 
       {/* Fullscreen Photo Lightbox Modal */}
       <ImageLightboxModal />
+
+      {/* Add Text Block Modal */}
+      <AddTextModal
+        isOpen={isAddTextModalOpen}
+        onClose={() => setIsAddTextModalOpen(false)}
+      />
     </div>
   );
 };

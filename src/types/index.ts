@@ -59,7 +59,27 @@ export interface ImageNodeData extends Record<string, unknown> {
 
 export type ImageNode = Node<ImageNodeData, 'imageNode'>;
 
-export type BoardNode = StrategyNode | ImageNode;
+export type TextNodeColor = 
+  | 'default' 
+  | 'amber' 
+  | 'emerald' 
+  | 'blue' 
+  | 'rose' 
+  | 'purple' 
+  | 'graphite';
+
+export interface TextNodeData extends Record<string, unknown> {
+  text: string;
+  title?: string;
+  color?: TextNodeColor | string;
+  fontSize?: 'sm' | 'md' | 'lg' | 'xl';
+  width?: number;
+  isHighlighted?: boolean;
+}
+
+export type TextNode = Node<TextNodeData, 'textNode'>;
+
+export type BoardNode = StrategyNode | ImageNode | TextNode;
 
 export type EdgeLabelSize = 'sm' | 'md' | 'lg' | 'xl';
 
@@ -94,7 +114,7 @@ export interface DrawingStroke {
 export type LayoutMode = 'freeform' | 'pyramid' | 'flywheel';
 
 export interface BoardSnapshot {
-  nodes: (StrategyNode | ImageNode)[];
+  nodes: BoardNode[];
   edges: StrategyEdge[];
   drawings?: DrawingStroke[];
   timestamp: number;
@@ -106,7 +126,7 @@ export interface CanvasProject {
   id: string;
   title: string;
   description?: string;
-  nodes: (StrategyNode | ImageNode)[];
+  nodes: BoardNode[];
   edges: StrategyEdge[];
   drawings?: DrawingStroke[];
   layoutMode: LayoutMode;

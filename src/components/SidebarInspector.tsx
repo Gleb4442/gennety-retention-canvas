@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useBoardStore } from '../store/useBoardStore';
 import { CATEGORIES } from '../constants/categories';
-import type { CategoryType, EdgeLabelSize, StrategyNodeData, ImageNodeData } from '../types';
+import type { CategoryType, EdgeLabelSize, StrategyNodeData, ImageNodeData, TextNodeData } from '../types';
 import { 
   IconFoundation, 
   IconPsychology, 
@@ -11,6 +11,7 @@ import {
   IconLifecycle, 
   IconOutcome, 
   IconCustomNode,
+  IconText,
 } from './AbstractIcons';
 import { compressImageFile } from '../utils/imageCompressor';
 
@@ -163,6 +164,7 @@ export const SidebarInspector: React.FC<SidebarInspectorProps> = ({ onFocusNode 
   }
 
   const isImageNode = selectedNode?.type === 'imageNode';
+  const isTextNode = selectedNode?.type === 'textNode';
   const isStrategyNode = selectedNode?.type === 'strategyNode';
 
   const incomingEdges = selectedNode ? edges.filter((e) => e.target === selectedNode.id) : [];
@@ -251,6 +253,8 @@ export const SidebarInspector: React.FC<SidebarInspectorProps> = ({ onFocusNode 
               <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
               </svg>
+            ) : isTextNode ? (
+              <IconText className="w-3.5 h-3.5" />
             ) : isStrategyNode ? (
               <SelectedAbstractIcon className="w-3.5 h-3.5" />
             ) : (
@@ -260,7 +264,7 @@ export const SidebarInspector: React.FC<SidebarInspectorProps> = ({ onFocusNode 
             )}
           </div>
           <span className="font-display font-bold text-sm tracking-wide uppercase opacity-95">
-            {isImageNode ? 'Фото-Карточка' : selectedNode ? 'Инспектор Карточки' : 'Инспектор Связи'}
+            {isImageNode ? 'Фото-Карточка' : isTextNode ? 'Текстовый Блок' : selectedNode ? 'Инспектор Карточки' : 'Инспектор Связи'}
           </span>
         </div>
         <button
@@ -402,6 +406,144 @@ export const SidebarInspector: React.FC<SidebarInspectorProps> = ({ onFocusNode 
                   onDebouncedChange={(val) => updateNode(selectedNode.id, { caption: val })}
                   className="w-full liquid-pill px-3 py-2 rounded-xl text-inherit outline-none leading-relaxed resize-none text-xs"
                 />
+              </div>
+
+              {/* Action Buttons */}
+              <div className="pt-4 border-t border-current/10 flex gap-2">
+                <button
+                  onClick={() => duplicateNode(selectedNode.id)}
+                  className="flex-1 py-2 px-3 rounded-xl liquid-pill font-medium text-xs hover:liquid-pill-active transition-all"
+                >
+                  Дублировать
+                </button>
+                <button
+                  onClick={() => deleteNode(selectedNode.id)}
+                  className="flex-1 py-2 px-3 rounded-xl liquid-pill text-rose-400 hover:bg-rose-500/20 font-medium text-xs transition-all"
+                >
+                  Удалить
+                </button>
+              </div>
+            </div>
+          );
+        })()}
+
+        {/* ===================== TEXT NODE INSPECTOR ===================== */}
+        {isTextNode && (() => {
+          const textData = selectedNode.data as TextNodeData;
+          return (
+            <div className="space-y-4">
+              {/* Title */}
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-mono opacity-60 uppercase tracking-wider">
+                  Заголовок (необязательно)
+                </label>
+                <DebouncedInput
+                  type="text"
+                  value={textData.title || ''}
+                  placeholder="Заголовок блока..."
+                  onDebouncedChange={(val) => updateNode(selectedNode.id, { title: val })}
+                  className="w-full liquid-pill px-3 py-2 rounded-xl text-inherit font-semibold outline-none text-xs"
+                />
+              </div>
+
+              {/* Body Text */}
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-mono opacity-60 uppercase tracking-wider">
+                  Текст блока
+                </label>
+                <DebouncedTextarea
+                  rows={6}
+                  value={textData.text || ''}
+                  placeholder="Введите любой текст..."
+                  onDebouncedChange={(val) => updateNode(selectedNode.id, { text: val })}
+                  className="w-full liquid-pill px-3 py-2 rounded-xl text-inherit outline-none leading-relaxed resize-y text-xs font-sans"
+                />
+              </div>
+
+              {/* Color Presets */}
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-mono opacity-60 uppercase tracking-wider">
+                  Стиль / Оттенок блока
+                </label>
+                <div className="flex items-center gap-2 flex-wrap">
+                  {[
+                    { id: 'default', label: 'Стекло', bg: '#71717A' },
+                    { id: 'amber', label: 'Янтарь', bg: '#F59E0B' },
+                    { id: 'emerald', label: 'Изумруд', bg: '#10B981' },
+                    { id: 'blue', label: 'Лазурь', bg: '#3B82F6' },
+                    { id: 'rose', label: 'Коралл', bg: '#F43F5E' },
+                    { id: 'purple', label: 'Аметист', bg: '#A855F7' },
+                    { id: 'graphite', label: 'Графит', bg: '#27272A' },
+                  ].map((opt) => (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      onClick={() => updateNode(selectedNode.id, { color: opt.id })}
+                      title={opt.label}
+                      className={`w-6 h-6 rounded-full transition-all flex items-center justify-center ${
+                        (textData.color || 'default') === opt.id
+                          ? 'scale-110 ring-2 ring-current shadow-md'
+                          : 'opacity-70 hover:opacity-100 hover:scale-105'
+                      }`}
+                      style={{ backgroundColor: opt.bg }}
+                    >
+                      {(textData.color || 'default') === opt.id && (
+                        <span className="w-1.5 h-1.5 rounded-full bg-white shadow-sm" />
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Font Size Selector */}
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-mono opacity-60 uppercase tracking-wider">
+                  Размер шрифта
+                </label>
+                <div className="grid grid-cols-4 gap-1.5">
+                  {(['sm', 'md', 'lg', 'xl'] as const).map((sz) => (
+                    <button
+                      key={sz}
+                      type="button"
+                      onClick={() => updateNode(selectedNode.id, { fontSize: sz })}
+                      className={`py-1.5 rounded-lg text-xs font-mono font-medium transition-all ${
+                        (textData.fontSize || 'md') === sz
+                          ? 'liquid-pill-active font-bold shadow-sm'
+                          : 'liquid-pill opacity-75 hover:opacity-100'
+                      }`}
+                    >
+                      {sz.toUpperCase()}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Width Presets */}
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-mono opacity-60 uppercase tracking-wider">
+                  Ширина блока
+                </label>
+                <div className="grid grid-cols-4 gap-1.5">
+                  {[
+                    { label: 'S (240px)', width: 240 },
+                    { label: 'M (340px)', width: 340 },
+                    { label: 'L (480px)', width: 480 },
+                    { label: 'XL (640px)', width: 640 },
+                  ].map((w) => (
+                    <button
+                      key={w.width}
+                      type="button"
+                      onClick={() => updateNode(selectedNode.id, { width: w.width })}
+                      className={`py-1.5 rounded-lg text-[11px] font-mono transition-all ${
+                        (textData.width || 340) === w.width
+                          ? 'liquid-pill-active font-bold shadow-sm'
+                          : 'liquid-pill opacity-75 hover:opacity-100'
+                      }`}
+                    >
+                      {w.label.split(' ')[0]}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               {/* Action Buttons */}

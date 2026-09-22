@@ -12,6 +12,9 @@ import type {
   StrategyEdge, 
   ImageNode,
   ImageNodeData,
+  TextNode,
+  TextNodeData,
+  BoardNode,
   LayoutMode, 
   BoardSnapshot, 
   StrategyNodeData, 
@@ -79,7 +82,7 @@ export interface BoardStore {
   isAiBridgeModalOpen: boolean;
 
   // Active Canvas Data
-  nodes: (StrategyNode | ImageNode)[];
+  nodes: BoardNode[];
   edges: StrategyEdge[];
   drawings: DrawingStroke[];
   selectedNodeId: string | null;
@@ -119,6 +122,11 @@ export interface BoardStore {
   // Standalone Image Node on Canvas
   addImageNode: (imageUrl: string, position?: { x: number; y: number }, title?: string, caption?: string) => string;
 
+  // Standalone Text Node on Canvas & Modal
+  addTextNode: (text: string, position?: { x: number; y: number }, title?: string, color?: string, fontSize?: 'sm' | 'md' | 'lg' | 'xl') => string;
+  isAddTextModalOpen: boolean;
+  setIsAddTextModalOpen: (open: boolean) => void;
+
   // History
   undoStack: BoardSnapshot[];
   redoStack: BoardSnapshot[];
@@ -141,9 +149,9 @@ export interface BoardStore {
   importBackupJson: (jsonString: string) => { success: boolean; error?: string };
 
   // Canvas Setters & Flow Handlers
-  setNodes: (nodes: (StrategyNode | ImageNode)[]) => void;
+  setNodes: (nodes: BoardNode[]) => void;
   setEdges: (edges: StrategyEdge[]) => void;
-  onNodesChange: (changes: NodeChange<StrategyNode | ImageNode>[]) => void;
+  onNodesChange: (changes: NodeChange<BoardNode>[]) => void;
   onEdgesChange: (changes: EdgeChange<StrategyEdge>[]) => void;
   onConnect: (connection: Connection) => void;
 
@@ -157,7 +165,7 @@ export interface BoardStore {
 
   // Node CRUD
   addNode: (nodeData: Partial<StrategyNodeData>, position?: { x: number; y: number }) => string;
-  updateNode: (id: string, data: Partial<StrategyNodeData | ImageNodeData>) => void;
+  updateNode: (id: string, data: Partial<StrategyNodeData | ImageNodeData | TextNodeData>) => void;
   deleteNode: (id: string) => void;
   duplicateNode: (id: string) => void;
 
@@ -278,7 +286,7 @@ function bootstrap() {
 const initialBoot = bootstrap();
 
 let originalStateBeforePreview: {
-  nodes: (StrategyNode | ImageNode)[];
+  nodes: BoardNode[];
   edges: StrategyEdge[];
   drawings: DrawingStroke[];
   layoutMode: LayoutMode;
@@ -300,7 +308,7 @@ const debouncedCollabSync = (project: CanvasProject, ownerKey: string) => {
 export const useBoardStore = create<BoardStore>((set, get) => {
   // Helper to persist current active project into projects list and localStorage
   const syncAndPersist = (
-    nodes: (StrategyNode | ImageNode)[],
+    nodes: BoardNode[],
     edges: StrategyEdge[],
     layoutMode: LayoutMode,
     theme: ThemeMode,
@@ -498,6 +506,51 @@ export const useBoardStore = create<BoardStore>((set, get) => {
           isInspectorOpen: true,
         };
       });
+
+      return id;
+    },
+
+    // Standalone Text Node on Canvas & Modal
+    isAddTextModalOpen: false,
+    setIsAddTextModalOpen: (open) => set({ isAddTextModalOpen: open }),
+    addTextNode: (text, position, title, color = 'default', fontSize = 'md') => {
+      if (get().isViewerMode) return '';
+      get().saveSnapshot();
+      const id = `text_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+      const defaultPosition = position || {
+        x: 350 + Math.random() * 150,
+        y: 200 + Math.random() * 150,
+      };
+
+      const newTextNode: TextNode = {
+        id,
+        type: 'textNode',
+        position: defaultPosition,
+        data: {
+          text,
+          title: title || undefined,
+          color,
+          fontSize,
+          width: 340,
+        },
+      };
+
+      set((state) => {
+        const updatedNodes = [...state.nodes, newTextNode];
+        syncAndPersist(updatedNodes, state.edges, state.layoutMode, state.theme, state.drawings);
+        return {
+          nodes: updatedNodes,
+          selectedNodeId: id,
+          selectedEdgeId: null,
+          isInspectorOpen: true,
+        };
+      });
+
+      const user = collabManager.getCurrentUser();
+      collabManager.broadcastMutation(
+        { type: 'node_add', node: newTextNode, user, summary: `Добавил текстовый блок "${title || text.slice(0, 25)}"` },
+        { actionType: 'node_create', summary: `Добавил текстовый блок "${title || text.slice(0, 25)}"`, targetId: id }
+      );
 
       return id;
     },
@@ -1105,7 +1158,7 @@ export const useBoardStore = create<BoardStore>((set, get) => {
       get().saveSnapshot();
       let nodeTitle = '';
       set((state) => {
-        const updatedNodes: (StrategyNode | ImageNode)[] = state.nodes.map((node) => {
+        const updatedNodes: BoardNode[] = state.nodes.map((node) => {
           if (node.id === id) {
             if (node.type === 'imageNode') {
               return {
@@ -1115,6 +1168,15 @@ export const useBoardStore = create<BoardStore>((set, get) => {
                   ...data,
                 },
               } as ImageNode;
+            } else if (node.type === 'textNode') {
+              nodeTitle = (data as any).title || (node.data as any).title || (data as any).text?.slice(0, 25) || '';
+              return {
+                ...node,
+                data: {
+                  ...node.data,
+                  ...data,
+                },
+              } as TextNode;
             } else {
               nodeTitle = (data as any).title || (node.data as any).title || '';
               return {
@@ -1172,9 +1234,9 @@ export const useBoardStore = create<BoardStore>((set, get) => {
       if (!nodeToDup) return;
 
       get().saveSnapshot();
-      const newId = `${nodeToDup.type === 'imageNode' ? 'img' : 'node'}_${Date.now()}`;
+      const newId = `${nodeToDup.type === 'imageNode' ? 'img' : nodeToDup.type === 'textNode' ? 'text' : 'node'}_${Date.now()}`;
 
-      let duplicatedNode: StrategyNode | ImageNode;
+      let duplicatedNode: BoardNode;
       if (nodeToDup.type === 'imageNode') {
         const imgData = nodeToDup.data as ImageNodeData;
         duplicatedNode = {
@@ -1190,6 +1252,21 @@ export const useBoardStore = create<BoardStore>((set, get) => {
           },
           selected: true,
         } as ImageNode;
+      } else if (nodeToDup.type === 'textNode') {
+        const textData = nodeToDup.data as TextNodeData;
+        duplicatedNode = {
+          ...nodeToDup,
+          id: newId,
+          position: {
+            x: nodeToDup.position.x + 40,
+            y: nodeToDup.position.y + 40,
+          },
+          data: {
+            ...textData,
+            title: textData.title ? `${textData.title} (Копия)` : undefined,
+          },
+          selected: true,
+        } as TextNode;
       } else {
         const stratData = nodeToDup.data as StrategyNodeData;
         duplicatedNode = {
@@ -1265,8 +1342,9 @@ export const useBoardStore = create<BoardStore>((set, get) => {
       get().saveSnapshot();
       const idMap = new Map<string, string>();
       const timestamp = Date.now();
-      const duplicatedNodes: (StrategyNode | ImageNode)[] = selectedNodes.map((nodeToDup, idx) => {
-        const newId = `${nodeToDup.type === 'imageNode' ? 'img' : 'node'}_${timestamp}_${idx}`;
+      const duplicatedNodes: BoardNode[] = selectedNodes.map((nodeToDup, idx) => {
+        const prefix = nodeToDup.type === 'imageNode' ? 'img' : nodeToDup.type === 'textNode' ? 'text' : 'node';
+        const newId = `${prefix}_${timestamp}_${idx}`;
         idMap.set(nodeToDup.id, newId);
         return {
           ...nodeToDup,
@@ -1615,7 +1693,7 @@ export const useBoardStore = create<BoardStore>((set, get) => {
               }
               return node;
             });
-            set({ nodes: updated as (StrategyNode | ImageNode)[] });
+            set({ nodes: updated as BoardNode[] });
             break;
           }
 

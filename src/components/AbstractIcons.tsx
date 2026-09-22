@@ -133,3 +133,18 @@ export const IconBrandPebble: React.FC<IconProps> = ({ className = 'w-4 h-4', si
     <rect x="3" y="3" width="18" height="18" rx="8" />
   </svg>
 );
+
+export const IconText: React.FC<IconProps> = ({ className = 'w-4 h-4', size = 16 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <polyline points="4 7 4 4 20 4 20 7" />
+    <line x1="9" y1="20" x2="15" y2="20" />
+    <line x1="12" y1="4" x2="12" y2="20" />
+  </svg>
+);
+
+export const IconTextNote: React.FC<IconProps> = ({ className = 'w-4 h-4', size = 16 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}>
+    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 14H7v-2h10v2zm0-4H7v-2h10v2zm0-4H7V7h10v2z" />
+  </svg>
+);
+

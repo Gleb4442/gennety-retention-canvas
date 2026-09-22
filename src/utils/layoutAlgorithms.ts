@@ -1,9 +1,9 @@
-import type { StrategyNode, ImageNode, StrategyEdge, LayoutMode } from '../types';
+import type { BoardNode, StrategyEdge, LayoutMode } from '../types';
 
 const NODE_WIDTH = 340;
 const NODE_HEIGHT = 220;
 
-export async function getDagreLayout<T extends StrategyNode | ImageNode>(
+export async function getDagreLayout<T extends BoardNode>(
   nodes: T[],
   edges: StrategyEdge[],
   direction: 'TB' | 'LR' = 'TB'
@@ -21,7 +21,7 @@ export async function getDagreLayout<T extends StrategyNode | ImageNode>(
   });
 
   nodes.forEach((node) => {
-    const w = node.type === 'imageNode' && 'width' in node.data && typeof node.data.width === 'number' 
+    const w = (node.type === 'imageNode' || node.type === 'textNode') && 'width' in node.data && typeof node.data.width === 'number' 
       ? node.data.width 
       : NODE_WIDTH;
     dagreGraph.setNode(node.id, { width: w, height: NODE_HEIGHT });
@@ -35,7 +35,7 @@ export async function getDagreLayout<T extends StrategyNode | ImageNode>(
 
   return nodes.map((node) => {
     const nodeWithPosition = dagreGraph.node(node.id);
-    const w = node.type === 'imageNode' && 'width' in node.data && typeof node.data.width === 'number' 
+    const w = (node.type === 'imageNode' || node.type === 'textNode') && 'width' in node.data && typeof node.data.width === 'number' 
       ? node.data.width 
       : NODE_WIDTH;
     return {
@@ -48,7 +48,7 @@ export async function getDagreLayout<T extends StrategyNode | ImageNode>(
   });
 }
 
-export function getFlywheelLayout<T extends StrategyNode | ImageNode>(
+export function getFlywheelLayout<T extends BoardNode>(
   nodes: T[],
   centerX: number = 800,
   centerY: number = 550,
@@ -79,7 +79,7 @@ export function getFlywheelLayout<T extends StrategyNode | ImageNode>(
   });
 
   return sortedNodes.map((node, index) => {
-    const w = node.type === 'imageNode' && 'width' in node.data && typeof node.data.width === 'number' 
+    const w = (node.type === 'imageNode' || node.type === 'textNode') && 'width' in node.data && typeof node.data.width === 'number' 
       ? node.data.width 
       : NODE_WIDTH;
     // Start at top (-PI/2) and rotate clockwise
@@ -98,10 +98,10 @@ export function getFlywheelLayout<T extends StrategyNode | ImageNode>(
 }
 
 export async function computeLayout(
-  nodes: (StrategyNode | ImageNode)[],
+  nodes: BoardNode[],
   edges: StrategyEdge[],
   mode: LayoutMode
-): Promise<(StrategyNode | ImageNode)[]> {
+): Promise<BoardNode[]> {
   switch (mode) {
     case 'pyramid':
       // Hierarchical upward / downward pyramid (TB direction)
