@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: gennety-retention-canvas
+    runtime: node
+    plan: starter
+    region: frankfurt
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: DATABASE_URL
+        sync: false
+      - key: GENNETY_ACCESS_KEY
+        sync: false

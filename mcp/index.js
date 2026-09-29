@@ -1447,4 +1447,13 @@ function main() {
   });
 }
 
-main();
+const isDirectRun = process.argv[1] && (
+  fileURLToPath(import.meta.url) === path.resolve(process.argv[1]) ||
+  process.argv[1].endsWith('mcp/index.js')
+);
+
+if (isDirectRun) {
+  main();
+}
+
+export { TOOLS, executeTool, handleMessage, loadStorage, saveStorage };

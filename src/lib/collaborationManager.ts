@@ -79,6 +79,8 @@ export class CollaborationManager {
   private projectId: string = '';
   private user: CollabUser;
   private channel: BroadcastChannel | null = null;
+  private ws: WebSocket | null = null;
+  private wsReconnectTimer: any = null;
   private heartbeatTimer: any = null;
   private pollTimer: any = null;
   private lastPollTs: number = Date.now();
@@ -101,7 +103,7 @@ export class CollaborationManager {
   }
 
   public init(projectId: string, role: UserRole = 'editor') {
-    if (this.projectId === projectId && this.channel) {
+    if (this.projectId === projectId && (this.channel || this.ws)) {
       return;
     }
 
@@ -120,25 +122,110 @@ export class CollaborationManager {
         };
       }
     } catch (e) {
-      console.warn('[Collab] BroadcastChannel unavailable, using API polling fallback:', e);
+      console.warn('[Collab] BroadcastChannel unavailable:', e);
     }
 
-    // 2. Start Presence Heartbeat (every 4 seconds)
+    // 2. Setup Real-time WebSocket connection to Render server
+    this.setupWebSocket(projectId);
+
+    // 3. Start Presence Heartbeat (every 4 seconds)
     this.broadcastHeartbeat();
     this.heartbeatTimer = setInterval(() => {
       this.broadcastHeartbeat();
       this.purgeStalePeers();
     }, 4000);
 
-    // 3. Start API Poll bus (every 2.5 seconds for multi-device sync)
+    // 4. Start API Poll bus (every 4 seconds as a background fallback)
     this.lastPollTs = Date.now();
     this.pollTimer = setInterval(() => {
       this.pollRemoteEvents();
-    }, 2500);
+    }, 4000);
 
-    // 4. Cleanup on page leave
+    // 5. Cleanup on page leave
     if (typeof window !== 'undefined') {
       window.addEventListener('beforeunload', this.handleBeforeUnload);
+    }
+  }
+
+  private setupWebSocket(projectId: string) {
+    if (typeof window === 'undefined') return;
+
+    try {
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const wsUrl = `${protocol}//${window.location.host}/ws`;
+      const ws = new WebSocket(wsUrl);
+      this.ws = ws;
+
+      ws.onopen = () => {
+        ws.send(
+          JSON.stringify({
+            type: 'subscribe',
+            projectId,
+            user: this.user,
+          })
+        );
+      };
+
+      ws.onmessage = (ev) => {
+        try {
+          const data = JSON.parse(ev.data);
+          if (!data || typeof data !== 'object') return;
+
+          if (data.type === 'subscribed') {
+            if (Array.isArray(data.peers)) {
+              data.peers.forEach((p: any) => {
+                if (p.id !== this.user.id) {
+                  this.activePeers.set(p.id, { ...p, isSelf: false, lastActiveAt: Date.now() });
+                }
+              });
+              this.notifyPresence();
+            }
+          } else if (data.type === 'cursor_move') {
+            if (data.cursor && data.cursor.userId !== this.user.id) {
+              this.remoteCursors.set(data.cursor.userId, data.cursor);
+              this.notifyCursors();
+            }
+          } else if (data.type === 'node_positions') {
+            if (data.positions && data.userId !== this.user.id) {
+              this.onEventCallbacks.forEach((cb) =>
+                cb({
+                  type: 'nodes_moved',
+                  nodePositions: data.positions,
+                  user: { id: data.userId, name: 'Участник', color: '#10B981', role: 'editor', isSelf: false },
+                } as any)
+              );
+            }
+          } else if (data.type === 'presence_join') {
+            if (data.user && data.user.id !== this.user.id) {
+              this.activePeers.set(data.user.id, { ...data.user, isSelf: false, lastActiveAt: Date.now() });
+              this.notifyPresence();
+            }
+          } else if (data.type === 'presence_leave') {
+            if (data.userId) {
+              this.activePeers.delete(data.userId);
+              this.remoteCursors.delete(data.userId);
+              this.notifyPresence();
+              this.notifyCursors();
+            }
+          } else if (['mcp_mutation', 'workspace_saved', 'project_synced', 'version_restored'].includes(data.type)) {
+            // Live notifications from remote MCP agents or cloud
+            this.onEventCallbacks.forEach((cb) => cb(data as any));
+          } else if (data.type) {
+            this.handleIncomingMessage(data as CollabEventMessage);
+          }
+        } catch {
+          // ignore parsing error
+        }
+      };
+
+      ws.onclose = () => {
+        this.ws = null;
+        if (this.projectId === projectId) {
+          this.wsReconnectTimer = setTimeout(() => this.setupWebSocket(projectId), 3000);
+        }
+      };
+    } catch (e) {
+      console.warn('[Collab] WebSocket connection error, using HTTP polling fallback:', e);
     }
   }
 
@@ -151,6 +238,16 @@ export class CollaborationManager {
     if (this.pollTimer) clearInterval(this.pollTimer);
     if (this.cursorThrottleTimer) clearTimeout(this.cursorThrottleTimer);
     if (this.nodeMoveThrottleTimer) clearTimeout(this.nodeMoveThrottleTimer);
+    if (this.wsReconnectTimer) clearTimeout(this.wsReconnectTimer);
+
+    if (this.ws) {
+      try {
+        this.ws.close();
+      } catch {
+        // ignore
+      }
+      this.ws = null;
+    }
 
     if (this.channel) {
       this.postMessage({ type: 'presence_leave', userId: this.user.id });
@@ -241,7 +338,22 @@ export class CollaborationManager {
       }
     }
 
-    // 2. Publish to API event bus asynchronously for cross-device peers
+    // 2. Stream instantly to WebSocket server if connected
+    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+      try {
+        if (msg.type === 'cursor_move') {
+          this.ws.send(JSON.stringify({ type: 'cursor', projectId: this.projectId, cursor: (msg as any).cursor }));
+        } else if (msg.type === 'nodes_moved') {
+          this.ws.send(JSON.stringify({ type: 'node_move', projectId: this.projectId, positions: (msg as any).nodePositions }));
+        } else {
+          this.ws.send(JSON.stringify({ type: 'event', projectId: this.projectId, event: msg }));
+        }
+      } catch (e) {
+        // ignore send error
+      }
+    }
+
+    // 3. Publish to API event bus asynchronously for cross-device peers
     if (!['cursor_move', 'presence_heartbeat'].includes(msg.type)) {
       fetch(`/api/collaboration?action=publish_event`, {
         method: 'POST',
