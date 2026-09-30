@@ -115,16 +115,16 @@ export const CustomNode = memo(({ id, data, selected }: NodeProps & { data: Stra
 
   return (
     <div
-      className={`group relative w-[340px] rounded-2xl transition-shadow duration-150 select-none liquid-glass ${
+      className={`group relative w-[340px] rounded-3xl transition-all duration-200 select-none liquid-glass ${
         selected
-          ? 'scale-[1.02] shadow-2xl ring-0 ring-offset-0'
-          : 'hover:-translate-y-1'
+          ? 'scale-[1.015] shadow-2xl ring-0 ring-offset-0'
+          : 'hover:-translate-y-1 hover:shadow-2xl'
       } ${isDragOverCard ? 'ring-2 ring-white/60 scale-[1.02]' : ''}`}
       style={{
         boxShadow: peerSelecting
           ? `0 0 0 2px ${peerSelecting.color}, 0 0 24px ${peerSelecting.color}66`
           : selected
-          ? '0 30px 60px -15px rgba(0,0,0,0.55), inset 0 1px 2px 0 rgba(255,255,255,0.3), 0 0 0 1.5px var(--text-primary)'
+          ? '0 32px 70px -15px rgba(0,0,0,0.8), 0 0 0 1.5px rgba(255,255,255,0.45), 0 0 35px rgba(255,255,255,0.06)'
           : undefined,
       }}
       onClick={() => setSelectedNodeId(id)}
@@ -231,7 +231,7 @@ export const CustomNode = memo(({ id, data, selected }: NodeProps & { data: Stra
         {/* Attached Photo Banner */}
         {data.imageUrl && (
           <div 
-            className="relative w-full h-40 rounded-xl overflow-hidden group/img cursor-pointer bg-black/25 shadow-inner border border-white/10"
+            className="relative w-full h-40 rounded-2xl overflow-hidden group/img cursor-pointer bg-black/20 shadow-md"
             onClick={(e) => {
               e.stopPropagation();
               openLightbox(data.imageUrl!, data.title);
@@ -288,24 +288,24 @@ export const CustomNode = memo(({ id, data, selected }: NodeProps & { data: Stra
           {data.description}
         </div>
 
-        {/* Key Metric Highlight - Frameless Liquid Inset */}
+        {/* Key Metric Highlight - Frameless Inset */}
         {data.keyMetric && (
-          <div className="flex items-start gap-2.5 p-2.5 rounded-xl liquid-pill text-xs leading-tight opacity-95 shadow-inner">
-            <span className="w-1.5 h-1.5 rounded-full bg-current mt-1 flex-shrink-0 opacity-70" />
+          <div className="flex items-start gap-2.5 p-3 rounded-2xl bg-white/[0.04] dark:bg-white/[0.04] text-xs leading-relaxed opacity-95">
+            <span className="w-1.5 h-1.5 rounded-full bg-current mt-1.5 flex-shrink-0 opacity-60" />
             <div>
-              <span className="font-bold opacity-100">Цель: </span>
-              <span className="opacity-90 font-medium">{data.keyMetric}</span>
+              <span className="font-semibold opacity-100">Цель: </span>
+              <span className="opacity-80 font-normal">{data.keyMetric}</span>
             </div>
           </div>
         )}
 
-        {/* Strategic Outcome Highlight - Frameless Liquid Inset */}
+        {/* Strategic Outcome Highlight - Frameless Inset */}
         {data.outcome && (
-          <div className="flex items-start gap-2.5 p-2.5 rounded-xl liquid-pill text-xs leading-tight opacity-95 shadow-inner">
-            <span className="w-1.5 h-1.5 rounded-full bg-current mt-1 flex-shrink-0 opacity-70" />
+          <div className="flex items-start gap-2.5 p-3 rounded-2xl bg-white/[0.04] dark:bg-white/[0.04] text-xs leading-relaxed opacity-95">
+            <span className="w-1.5 h-1.5 rounded-full bg-current mt-1.5 flex-shrink-0 opacity-60" />
             <div>
-              <span className="font-bold opacity-100">Результат: </span>
-              <span className="opacity-90 font-medium">{data.outcome}</span>
+              <span className="font-semibold opacity-100">Результат: </span>
+              <span className="opacity-80 font-normal">{data.outcome}</span>
             </div>
           </div>
         )}
@@ -317,25 +317,25 @@ export const CustomNode = memo(({ id, data, selected }: NodeProps & { data: Stra
         type="target"
         position={Position.Top}
         id="top"
-        className="!w-2.5 !h-2.5 !bg-inherit !opacity-60 hover:!opacity-100 !border-0 !shadow-md !-top-1.5"
+        className="!w-2 !h-2 !bg-white/40 hover:!bg-white !opacity-40 hover:!opacity-100 !border-0 !shadow-sm !-top-1 transition-all duration-150"
       />
       <Handle
         type="source"
         position={Position.Bottom}
         id="bottom"
-        className="!w-2.5 !h-2.5 !bg-inherit !opacity-60 hover:!opacity-100 !border-0 !shadow-md !-bottom-1.5"
+        className="!w-2 !h-2 !bg-white/40 hover:!bg-white !opacity-40 hover:!opacity-100 !border-0 !shadow-sm !-bottom-1 transition-all duration-150"
       />
       <Handle
         type="target"
         position={Position.Left}
         id="left"
-        className="!w-2.5 !h-2.5 !bg-inherit !opacity-60 hover:!opacity-100 !border-0 !shadow-md !-left-1.5"
+        className="!w-2 !h-2 !bg-white/40 hover:!bg-white !opacity-40 hover:!opacity-100 !border-0 !shadow-sm !-left-1 transition-all duration-150"
       />
       <Handle
         type="source"
         position={Position.Right}
         id="right"
-        className="!w-2.5 !h-2.5 !bg-inherit !opacity-60 hover:!opacity-100 !border-0 !shadow-md !-right-1.5"
+        className="!w-2 !h-2 !bg-white/40 hover:!bg-white !opacity-40 hover:!opacity-100 !border-0 !shadow-sm !-right-1 transition-all duration-150"
       />
     </div>
   );

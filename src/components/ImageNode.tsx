@@ -52,12 +52,17 @@ export const ImageNode = memo(({ id, data, selected }: NodeProps & { data: Image
 
   return (
     <div
-      style={{ width: `${currentWidth}px` }}
+      style={{
+        width: `${currentWidth}px`,
+        boxShadow: selected
+          ? '0 32px 70px -15px rgba(0,0,0,0.8), 0 0 0 1.5px rgba(255,255,255,0.4), 0 0 35px rgba(255,255,255,0.06)'
+          : undefined,
+      }}
       onClick={() => setSelectedNodeId(id)}
-      className={`group relative rounded-3xl transition-all duration-150 select-none liquid-glass p-2.5 ${
+      className={`group relative rounded-3xl transition-all duration-200 select-none liquid-glass p-2.5 ${
         selected
-          ? 'scale-[1.01] shadow-2xl ring-2 ring-zinc-900 dark:ring-white/80'
-          : 'hover:-translate-y-0.5 hover:shadow-xl'
+          ? 'scale-[1.015] shadow-2xl ring-0 ring-offset-0'
+          : 'hover:-translate-y-1 hover:shadow-2xl'
       }`}
     >
       <input
@@ -69,7 +74,7 @@ export const ImageNode = memo(({ id, data, selected }: NodeProps & { data: Image
       />
 
       {/* Floating Action Menu on hover / select */}
-      <div className="absolute -top-10 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 bg-zinc-900/90 dark:bg-black/90 text-white backdrop-blur-md px-2 py-1 rounded-xl shadow-xl z-20 text-[11px] font-mono border border-white/15">
+      <div className="absolute -top-11 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 liquid-glass px-2.5 py-1 rounded-2xl shadow-xl z-20 text-[11px] font-mono">
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -121,7 +126,7 @@ export const ImageNode = memo(({ id, data, selected }: NodeProps & { data: Image
 
       {/* Image View */}
       <div 
-        className="relative w-full rounded-2xl overflow-hidden bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 shadow-sm cursor-zoom-in group/inner"
+        className="relative w-full rounded-2xl overflow-hidden bg-black/5 dark:bg-white/5 shadow-sm cursor-zoom-in group/inner"
         onClick={(e) => {
           e.stopPropagation();
           openLightbox(data.imageUrl, data.title || data.caption);
@@ -187,25 +192,25 @@ export const ImageNode = memo(({ id, data, selected }: NodeProps & { data: Image
         type="target"
         position={Position.Top}
         id="top"
-        className="!w-3 !h-3 !bg-zinc-800 dark:!bg-white !opacity-60 hover:!opacity-100 !border-0 !shadow-md !-top-1.5"
+        className="!w-2 !h-2 !bg-white/40 hover:!bg-white !opacity-40 hover:!opacity-100 !border-0 !shadow-sm !-top-1 transition-all duration-150"
       />
       <Handle
         type="source"
         position={Position.Bottom}
         id="bottom"
-        className="!w-3 !h-3 !bg-zinc-800 dark:!bg-white !opacity-60 hover:!opacity-100 !border-0 !shadow-md !-bottom-1.5"
+        className="!w-2 !h-2 !bg-white/40 hover:!bg-white !opacity-40 hover:!opacity-100 !border-0 !shadow-sm !-bottom-1 transition-all duration-150"
       />
       <Handle
         type="target"
         position={Position.Left}
         id="left"
-        className="!w-3 !h-3 !bg-zinc-800 dark:!bg-white !opacity-60 hover:!opacity-100 !border-0 !shadow-md !-left-1.5"
+        className="!w-2 !h-2 !bg-white/40 hover:!bg-white !opacity-40 hover:!opacity-100 !border-0 !shadow-sm !-left-1 transition-all duration-150"
       />
       <Handle
         type="source"
         position={Position.Right}
         id="right"
-        className="!w-3 !h-3 !bg-zinc-800 dark:!bg-white !opacity-60 hover:!opacity-100 !border-0 !shadow-md !-right-1.5"
+        className="!w-2 !h-2 !bg-white/40 hover:!bg-white !opacity-40 hover:!opacity-100 !border-0 !shadow-sm !-right-1 transition-all duration-150"
       />
     </div>
   );

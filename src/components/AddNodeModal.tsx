@@ -78,7 +78,7 @@ export const AddNodeModal: React.FC<AddNodeModalProps> = ({ isOpen, onClose }) =
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="px-6 py-4 flex items-center justify-between border-b border-current/10">
+        <div className="px-6 py-5 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-xl liquid-pill flex items-center justify-center opacity-90">
               <IconAdd className="w-4 h-4" />
@@ -209,7 +209,7 @@ export const AddNodeModal: React.FC<AddNodeModalProps> = ({ isOpen, onClose }) =
           </div>
 
           {/* Footer Actions */}
-          <div className="pt-4 border-t border-current/10 flex items-center justify-end gap-2.5">
+          <div className="pt-4 flex items-center justify-end gap-2.5">
             <button
               type="button"
               onClick={onClose}

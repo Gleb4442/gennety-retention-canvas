@@ -74,7 +74,7 @@ export const AuthGate: React.FC = () => {
       <div className="relative w-full max-w-md p-8 rounded-3xl liquid-glass shadow-2xl z-10 animate-in fade-in zoom-in-95 duration-200">
         {/* Brand Header */}
         <div className="flex flex-col items-center text-center mb-7">
-          <div className="w-16 h-16 rounded-2xl liquid-pill flex items-center justify-center p-2.5 mb-4 shadow-xl ring-1 ring-white/10">
+          <div className="w-16 h-16 rounded-2xl liquid-pill flex items-center justify-center p-2.5 mb-4 shadow-xl">
             <ButterflyLogo theme={theme} className="w-full h-full" />
           </div>
           <h1 className="font-display font-bold text-2xl tracking-tight text-white mb-1">
@@ -116,7 +116,7 @@ export const AuthGate: React.FC = () => {
 
         {/* Error Alert */}
         {error && (
-          <div className="mb-5 p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs flex items-center gap-2">
+          <div className="mb-5 p-3.5 rounded-2xl bg-rose-500/15 text-rose-300 text-xs flex items-center gap-2">
             <svg className="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="12" cy="12" r="10" />
               <line x1="12" y1="8" x2="12" y2="12" />
@@ -190,13 +190,13 @@ export const AuthGate: React.FC = () => {
         {/* Mode 2: Generate Key */}
         {mode === 'generate' && (
           <div className="space-y-4">
-            <div className="p-4 rounded-2xl liquid-pill border border-white/5">
+            <div className="p-4 rounded-2xl liquid-pill">
               <div className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider mb-2 flex items-center justify-between">
                 <span>Ваш уникальный ключ</span>
                 <span className="text-[10px] text-zinc-400 font-normal">Единожды создаваемый</span>
               </div>
 
-              <div className="p-3 rounded-xl bg-black/40 border border-white/10 flex items-center justify-between gap-2 mb-3">
+              <div className="p-3.5 rounded-xl bg-black/40 flex items-center justify-between gap-2 mb-3">
                 <span className="font-mono font-bold text-sm tracking-wider text-zinc-100 select-all break-all">
                   {generatedKey || 'Генерация...'}
                 </span>
@@ -260,7 +260,7 @@ export const AuthGate: React.FC = () => {
         )}
 
         {/* Footer / Demo shortcut */}
-        <div className="mt-7 pt-4 border-t border-white/5 flex items-center justify-between text-[11px] text-zinc-500 font-mono">
+        <div className="mt-7 pt-4 flex items-center justify-between text-[11px] text-zinc-500 font-mono">
           <span>Gennety Retention Hub v2.0</span>
           <button
             type="button"

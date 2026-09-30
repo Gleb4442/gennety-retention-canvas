@@ -105,7 +105,7 @@ console.log('Projects:', workspace.projects);`;
         onClick={(e) => e.stopPropagation()}
       >
         {/* ================= HEADER: Minimalist & Clean ================= */}
-        <div className="px-6 py-3.5 border-b border-black/10 dark:border-white/10 flex items-center justify-between gap-4">
+        <div className="px-6 py-3.5 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3 sm:gap-4">
             <span className="font-semibold text-sm sm:text-base text-zinc-900 dark:text-white tracking-tight">
               MCP Bridge
@@ -169,7 +169,7 @@ console.log('Projects:', workspace.projects);`;
           {activeTab === 'prompt' && (
             <div className="space-y-4">
               {/* Minimal Action Strip */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-2xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/10 dark:border-white/10">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-2xl bg-black/[0.02] dark:bg-white/[0.03]">
                 <div className="space-y-0.5">
                   <div className="text-xs font-semibold text-zinc-900 dark:text-white">
                     Системный контекст для ИИ-ассистентов
@@ -204,7 +204,7 @@ console.log('Projects:', workspace.projects);`;
               {/* Minimal Credentials Tiles */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 text-xs font-mono">
                 {/* 1-Click URL */}
-                <div className="p-3 rounded-xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/5 dark:border-white/5 flex flex-col justify-between gap-1.5">
+                <div className="p-3 rounded-xl bg-black/[0.02] dark:bg-white/[0.03] flex flex-col justify-between gap-1.5">
                   <div className="flex items-center justify-between text-[10px] uppercase tracking-wider font-semibold text-zinc-400">
                     <span>Direct Auth URL</span>
                     <button
@@ -220,7 +220,7 @@ console.log('Projects:', workspace.projects);`;
                 </div>
 
                 {/* Key */}
-                <div className="p-3 rounded-xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/5 dark:border-white/5 flex flex-col justify-between gap-1.5">
+                <div className="p-3 rounded-xl bg-black/[0.02] dark:bg-white/[0.03] flex flex-col justify-between gap-1.5">
                   <div className="flex items-center justify-between text-[10px] uppercase tracking-wider font-semibold text-zinc-400">
                     <span>Access Key</span>
                     <button
@@ -236,7 +236,7 @@ console.log('Projects:', workspace.projects);`;
                 </div>
 
                 {/* REST API */}
-                <div className="p-3 rounded-xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/5 dark:border-white/5 flex flex-col justify-between gap-1.5">
+                <div className="p-3 rounded-xl bg-black/[0.02] dark:bg-white/[0.03] flex flex-col justify-between gap-1.5">
                   <div className="flex items-center justify-between text-[10px] uppercase tracking-wider font-semibold text-zinc-400">
                     <span>REST Endpoint</span>
                     <button
@@ -269,7 +269,7 @@ console.log('Projects:', workspace.projects);`;
               </div>
 
               {/* Code Preview */}
-              <div className="relative rounded-xl bg-zinc-950 text-zinc-300 border border-black/10 dark:border-white/10 p-3.5 font-mono text-xs leading-relaxed max-h-56 overflow-y-auto whitespace-pre-wrap select-text">
+              <div className="relative rounded-2xl bg-zinc-950 text-zinc-300 p-3.5 font-mono text-xs leading-relaxed max-h-56 overflow-y-auto whitespace-pre-wrap select-text shadow-inner">
                 <div className="sticky top-0 float-right mb-1">
                   <button
                     onClick={() => handleCopyText(generatedPrompt, setCopiedPrompt)}
@@ -295,7 +295,7 @@ console.log('Projects:', workspace.projects);`;
 
                 <div className="space-y-1.5 text-xs">
                   {/* Category 1: Workflows & Layout */}
-                  <div className="flex flex-wrap items-center gap-1.5 p-2 rounded-xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/5 dark:border-white/5">
+                  <div className="flex flex-wrap items-center gap-1.5 p-2 rounded-xl bg-black/[0.02] dark:bg-white/[0.03]">
                     <span className="text-[10px] uppercase font-mono text-zinc-400 font-semibold px-1">Воркфлоу & Сетка:</span>
                     <span className="px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-mono text-[11px] font-semibold" title="Генерация комплексного воркфлоу со стратегией, текстом и фото в 1 вызов">
                       build_explanatory_workflow
@@ -306,7 +306,7 @@ console.log('Projects:', workspace.projects);`;
                   </div>
 
                   {/* Category 2: Content & Nodes */}
-                  <div className="flex flex-wrap items-center gap-1.5 p-2 rounded-xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/5 dark:border-white/5">
+                  <div className="flex flex-wrap items-center gap-1.5 p-2 rounded-xl bg-black/[0.02] dark:bg-white/[0.03]">
                     <span className="text-[10px] uppercase font-mono text-zinc-400 font-semibold px-1">Узлы & Контент:</span>
                     <span className="px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 font-mono text-[11px]" title="Создание или редактирование блока любого типа">
                       create_or_update_node
@@ -323,7 +323,7 @@ console.log('Projects:', workspace.projects);`;
                   </div>
 
                   {/* Category 3: Analysis & Search */}
-                  <div className="flex flex-wrap items-center gap-1.5 p-2 rounded-xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/5 dark:border-white/5">
+                  <div className="flex flex-wrap items-center gap-1.5 p-2 rounded-xl bg-black/[0.02] dark:bg-white/[0.03]">
                     <span className="text-[10px] uppercase font-mono text-zinc-400 font-semibold px-1">Анализ & Поиск:</span>
                     <span className="px-2 py-0.5 rounded-md bg-rose-500/10 text-rose-600 dark:text-rose-400 font-mono text-[11px]" title="Аудит воронки на разрывы и тупики">
                       analyze_retention_flow
@@ -340,7 +340,7 @@ console.log('Projects:', workspace.projects);`;
                   </div>
 
                   {/* Category 4: Sync & Backup */}
-                  <div className="flex flex-wrap items-center gap-1.5 p-2 rounded-xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/5 dark:border-white/5">
+                  <div className="flex flex-wrap items-center gap-1.5 p-2 rounded-xl bg-black/[0.02] dark:bg-white/[0.03]">
                     <span className="text-[10px] uppercase font-mono text-zinc-400 font-semibold px-1">Синхронизация:</span>
                     <span className="px-2 py-0.5 rounded-md bg-zinc-500/10 text-zinc-600 dark:text-zinc-300 font-mono text-[11px]" title="Экспорт полного JSON-бэкапа">
                       export_workspace_backup
@@ -364,7 +364,7 @@ console.log('Projects:', workspace.projects);`;
                     {copiedClaudeConfig ? '✓ Скопировано' : 'Копировать'}
                   </button>
                 </div>
-                <pre className="p-3.5 rounded-xl bg-zinc-950 text-zinc-300 border border-black/10 dark:border-white/10 font-mono text-xs leading-relaxed overflow-x-auto">
+                <pre className="p-3.5 rounded-2xl bg-zinc-950 text-zinc-300 font-mono text-xs leading-relaxed overflow-x-auto shadow-inner">
                   {claudeDesktopConfig}
                 </pre>
               </div>
@@ -381,16 +381,16 @@ console.log('Projects:', workspace.projects);`;
                     {copiedCursorConfig ? '✓ Скопировано' : 'Копировать'}
                   </button>
                 </div>
-                <pre className="p-3.5 rounded-xl bg-zinc-950 text-zinc-300 border border-black/10 dark:border-white/10 font-mono text-xs leading-relaxed overflow-x-auto">
+                <pre className="p-3.5 rounded-2xl bg-zinc-950 text-zinc-300 font-mono text-xs leading-relaxed overflow-x-auto shadow-inner">
                   {cursorMcpConfig}
                 </pre>
               </div>
 
               {/* Local run command */}
-              <div className="p-3 rounded-xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/5 dark:border-white/5 flex items-center justify-between gap-3 text-xs font-mono">
+              <div className="p-3 rounded-xl bg-black/[0.02] dark:bg-white/[0.03] flex items-center justify-between gap-3 text-xs font-mono">
                 <span className="text-zinc-500 dark:text-zinc-400">Локальный запуск stdio:</span>
                 <div className="flex items-center gap-2">
-                  <code className="px-2 py-0.5 rounded bg-zinc-950 text-emerald-400 font-bold border border-white/10">
+                  <code className="px-2 py-0.5 rounded bg-zinc-950 text-emerald-400 font-bold">
                     npm run mcp
                   </code>
                   <button
@@ -408,7 +408,7 @@ console.log('Projects:', workspace.projects);`;
           {activeTab === 'browser' && (
             <div className="space-y-3">
               {/* Protocol Step 1: URL */}
-              <div className="p-3.5 rounded-xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/5 dark:border-white/5 space-y-1.5">
+              <div className="p-3.5 rounded-xl bg-black/[0.02] dark:bg-white/[0.03] space-y-1.5">
                 <div className="flex items-center justify-between text-xs font-semibold text-zinc-800 dark:text-zinc-200">
                   <span>01 · Авторизация по URL (?key=...)</span>
                   <button
@@ -418,13 +418,13 @@ console.log('Projects:', workspace.projects);`;
                     {copiedUrl ? '✓ Скопировано' : 'Копировать'}
                   </button>
                 </div>
-                <code className="block p-2.5 rounded-lg bg-zinc-950 text-zinc-300 border border-black/10 dark:border-white/10 font-mono text-xs truncate">
+                <code className="block p-2.5 rounded-xl bg-zinc-950 text-zinc-300 font-mono text-xs truncate shadow-inner">
                   {directAuthUrl}
                 </code>
               </div>
 
               {/* Protocol Step 2: Runtime DOM API */}
-              <div className="p-3.5 rounded-xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/5 dark:border-white/5 space-y-1.5">
+              <div className="p-3.5 rounded-xl bg-black/[0.02] dark:bg-white/[0.03] space-y-1.5">
                 <div className="flex items-center justify-between text-xs font-semibold text-zinc-800 dark:text-zinc-200">
                   <span>02 · Runtime DOM API (window.__GENNETY_WORKSPACE__)</span>
                   <button
@@ -434,13 +434,13 @@ console.log('Projects:', workspace.projects);`;
                     {copiedDomApi ? '✓ Скопировано' : 'Копировать'}
                   </button>
                 </div>
-                <pre className="p-2.5 rounded-lg bg-zinc-950 text-zinc-300 border border-black/10 dark:border-white/10 font-mono text-xs leading-relaxed overflow-x-auto">
+                <pre className="p-2.5 rounded-xl bg-zinc-950 text-zinc-300 font-mono text-xs leading-relaxed overflow-x-auto shadow-inner">
                   {domApiSnippet}
                 </pre>
               </div>
 
               {/* Protocol Step 3: REST API */}
-              <div className="p-3.5 rounded-xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/5 dark:border-white/5 space-y-1.5">
+              <div className="p-3.5 rounded-xl bg-black/[0.02] dark:bg-white/[0.03] space-y-1.5">
                 <div className="flex items-center justify-between text-xs font-semibold text-zinc-800 dark:text-zinc-200">
                   <span>03 · cURL Endpoint</span>
                   <button
@@ -450,7 +450,7 @@ console.log('Projects:', workspace.projects);`;
                     {copiedCurl ? '✓ Скопировано' : 'Копировать'}
                   </button>
                 </div>
-                <pre className="p-2.5 rounded-lg bg-zinc-950 text-zinc-300 border border-black/10 dark:border-white/10 font-mono text-xs leading-relaxed overflow-x-auto">
+                <pre className="p-2.5 rounded-xl bg-zinc-950 text-zinc-300 font-mono text-xs leading-relaxed overflow-x-auto shadow-inner">
                   {curlSnippet}
                 </pre>
               </div>
@@ -459,7 +459,7 @@ console.log('Projects:', workspace.projects);`;
         </div>
 
         {/* ================= FOOTER: Minimalist ================= */}
-        <div className="px-6 py-3 border-t border-black/10 dark:border-white/10 flex items-center justify-between text-xs text-zinc-400 font-mono">
+        <div className="px-6 py-3 flex items-center justify-between text-xs text-zinc-400 font-mono">
           <div>
             {projects.length} схем · {totalNodesCount} узлов
           </div>

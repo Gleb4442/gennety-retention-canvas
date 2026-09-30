@@ -20,39 +20,39 @@ const COLOR_CONFIG: Record<
   }
 > = {
   default: {
-    cardClass: 'liquid-glass border-black/10 dark:border-white/15 text-zinc-900 dark:text-zinc-100',
+    cardClass: 'liquid-glass text-zinc-900 dark:text-zinc-100 shadow-2xl',
     badgeBg: 'bg-zinc-500/15 text-zinc-700 dark:text-zinc-300',
-    accentBorder: 'border-zinc-500/30',
+    accentBorder: 'border-transparent',
   },
   amber: {
-    cardClass: 'bg-amber-500/15 border-amber-500/35 text-amber-950 dark:text-amber-100 shadow-amber-500/10 backdrop-blur-xl',
-    badgeBg: 'bg-amber-500/25 text-amber-900 dark:text-amber-200',
-    accentBorder: 'border-amber-500/40',
+    cardClass: 'bg-amber-500/[0.12] text-amber-950 dark:text-amber-100 shadow-2xl shadow-amber-500/5 backdrop-blur-2xl',
+    badgeBg: 'bg-amber-500/20 text-amber-900 dark:text-amber-200',
+    accentBorder: 'border-transparent',
   },
   emerald: {
-    cardClass: 'bg-emerald-500/15 border-emerald-500/35 text-emerald-950 dark:text-emerald-100 shadow-emerald-500/10 backdrop-blur-xl',
-    badgeBg: 'bg-emerald-500/25 text-emerald-900 dark:text-emerald-200',
-    accentBorder: 'border-emerald-500/40',
+    cardClass: 'bg-emerald-500/[0.12] text-emerald-950 dark:text-emerald-100 shadow-2xl shadow-emerald-500/5 backdrop-blur-2xl',
+    badgeBg: 'bg-emerald-500/20 text-emerald-900 dark:text-emerald-200',
+    accentBorder: 'border-transparent',
   },
   blue: {
-    cardClass: 'bg-blue-500/15 border-blue-500/35 text-blue-950 dark:text-blue-100 shadow-blue-500/10 backdrop-blur-xl',
-    badgeBg: 'bg-blue-500/25 text-blue-900 dark:text-blue-200',
-    accentBorder: 'border-blue-500/40',
+    cardClass: 'bg-blue-500/[0.12] text-blue-950 dark:text-blue-100 shadow-2xl shadow-blue-500/5 backdrop-blur-2xl',
+    badgeBg: 'bg-blue-500/20 text-blue-900 dark:text-blue-200',
+    accentBorder: 'border-transparent',
   },
   rose: {
-    cardClass: 'bg-rose-500/15 border-rose-500/35 text-rose-950 dark:text-rose-100 shadow-rose-500/10 backdrop-blur-xl',
-    badgeBg: 'bg-rose-500/25 text-rose-900 dark:text-rose-200',
-    accentBorder: 'border-rose-500/40',
+    cardClass: 'bg-rose-500/[0.12] text-rose-950 dark:text-rose-100 shadow-2xl shadow-rose-500/5 backdrop-blur-2xl',
+    badgeBg: 'bg-rose-500/20 text-rose-900 dark:text-rose-200',
+    accentBorder: 'border-transparent',
   },
   purple: {
-    cardClass: 'bg-purple-500/15 border-purple-500/35 text-purple-950 dark:text-purple-100 shadow-purple-500/10 backdrop-blur-xl',
-    badgeBg: 'bg-purple-500/25 text-purple-900 dark:text-purple-200',
-    accentBorder: 'border-purple-500/40',
+    cardClass: 'bg-purple-500/[0.12] text-purple-950 dark:text-purple-100 shadow-2xl shadow-purple-500/5 backdrop-blur-2xl',
+    badgeBg: 'bg-purple-500/20 text-purple-900 dark:text-purple-200',
+    accentBorder: 'border-transparent',
   },
   graphite: {
-    cardClass: 'bg-zinc-900/90 border-zinc-700/60 text-zinc-100 shadow-2xl backdrop-blur-xl',
+    cardClass: 'bg-zinc-900/90 text-zinc-100 shadow-2xl backdrop-blur-2xl',
     badgeBg: 'bg-zinc-800 text-zinc-300',
-    accentBorder: 'border-zinc-600/50',
+    accentBorder: 'border-transparent',
   },
 };
 
@@ -158,21 +158,26 @@ export const TextNode = memo(({ id, data, selected }: NodeProps & { data: TextNo
 
   return (
     <div
-      style={{ width: `${currentWidth}px` }}
       onClick={() => setSelectedNodeId(id)}
       onDoubleClick={handleStartEdit}
-      className={`group relative rounded-2xl transition-all duration-150 select-none border ${
+      className={`group relative rounded-3xl transition-all duration-200 select-none ${
         colorScheme.cardClass
-      } p-4 ${
+      } p-5 ${
         selected
-          ? 'scale-[1.01] shadow-2xl ring-2 ring-zinc-900 dark:ring-white/80'
-          : 'hover:-translate-y-0.5 hover:shadow-xl'
+          ? 'scale-[1.015] shadow-2xl ring-0 ring-offset-0'
+          : 'hover:-translate-y-1 hover:shadow-2xl'
       }`}
+      style={{
+        width: `${currentWidth}px`,
+        boxShadow: selected
+          ? '0 32px 70px -15px rgba(0,0,0,0.8), 0 0 0 1.5px rgba(255,255,255,0.4), 0 0 35px rgba(255,255,255,0.06)'
+          : undefined,
+      }}
     >
       {/* Remote Peer Selection Indicator */}
       {peerSelecting && (
         <div
-          className="absolute -top-6 left-3 px-2 py-0.5 rounded-full text-[10px] font-medium tracking-wide shadow-md whitespace-nowrap select-none backdrop-blur-md border border-white/20 text-white flex items-center gap-1 z-30 animate-pulse"
+          className="absolute -top-6 left-3 px-2 py-0.5 rounded-full text-[10px] font-medium tracking-wide shadow-md whitespace-nowrap select-none backdrop-blur-md text-white flex items-center gap-1 z-30 animate-pulse"
           style={{ backgroundColor: peerSelecting.color }}
         >
           <span className="w-1.5 h-1.5 rounded-full bg-white" />
@@ -340,25 +345,25 @@ export const TextNode = memo(({ id, data, selected }: NodeProps & { data: TextNo
         type="target"
         position={Position.Top}
         id="top"
-        className="!w-3 !h-3 !bg-zinc-800 dark:!bg-white !opacity-60 hover:!opacity-100 !border-0 !shadow-md !-top-1.5"
+        className="!w-2 !h-2 !bg-white/40 hover:!bg-white !opacity-40 hover:!opacity-100 !border-0 !shadow-sm !-top-1 transition-all duration-150"
       />
       <Handle
         type="source"
         position={Position.Bottom}
         id="bottom"
-        className="!w-3 !h-3 !bg-zinc-800 dark:!bg-white !opacity-60 hover:!opacity-100 !border-0 !shadow-md !-bottom-1.5"
+        className="!w-2 !h-2 !bg-white/40 hover:!bg-white !opacity-40 hover:!opacity-100 !border-0 !shadow-sm !-bottom-1 transition-all duration-150"
       />
       <Handle
         type="target"
         position={Position.Left}
         id="left"
-        className="!w-3 !h-3 !bg-zinc-800 dark:!bg-white !opacity-60 hover:!opacity-100 !border-0 !shadow-md !-left-1.5"
+        className="!w-2 !h-2 !bg-white/40 hover:!bg-white !opacity-40 hover:!opacity-100 !border-0 !shadow-sm !-left-1 transition-all duration-150"
       />
       <Handle
         type="source"
         position={Position.Right}
         id="right"
-        className="!w-3 !h-3 !bg-zinc-800 dark:!bg-white !opacity-60 hover:!opacity-100 !border-0 !shadow-md !-right-1.5"
+        className="!w-2 !h-2 !bg-white/40 hover:!bg-white !opacity-40 hover:!opacity-100 !border-0 !shadow-sm !-right-1 transition-all duration-150"
       />
     </div>
   );

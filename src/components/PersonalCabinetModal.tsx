@@ -139,9 +139,9 @@ export const PersonalCabinetModal: React.FC<PersonalCabinetModalProps> = ({
         onClick={(e) => e.stopPropagation()}
       >
         {/* ================= TOP HEADER ================= */}
-        <div className="px-6 py-4 border-b border-black/10 dark:border-white/10 flex flex-wrap items-center justify-between gap-4 bg-black/[0.03] dark:bg-white/[0.02]">
+        <div className="px-6 py-4 flex flex-wrap items-center justify-between gap-4 bg-black/[0.03] dark:bg-white/[0.02]">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-white dark:bg-white/10 border border-black/10 dark:border-white/10 flex items-center justify-center p-2 shadow-sm">
+            <div className="w-10 h-10 rounded-2xl bg-black/5 dark:bg-white/10 flex items-center justify-center p-2 shadow-sm">
               <ButterflyLogo theme={theme} className="w-full h-full" />
             </div>
             <div>
@@ -149,7 +149,7 @@ export const PersonalCabinetModal: React.FC<PersonalCabinetModalProps> = ({
                 <h1 className="font-display font-bold text-base text-zinc-900 dark:text-white">
                   Личный кабинет
                 </h1>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-zinc-200/80 dark:bg-white/10 text-zinc-800 dark:text-zinc-200 border border-black/10 dark:border-white/10 font-medium">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-zinc-200/80 dark:bg-white/10 text-zinc-800 dark:text-zinc-200 font-medium">
                   Проекты
                 </span>
               </div>
@@ -184,7 +184,7 @@ export const PersonalCabinetModal: React.FC<PersonalCabinetModalProps> = ({
                   importProjectInputRef.current?.click();
                 }
               }}
-              className="px-3 py-1.5 rounded-xl bg-white dark:bg-white/10 hover:bg-zinc-100 dark:hover:bg-white/15 text-zinc-700 dark:text-zinc-200 hover:text-zinc-900 dark:hover:text-white flex items-center gap-1.5 transition-colors border border-black/10 dark:border-white/10 text-xs font-medium shadow-sm"
+              className="px-3 py-1.5 rounded-xl bg-white dark:bg-white/10 hover:bg-zinc-100 dark:hover:bg-white/15 text-zinc-700 dark:text-zinc-200 hover:text-zinc-900 dark:hover:text-white flex items-center gap-1.5 transition-colors text-xs font-medium shadow-sm"
               title="Импортировать проект из JSON-кода или AI-промпта"
             >
               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -201,7 +201,7 @@ export const PersonalCabinetModal: React.FC<PersonalCabinetModalProps> = ({
                 onClose();
                 setIsAiBridgeModalOpen(true);
               }}
-              className="px-3 py-1.5 rounded-xl bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 text-zinc-700 dark:text-zinc-200 flex items-center gap-1.5 transition-colors border border-black/5 dark:border-white/5 text-xs font-mono font-bold shadow-xs"
+              className="px-3 py-1.5 rounded-xl bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 text-zinc-700 dark:text-zinc-200 flex items-center gap-1.5 transition-colors text-xs font-mono font-bold shadow-xs"
               title="MCP & AI-Агент: системный промпт, MCP-сервер и API"
             >
               <span>MCP</span>
@@ -210,12 +210,12 @@ export const PersonalCabinetModal: React.FC<PersonalCabinetModalProps> = ({
             {/* Settings & Key Button */}
             <button
               onClick={onOpenSettings}
-              className="px-3 py-1.5 rounded-xl bg-white dark:bg-white/10 hover:bg-zinc-100 dark:hover:bg-white/15 text-zinc-700 dark:text-zinc-200 hover:text-zinc-900 dark:hover:text-white flex items-center gap-1.5 transition-colors border border-black/10 dark:border-white/10 text-xs font-mono shadow-sm"
+              className="px-3 py-1.5 rounded-xl bg-white dark:bg-white/10 hover:bg-zinc-100 dark:hover:bg-white/15 text-zinc-700 dark:text-zinc-200 hover:text-zinc-900 dark:hover:text-white flex items-center gap-1.5 transition-colors text-xs font-mono shadow-sm"
               title="Открыть карту настроек ключа и аккаунта"
             >
               <svg className="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="12" cy="12" r="3" />
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
               </svg>
               <span>Настройки</span>
             </button>
@@ -223,7 +223,7 @@ export const PersonalCabinetModal: React.FC<PersonalCabinetModalProps> = ({
             {/* Close */}
             <button
               onClick={onClose}
-              className="p-1.5 rounded-xl bg-white dark:bg-white/10 hover:bg-zinc-100 dark:hover:bg-white/15 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors border border-black/10 dark:border-white/10 shadow-sm"
+              className="p-1.5 rounded-xl bg-white dark:bg-white/10 hover:bg-zinc-100 dark:hover:bg-white/15 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors shadow-sm"
               title="Закрыть"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -235,20 +235,20 @@ export const PersonalCabinetModal: React.FC<PersonalCabinetModalProps> = ({
         </div>
 
         {/* ================= STATS BAR ================= */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 px-6 py-3.5 border-b border-black/10 dark:border-white/10 bg-zinc-100/70 dark:bg-black/25">
-          <div className="p-3.5 rounded-2xl bg-white dark:bg-white/[0.06] border border-black/10 dark:border-white/10 shadow-sm transition-all hover:border-black/20 dark:hover:border-white/20">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 px-6 py-3.5 bg-zinc-100/70 dark:bg-black/25">
+          <div className="p-3.5 rounded-2xl bg-white dark:bg-white/[0.06] shadow-sm transition-all hover:bg-zinc-50 dark:hover:bg-white/[0.09]">
             <div className="text-[10px] font-mono text-zinc-500 dark:text-zinc-400 uppercase tracking-wider font-medium">Всего проектов</div>
             <div className="text-2xl font-bold font-display text-zinc-900 dark:text-white mt-1">{projects.length}</div>
           </div>
-          <div className="p-3.5 rounded-2xl bg-white dark:bg-white/[0.06] border border-black/10 dark:border-white/10 shadow-sm transition-all hover:border-black/20 dark:hover:border-white/20">
+          <div className="p-3.5 rounded-2xl bg-white dark:bg-white/[0.06] shadow-sm transition-all hover:bg-zinc-50 dark:hover:bg-white/[0.09]">
             <div className="text-[10px] font-mono text-zinc-500 dark:text-zinc-400 uppercase tracking-wider font-medium">Всего блоков</div>
             <div className="text-2xl font-bold font-display text-zinc-900 dark:text-white mt-1">{totalNodesCount}</div>
           </div>
-          <div className="p-3.5 rounded-2xl bg-white dark:bg-white/[0.06] border border-black/10 dark:border-white/10 shadow-sm transition-all hover:border-black/20 dark:hover:border-white/20">
+          <div className="p-3.5 rounded-2xl bg-white dark:bg-white/[0.06] shadow-sm transition-all hover:bg-zinc-50 dark:hover:bg-white/[0.09]">
             <div className="text-[10px] font-mono text-zinc-500 dark:text-zinc-400 uppercase tracking-wider font-medium">Связей в графах</div>
             <div className="text-2xl font-bold font-display text-zinc-900 dark:text-white mt-1">{totalEdgesCount}</div>
           </div>
-          <div className="p-3.5 rounded-2xl bg-white dark:bg-white/[0.06] border border-black/10 dark:border-white/10 shadow-sm transition-all hover:border-black/20 dark:hover:border-white/20">
+          <div className="p-3.5 rounded-2xl bg-white dark:bg-white/[0.06] shadow-sm transition-all hover:bg-zinc-50 dark:hover:bg-white/[0.09]">
             <div className="text-[10px] font-mono text-zinc-500 dark:text-zinc-400 uppercase tracking-wider font-medium">Активный проект</div>
             <div className="text-xs font-semibold font-display text-zinc-900 dark:text-zinc-100 mt-2 truncate">
               {activeProj?.title || '—'}
@@ -257,14 +257,14 @@ export const PersonalCabinetModal: React.FC<PersonalCabinetModalProps> = ({
         </div>
 
         {/* ================= CONTROLS SEARCH ================= */}
-        <div className="px-6 py-3 border-b border-black/10 dark:border-white/10 bg-zinc-50/50 dark:bg-black/15">
+        <div className="px-6 py-3 bg-zinc-50/50 dark:bg-black/15">
           <div className="relative">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Поиск по проектам..."
-              className="w-full pl-9 pr-4 py-2 rounded-xl bg-white dark:bg-white/[0.06] text-xs text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 border border-black/10 dark:border-white/10 shadow-sm focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-white/30"
+              className="w-full pl-9 pr-4 py-2 rounded-xl bg-white dark:bg-white/[0.06] text-xs text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 shadow-sm focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-white/30"
             />
             <svg
               className="w-4 h-4 text-zinc-400 dark:text-zinc-500 absolute left-3 top-2.5"
@@ -305,8 +305,8 @@ export const PersonalCabinetModal: React.FC<PersonalCabinetModalProps> = ({
                     }}
                     className={`group relative p-4 rounded-2xl transition-all cursor-pointer ${
                       isActive
-                        ? 'bg-white dark:bg-white/[0.12] border-2 border-zinc-900 dark:border-white shadow-lg ring-1 ring-black/10 dark:ring-white/20'
-                        : 'bg-white/95 dark:bg-white/[0.04] border border-black/15 dark:border-white/10 hover:border-black/30 dark:hover:border-white/25 hover:bg-white dark:hover:bg-white/[0.08] shadow-sm hover:shadow-md hover:scale-[1.008]'
+                        ? 'bg-white dark:bg-white/[0.12] shadow-xl ring-2 ring-zinc-900 dark:ring-white'
+                        : 'bg-white/95 dark:bg-white/[0.04] shadow-sm hover:shadow-xl hover:bg-white dark:hover:bg-white/[0.08] hover:scale-[1.008]'
                     }`}
                   >
                     {/* Active Ribbon */}
@@ -329,14 +329,14 @@ export const PersonalCabinetModal: React.FC<PersonalCabinetModalProps> = ({
                           value={editingTitle}
                           onChange={(e) => setEditingTitle(e.target.value)}
                           autoFocus
-                          className="w-full px-2.5 py-1.5 rounded-lg bg-zinc-100 dark:bg-white/10 text-xs font-semibold text-zinc-900 dark:text-white border border-black/15 dark:border-white/20 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-white/40"
+                          className="w-full px-2.5 py-1.5 rounded-lg bg-zinc-100 dark:bg-white/10 text-xs font-semibold text-zinc-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-white/40"
                         />
                         <input
                           type="text"
                           value={editingDesc}
                           onChange={(e) => setEditingDesc(e.target.value)}
                           placeholder="Описание..."
-                          className="w-full px-2.5 py-1 rounded-lg bg-zinc-100 dark:bg-white/10 text-[11px] text-zinc-700 dark:text-zinc-300 border border-black/15 dark:border-white/20 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-white/40"
+                          className="w-full px-2.5 py-1 rounded-lg bg-zinc-100 dark:bg-white/10 text-[11px] text-zinc-700 dark:text-zinc-300 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-white/40"
                         />
                         <div className="flex items-center gap-2 pt-1">
                           <button
@@ -376,19 +376,19 @@ export const PersonalCabinetModal: React.FC<PersonalCabinetModalProps> = ({
 
                     {/* Meta chips */}
                     <div className="flex flex-wrap items-center gap-1.5 mb-3 font-mono text-[10px]">
-                      <span className="px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/10 text-zinc-800 dark:text-zinc-200 font-medium border border-black/5 dark:border-white/10">
+                      <span className="px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/10 text-zinc-800 dark:text-zinc-200 font-medium">
                         🧩 {nodeCount} блоков
                       </span>
-                      <span className="px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 border border-black/5 dark:border-white/5">
+                      <span className="px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400">
                         ⚡ {edgeCount} связей
                       </span>
-                      <span className="px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 capitalize border border-black/5 dark:border-white/5">
+                      <span className="px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 capitalize">
                         📐 {p.layoutMode}
                       </span>
                     </div>
 
                     {/* Footer with date & actions */}
-                    <div className="flex items-center justify-between pt-2.5 border-t border-black/10 dark:border-white/10 text-[10px] font-mono text-zinc-500 dark:text-zinc-400">
+                    <div className="flex items-center justify-between pt-2.5 text-[10px] font-mono text-zinc-500 dark:text-zinc-400">
                       <span>{formatDate(p.updatedAt)}</span>
 
                       <div className="flex items-center gap-1 opacity-85 group-hover:opacity-100 transition-opacity">
@@ -455,7 +455,7 @@ export const PersonalCabinetModal: React.FC<PersonalCabinetModalProps> = ({
         </div>
 
         {/* ================= FOOTER ================= */}
-        <div className="px-6 py-3.5 border-t border-black/10 dark:border-white/10 flex flex-wrap items-center justify-between gap-2 bg-zinc-100/70 dark:bg-black/30 text-xs font-mono text-zinc-500 dark:text-zinc-400">
+        <div className="px-6 py-3.5 flex flex-wrap items-center justify-between gap-2 bg-zinc-100/70 dark:bg-black/30 text-xs font-mono text-zinc-500 dark:text-zinc-400">
           <div className="flex items-center gap-2.5">
             <span
               className={`w-2.5 h-2.5 rounded-full ${

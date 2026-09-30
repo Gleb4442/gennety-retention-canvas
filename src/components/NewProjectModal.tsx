@@ -53,7 +53,7 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-xl liquid-pill text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors border border-black/5 dark:border-white/5"
+            className="p-2 rounded-xl liquid-pill text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <line x1="18" y1="6" x2="6" y2="18" />
@@ -69,10 +69,10 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({
               <button
                 type="button"
                 onClick={() => setTemplate('blueprint')}
-                className={`p-3.5 rounded-2xl text-left transition-all border ${
+                className={`p-3.5 rounded-2xl text-left transition-all ${
                   template === 'blueprint'
-                    ? 'bg-zinc-200/90 dark:bg-white/15 border-zinc-900 dark:border-white shadow-md ring-1 ring-zinc-900/20 dark:ring-white/20'
-                    : 'bg-white/80 dark:bg-white/[0.04] border-black/10 dark:border-white/10 hover:border-black/25 dark:hover:border-white/20'
+                    ? 'bg-zinc-200/90 dark:bg-white/15 shadow-md ring-2 ring-indigo-500/50'
+                    : 'bg-black/[0.03] dark:bg-white/[0.04] hover:bg-black/[0.05] dark:hover:bg-white/[0.07]'
                 }`}
               >
                 <div className="flex items-center gap-2 mb-1.5">
@@ -87,10 +87,10 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({
               <button
                 type="button"
                 onClick={() => setTemplate('blank')}
-                className={`p-3.5 rounded-2xl text-left transition-all border ${
+                className={`p-3.5 rounded-2xl text-left transition-all ${
                   template === 'blank'
-                    ? 'bg-zinc-200/90 dark:bg-white/15 border-zinc-900 dark:border-white shadow-md ring-1 ring-zinc-900/20 dark:ring-white/20'
-                    : 'bg-white/80 dark:bg-white/[0.04] border-black/10 dark:border-white/10 hover:border-black/25 dark:hover:border-white/20'
+                    ? 'bg-zinc-200/90 dark:bg-white/15 shadow-md ring-2 ring-indigo-500/50'
+                    : 'bg-black/[0.03] dark:bg-white/[0.04] hover:bg-black/[0.05] dark:hover:bg-white/[0.07]'
                 }`}
               >
                 <div className="flex items-center gap-2 mb-1.5">
@@ -115,7 +115,7 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Например: Новая воронка онбординга"
               autoFocus
-              className="w-full px-4 py-2.5 rounded-xl bg-white dark:bg-white/[0.06] text-sm text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 border border-black/10 dark:border-white/10 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-white/30 font-sans shadow-sm"
+              className="w-full px-4 py-2.5 rounded-xl bg-black/[0.03] dark:bg-white/[0.06] text-sm text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 border-0 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 font-sans shadow-sm"
             />
           </div>
 
@@ -129,7 +129,7 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Краткое описание гипотезы или целей проекта..."
               rows={2}
-              className="w-full px-4 py-2 rounded-xl bg-white dark:bg-white/[0.06] text-xs text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 border border-black/10 dark:border-white/10 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-white/30 font-sans resize-none shadow-sm"
+              className="w-full px-4 py-2 rounded-xl bg-black/[0.03] dark:bg-white/[0.06] text-xs text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 border-0 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 font-sans resize-none shadow-sm"
             />
           </div>
 
@@ -140,10 +140,10 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({
               onClose();
               onOpenImportJson?.();
             }}
-            className="w-full p-3 rounded-2xl bg-zinc-100/80 dark:bg-white/[0.05] border border-black/10 dark:border-white/10 hover:border-black/25 dark:hover:border-white/20 text-left flex items-center justify-between transition-all group hover:bg-zinc-200/60 dark:hover:bg-white/[0.08] shadow-sm"
+            className="w-full p-3.5 rounded-2xl bg-black/[0.03] dark:bg-white/[0.04] hover:bg-black/[0.05] dark:hover:bg-white/[0.07] text-left flex items-center justify-between transition-all group shadow-sm"
           >
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-white dark:bg-white/10 border border-black/5 dark:border-white/10 flex items-center justify-center text-zinc-700 dark:text-zinc-300 group-hover:scale-110 transition-transform shadow-xs">
+              <div className="w-8 h-8 rounded-xl bg-white dark:bg-white/10 flex items-center justify-center text-zinc-700 dark:text-zinc-300 group-hover:scale-110 transition-transform shadow-xs">
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <polyline points="16 18 22 12 16 6" />
                   <polyline points="8 6 2 12 8 18" />
@@ -166,7 +166,7 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-xl bg-zinc-100 hover:bg-zinc-200 dark:bg-white/10 dark:hover:bg-white/15 text-xs font-mono text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white transition-colors border border-black/5 dark:border-white/5"
+              className="px-4 py-2 rounded-xl bg-black/[0.04] hover:bg-black/[0.08] dark:bg-white/10 dark:hover:bg-white/15 text-xs font-mono text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white transition-colors"
             >
               Отмена
             </button>

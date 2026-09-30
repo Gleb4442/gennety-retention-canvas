@@ -86,9 +86,9 @@ export const DrawingToolbar: React.FC = () => {
   ];
 
   return (
-    <div className="fixed top-20 left-1/2 -translate-x-1/2 z-40 flex items-center gap-2 p-1.5 rounded-2xl liquid-glass shadow-2xl border border-black/15 dark:border-white/10 animate-in fade-in zoom-in-95 duration-150 select-none text-zinc-900 dark:text-zinc-100">
+    <div className="fixed top-20 left-1/2 -translate-x-1/2 z-40 flex items-center gap-2 p-2 rounded-3xl liquid-glass shadow-2xl animate-in fade-in zoom-in-95 duration-150 select-none text-zinc-900 dark:text-zinc-100">
       {/* Tool Selector */}
-      <div className="flex items-center gap-1 bg-black/5 dark:bg-white/5 p-1 rounded-xl">
+      <div className="flex items-center gap-1 bg-black/5 dark:bg-white/5 p-1 rounded-2xl">
         {tools.map((t) => {
           const isActive = drawingTool === t.id;
           return (
@@ -108,7 +108,7 @@ export const DrawingToolbar: React.FC = () => {
         })}
       </div>
 
-      <div className="w-[1px] h-5 bg-black/10 dark:bg-white/10 mx-0.5" />
+      <div className="w-px h-4 bg-current/10 mx-0.5 opacity-60" />
 
       {/* Color Palette (disabled for eraser / select) */}
       {drawingTool !== 'eraser' && drawingTool !== 'select' && (
@@ -121,10 +121,10 @@ export const DrawingToolbar: React.FC = () => {
                   key={c.id}
                   onClick={() => setDrawingColor(c.id)}
                   style={{ backgroundColor: c.bg }}
-                  className={`w-5 h-5 rounded-full border transition-all ${
+                  className={`w-5 h-5 rounded-full transition-all shadow-sm ${
                     isSelected
-                      ? 'scale-125 ring-2 ring-zinc-900 dark:ring-white border-white/50'
-                      : 'border-black/20 dark:border-white/20 hover:scale-110 opacity-80 hover:opacity-100'
+                      ? 'scale-125 ring-2 ring-current shadow-md'
+                      : 'hover:scale-110 opacity-80 hover:opacity-100'
                   }`}
                   title={c.label}
                 />
@@ -132,7 +132,7 @@ export const DrawingToolbar: React.FC = () => {
             })}
           </div>
 
-          <div className="w-[1px] h-5 bg-black/10 dark:bg-white/10 mx-0.5" />
+          <div className="w-px h-4 bg-current/10 mx-0.5 opacity-60" />
 
           {/* Stroke Width Selector */}
           <div className="flex items-center gap-1 bg-black/5 dark:bg-white/5 p-0.5 rounded-xl">

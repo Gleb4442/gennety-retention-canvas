@@ -117,13 +117,13 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
       />
 
       <div 
-        className="relative w-full max-w-lg p-6 rounded-3xl minimal-modal border border-black/15 dark:border-white/10 animate-in zoom-in-95 duration-150 space-y-5 text-zinc-900 dark:text-zinc-100"
+        className="relative w-full max-w-lg p-6 rounded-3xl minimal-modal shadow-2xl animate-in zoom-in-95 duration-150 space-y-5 text-zinc-900 dark:text-zinc-100"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-black/10 dark:border-white/10">
+        <div className="flex items-center justify-between pb-3">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-white dark:bg-white/10 border border-black/10 dark:border-white/10 flex items-center justify-center text-zinc-700 dark:text-zinc-300 shadow-xs">
+            <div className="w-8 h-8 rounded-xl bg-black/5 dark:bg-white/10 flex items-center justify-center text-zinc-700 dark:text-zinc-300 shadow-sm">
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="12" cy="12" r="3" />
                 <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
@@ -141,7 +141,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
 
           <button
             onClick={onClose}
-            className="p-2 rounded-xl bg-zinc-100 hover:bg-zinc-200 dark:bg-white/10 dark:hover:bg-white/20 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors border border-black/5 dark:border-white/5"
+            className="p-2 rounded-xl bg-zinc-100 hover:bg-zinc-200 dark:bg-white/10 dark:hover:bg-white/20 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <line x1="18" y1="6" x2="6" y2="18" />
@@ -151,7 +151,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
         </div>
 
         {/* Section 0: UI Font Size Configuration */}
-        <div className="p-4 rounded-2xl bg-zinc-100/70 dark:bg-white/[0.05] border border-black/10 dark:border-white/10 space-y-2.5">
+        <div className="p-4 rounded-2xl bg-zinc-100/70 dark:bg-white/[0.05] space-y-2.5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <svg className="w-4 h-4 opacity-75" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -166,7 +166,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
             </span>
           </div>
 
-          <div className="grid grid-cols-3 gap-1.5 p-1 rounded-xl bg-white dark:bg-black/40 border border-black/10 dark:border-white/10">
+          <div className="grid grid-cols-3 gap-1.5 p-1 rounded-xl bg-white dark:bg-black/40">
             <button
               type="button"
               onClick={() => setUiFontSize('sm')}
@@ -204,7 +204,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
         </div>
 
         {/* Section 1: Access Key Card */}
-        <div className="p-4 rounded-2xl bg-zinc-100/70 dark:bg-white/[0.05] border border-black/10 dark:border-white/10 space-y-3">
+        <div className="p-4 rounded-2xl bg-zinc-100/70 dark:bg-white/[0.05] space-y-3">
           <div className="flex items-center justify-between text-xs font-mono">
             <span className="text-zinc-500 dark:text-zinc-400 uppercase tracking-wider text-[10px] font-medium">
               Активный ключ доступа
@@ -216,7 +216,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
           </div>
 
           {/* Key Box */}
-          <div className="p-3 rounded-xl bg-white dark:bg-black/50 border border-black/10 dark:border-white/15 flex items-center justify-between gap-2 shadow-xs">
+          <div className="p-3 rounded-xl bg-white dark:bg-black/50 flex items-center justify-between gap-2 shadow-xs">
             <span className="font-mono font-bold text-sm tracking-wider text-zinc-950 dark:text-white select-all">
               {showFullKey ? accessKey : maskAccessKey(accessKey || '')}
             </span>
@@ -225,7 +225,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
               <button
                 type="button"
                 onClick={() => setShowFullKey(!showFullKey)}
-                className="p-1.5 rounded-lg bg-zinc-100 hover:bg-zinc-200 dark:bg-white/10 dark:hover:bg-white/20 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors border border-black/5 dark:border-white/5"
+                className="p-1.5 rounded-lg bg-zinc-100 hover:bg-zinc-200 dark:bg-white/10 dark:hover:bg-white/20 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors"
                 title={showFullKey ? 'Скрыть символы' : 'Показать полный ключ'}
               >
                 <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -240,7 +240,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
               <button
                 type="button"
                 onClick={handleCopyKey}
-                className="px-2.5 py-1.5 rounded-lg bg-zinc-100 hover:bg-zinc-200 dark:bg-white/10 dark:hover:bg-white/20 text-[11px] font-mono text-zinc-700 dark:text-zinc-200 hover:text-zinc-950 dark:hover:text-white flex items-center gap-1 transition-colors border border-black/5 dark:border-white/5"
+                className="px-2.5 py-1.5 rounded-lg bg-zinc-100 hover:bg-zinc-200 dark:bg-white/10 dark:hover:bg-white/20 text-[11px] font-mono text-zinc-700 dark:text-zinc-200 hover:text-zinc-950 dark:hover:text-white flex items-center gap-1 transition-colors"
                 title="Копировать ключ"
               >
                 {copiedKey ? (
@@ -264,7 +264,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
 
           {/* Switch / Change Key Subform */}
           {isSwitchingKey ? (
-            <form onSubmit={handleSwitchKeySubmit} className="pt-2 border-t border-black/10 dark:border-white/10 space-y-2">
+            <form onSubmit={handleSwitchKeySubmit} className="pt-2 space-y-2">
               <div className="flex items-center gap-2">
                 <input
                   type="text"
@@ -275,7 +275,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                   }}
                   placeholder="Введите другой ключ..."
                   autoFocus
-                  className="flex-1 px-3 py-1.5 rounded-xl bg-white dark:bg-white/10 text-xs font-mono text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 border border-black/15 dark:border-white/20 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-white/40"
+                  className="flex-1 px-3 py-1.5 rounded-xl bg-white dark:bg-white/10 text-xs font-mono text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-white/40"
                 />
                 <button
                   type="submit"
@@ -317,7 +317,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
         </div>
 
         {/* Section 1.5: Cloud Database Status */}
-        <div className="p-4 rounded-2xl bg-zinc-100/70 dark:bg-white/[0.05] border border-black/10 dark:border-white/10 space-y-2.5">
+        <div className="p-4 rounded-2xl bg-zinc-100/70 dark:bg-white/[0.05] space-y-2.5">
           <div className="flex items-center justify-between text-xs font-mono">
             <span className="text-zinc-500 dark:text-zinc-400 uppercase tracking-wider text-[10px] font-medium">
               Облачная база данных
@@ -350,7 +350,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
             </div>
           </div>
 
-          <div className="p-3 rounded-xl bg-white dark:bg-black/50 border border-black/10 dark:border-white/15 space-y-1 text-xs">
+          <div className="p-3 rounded-xl bg-white dark:bg-black/50 space-y-1 text-xs">
             <div className="flex items-center justify-between font-mono text-[11px]">
               <span className="text-zinc-500 dark:text-zinc-400">Провайдер:</span>
               <span className="font-semibold text-zinc-900 dark:text-white">Supabase PostgreSQL (AWS eu-west-1)</span>
@@ -374,7 +374,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
         </div>
 
         {/* Section 2: Backup Hub */}
-        <div className="p-4 rounded-2xl bg-zinc-100/70 dark:bg-white/[0.05] border border-black/10 dark:border-white/10 space-y-3">
+        <div className="p-4 rounded-2xl bg-zinc-100/70 dark:bg-white/[0.05] space-y-3">
           <div className="text-zinc-500 dark:text-zinc-400 uppercase tracking-wider text-[10px] font-mono font-medium">
             Резервное копирование всех проектов
           </div>
@@ -383,7 +383,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
             <button
               type="button"
               onClick={handleExportBackup}
-              className="px-3.5 py-2.5 rounded-xl bg-white hover:bg-zinc-50 dark:bg-white/10 dark:hover:bg-white/15 text-xs font-medium text-zinc-800 hover:text-zinc-950 dark:text-zinc-200 dark:hover:text-white flex items-center justify-center gap-2 transition-colors border border-black/10 dark:border-white/10 shadow-xs"
+              className="px-3.5 py-2.5 rounded-xl bg-white hover:bg-zinc-50 dark:bg-white/10 dark:hover:bg-white/15 text-xs font-medium text-zinc-800 hover:text-zinc-950 dark:text-zinc-200 dark:hover:text-white flex items-center justify-center gap-2 transition-colors shadow-xs"
             >
               <svg className="w-4 h-4 text-zinc-500 dark:text-zinc-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -396,7 +396,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
             <button
               type="button"
               onClick={() => backupInputRef.current?.click()}
-              className="px-3.5 py-2.5 rounded-xl bg-white hover:bg-zinc-50 dark:bg-white/10 dark:hover:bg-white/15 text-xs font-medium text-zinc-800 hover:text-zinc-950 dark:text-zinc-200 dark:hover:text-white flex items-center justify-center gap-2 transition-colors border border-black/10 dark:border-white/10 shadow-xs"
+              className="px-3.5 py-2.5 rounded-xl bg-white hover:bg-zinc-50 dark:bg-white/10 dark:hover:bg-white/15 text-xs font-medium text-zinc-800 hover:text-zinc-950 dark:text-zinc-200 dark:hover:text-white flex items-center justify-center gap-2 transition-colors shadow-xs"
             >
               <svg className="w-4 h-4 text-zinc-500 dark:text-zinc-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <polyline points="1 4 1 10 7 10" />
@@ -408,7 +408,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
         </div>
 
         {/* Section 3: AI & MCP Integration */}
-        <div className="p-4 rounded-2xl bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 border border-indigo-500/20 flex items-center justify-between gap-3">
+        <div className="p-4 rounded-2xl bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 flex items-center justify-between gap-3">
           <div className="space-y-0.5">
             <div className="font-display font-semibold text-xs text-zinc-900 dark:text-white flex items-center gap-1.5">
               <span>🤖 AI-Агент & MCP Мост</span>
@@ -430,7 +430,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
         </div>
 
         {/* Section 4: Logout Action */}
-        <div className="flex items-center justify-between pt-2 border-t border-black/10 dark:border-white/10">
+        <div className="flex items-center justify-between pt-2">
           <button
             type="button"
             onClick={() => {
@@ -439,7 +439,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                 onClose();
               }
             }}
-            className="px-3.5 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/30 dark:hover:bg-rose-950/50 text-xs text-rose-700 dark:text-rose-300 hover:text-rose-800 dark:hover:text-rose-200 flex items-center gap-1.5 transition-colors border border-rose-200 dark:border-rose-900/30 font-medium"
+            className="px-3.5 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/30 dark:hover:bg-rose-950/50 text-xs text-rose-700 dark:text-rose-300 hover:text-rose-800 dark:hover:text-rose-200 flex items-center gap-1.5 transition-colors font-medium"
           >
             <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />

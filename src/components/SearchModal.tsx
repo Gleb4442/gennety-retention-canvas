@@ -117,7 +117,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Search Bar */}
-        <div className="flex items-center px-5 py-4 border-b border-current/10">
+        <div className="flex items-center px-5 py-4">
           <IconSearchMinimal className="w-4 h-4 opacity-60 mr-3 flex-shrink-0" />
           <input
             ref={inputRef}
@@ -222,7 +222,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="px-5 py-2.5 border-t border-current/10 flex items-center justify-between text-[10px] font-mono opacity-50">
+        <div className="px-5 py-2.5 flex items-center justify-between text-[10px] font-mono opacity-50">
           <span>Навигация: ↑ ↓ стрелки</span>
           <span>ENTER для перехода</span>
         </div>

@@ -39,7 +39,7 @@ export const HelpShortcutsModal: React.FC<HelpShortcutsModalProps> = ({ isOpen, 
         className="w-full max-w-lg minimal-modal rounded-3xl shadow-2xl overflow-hidden flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="px-6 py-4 flex items-center justify-between border-b border-current/10">
+        <div className="px-6 py-5 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-xl liquid-pill flex items-center justify-center opacity-90">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
@@ -88,7 +88,7 @@ export const HelpShortcutsModal: React.FC<HelpShortcutsModalProps> = ({ isOpen, 
           </div>
         </div>
 
-        <div className="px-6 py-3 border-t border-current/10 flex justify-end">
+        <div className="px-6 py-4 flex justify-end">
           <button
             onClick={onClose}
             className="px-4 py-2 rounded-xl liquid-pill font-medium text-xs hover:liquid-pill-active transition-all"

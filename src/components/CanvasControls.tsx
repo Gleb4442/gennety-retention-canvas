@@ -31,7 +31,7 @@ export const CanvasControls: React.FC<CanvasControlsProps> = ({ isLocked, onTogg
       </div>
 
       {/* Main floating control bar */}
-      <div className="flex items-center p-1 rounded-2xl liquid-glass shadow-2xl gap-1">
+      <div className="flex items-center p-1.5 rounded-2xl liquid-glass shadow-2xl gap-1">
         <button
           onClick={() => zoomIn({ duration: 250 })}
           className="p-2 rounded-xl liquid-pill opacity-75 hover:opacity-100 transition-opacity"
@@ -52,7 +52,7 @@ export const CanvasControls: React.FC<CanvasControlsProps> = ({ isLocked, onTogg
           </svg>
         </button>
 
-        <div className="w-[1px] h-4 bg-current/10 mx-0.5" />
+        <div className="w-px h-3.5 bg-current/10 mx-0.5 opacity-60" />
 
         <button
           onClick={() => fitView({ padding: 0.18, duration: 400 })}
@@ -67,31 +67,31 @@ export const CanvasControls: React.FC<CanvasControlsProps> = ({ isLocked, onTogg
         {/* Preset zoom levels */}
         <button
           onClick={() => zoomTo(0.5, { duration: 300 })}
-          className="px-2 py-1 rounded-lg text-[10px] font-mono liquid-pill opacity-70 hover:opacity-100 transition-opacity"
+          className="px-2.5 py-1 rounded-xl text-[10px] font-mono liquid-pill opacity-70 hover:opacity-100 transition-opacity"
         >
           50%
         </button>
         <button
           onClick={() => zoomTo(1.0, { duration: 300 })}
-          className="px-2 py-1 rounded-lg text-[10px] font-mono liquid-pill opacity-70 hover:opacity-100 transition-opacity"
+          className="px-2.5 py-1 rounded-xl text-[10px] font-mono liquid-pill opacity-70 hover:opacity-100 transition-opacity"
         >
           100%
         </button>
         <button
           onClick={() => zoomTo(1.5, { duration: 300 })}
-          className="px-2 py-1 rounded-lg text-[10px] font-mono liquid-pill opacity-70 hover:opacity-100 transition-opacity"
+          className="px-2.5 py-1 rounded-xl text-[10px] font-mono liquid-pill opacity-70 hover:opacity-100 transition-opacity"
         >
           150%
         </button>
 
-        <div className="w-[1px] h-4 bg-current/10 mx-0.5" />
+        <div className="w-px h-3.5 bg-current/10 mx-0.5 opacity-60" />
 
         {/* Marquee Area Selection Mode Button */}
         <button
           onClick={() => setIsSelectAreaMode(!isSelectAreaMode)}
           className={`p-2 rounded-xl transition-all duration-150 ${
             isSelectAreaMode
-              ? 'liquid-pill-active font-semibold ring-1 ring-white/20'
+              ? 'liquid-pill-active font-semibold shadow-sm'
               : 'liquid-pill opacity-70 hover:opacity-100'
           }`}
           title={

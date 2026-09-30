@@ -181,7 +181,7 @@ export const CustomEdge = ({
               {/* Optional Image Thumbnail in Edge Pill */}
               {data?.imageUrl && (
                 <div 
-                  className="relative group/edgimg w-5 h-5 rounded-md overflow-hidden flex-shrink-0 cursor-pointer border border-white/20 shadow-sm"
+                  className="relative group/edgimg w-5 h-5 rounded-md overflow-hidden flex-shrink-0 cursor-pointer shadow-sm"
                   onClick={(e) => {
                     e.stopPropagation();
                     openLightbox(data.imageUrl!, data?.label || 'Связь');
@@ -202,7 +202,7 @@ export const CustomEdge = ({
               </span>
 
               {/* Quick action buttons on hover */}
-              <div className="hidden group-hover:flex items-center gap-1 ml-1 border-l border-current/20 pl-1.5 opacity-70">
+              <div className="hidden group-hover:flex items-center gap-1 ml-1 pl-1.5 opacity-70">
                 <button
                   onClick={(e) => {
                     e.stopPropagation();

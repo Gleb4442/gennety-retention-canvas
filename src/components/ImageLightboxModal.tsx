@@ -68,13 +68,13 @@ export const ImageLightboxModal: React.FC<ImageLightboxModalProps> = ({
         className="absolute top-5 inset-x-6 flex items-center justify-between pointer-events-none z-10"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="pointer-events-auto flex items-center gap-2 px-3.5 py-1.5 rounded-xl liquid-glass text-xs font-mono text-zinc-100 shadow-xl border border-white/10">
+        <div className="pointer-events-auto flex items-center gap-2 px-3.5 py-1.5 rounded-xl liquid-glass text-xs font-mono text-zinc-100 shadow-xl">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
           <span className="truncate max-w-xs">{title || 'Просмотр изображения'}</span>
         </div>
 
         {/* Floating Controls */}
-        <div className="pointer-events-auto flex items-center gap-1.5 p-1 rounded-2xl liquid-glass shadow-2xl border border-white/10 text-zinc-200">
+        <div className="pointer-events-auto flex items-center gap-1.5 p-1 rounded-2xl liquid-glass shadow-2xl text-zinc-200">
           <button
             onClick={() => setZoom((z) => Math.max(z - 0.25, 0.5))}
             className="p-2 rounded-xl hover:bg-white/10 text-inherit transition-colors"
@@ -140,7 +140,7 @@ export const ImageLightboxModal: React.FC<ImageLightboxModalProps> = ({
           src={imageUrl}
           alt={title || 'Фото'}
           style={{ transform: `scale(${zoom})`, transformOrigin: 'center center' }}
-          className="max-h-[80vh] max-w-[85vw] object-contain rounded-2xl shadow-2xl transition-transform duration-150 cursor-grab active:cursor-grabbing border border-white/10"
+          className="max-h-[80vh] max-w-[85vw] object-contain rounded-2xl shadow-2xl transition-transform duration-150 cursor-grab active:cursor-grabbing"
         />
       </div>
     </div>

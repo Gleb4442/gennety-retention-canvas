@@ -26,24 +26,24 @@ html.font-size-lg {
 .theme-dark {
   --bg-canvas: #090A0D;
   --dots-color: #1A1C24;
-  --card-glass: #111319;
+  --card-glass: rgba(17, 19, 25, 0.85);
   --surface-modal: #111319;
-  --border-modal: rgba(255, 255, 255, 0.1);
-  --card-border: rgba(255, 255, 255, 0.08);
+  --border-modal: rgba(255, 255, 255, 0.04);
+  --card-border: transparent;
   --card-specular: none;
-  --card-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.65);
+  --card-shadow: 0 24px 50px -12px rgba(0, 0, 0, 0.75), 0 1px 3px 0 rgba(255, 255, 255, 0.03);
   --text-primary: #F4F4F6;
   --text-secondary: #A1A7B4;
   --text-muted: #6B7280;
-  --nav-glass: #0C0D13;
-  --panel-glass: #111319;
-  --pill-glass: rgba(255, 255, 255, 0.05);
-  --pill-glass-hover: rgba(255, 255, 255, 0.09);
-  --pill-active: rgba(255, 255, 255, 0.15);
+  --nav-glass: rgba(12, 13, 19, 0.75);
+  --panel-glass: rgba(17, 19, 25, 0.92);
+  --pill-glass: rgba(255, 255, 255, 0.04);
+  --pill-glass-hover: rgba(255, 255, 255, 0.08);
+  --pill-active: rgba(255, 255, 255, 0.14);
   --accent-neutral: #E4E4E7;
-  --accent-neutral-subtle: rgba(255, 255, 255, 0.08);
+  --accent-neutral-subtle: rgba(255, 255, 255, 0.06);
   --bg-glass-contrast: #090A0D;
-  --edge-color: rgba(255, 255, 255, 0.28);
+  --edge-color: rgba(255, 255, 255, 0.22);
   --edge-selected: #FFFFFF;
 }
 
@@ -51,24 +51,24 @@ html.font-size-lg {
 .theme-light {
   --bg-canvas: #F4F5F8;
   --dots-color: #D1D6E2;
-  --card-glass: #FFFFFF;
+  --card-glass: rgba(255, 255, 255, 0.9);
   --surface-modal: #FFFFFF;
-  --border-modal: rgba(0, 0, 0, 0.09);
-  --card-border: rgba(0, 0, 0, 0.08);
+  --border-modal: rgba(0, 0, 0, 0.04);
+  --card-border: transparent;
   --card-specular: none;
-  --card-shadow: 0 12px 30px -10px rgba(0, 20, 50, 0.08), 0 2px 8px -2px rgba(0, 20, 50, 0.04);
+  --card-shadow: 0 20px 45px -12px rgba(0, 20, 50, 0.09), 0 2px 8px -2px rgba(0, 20, 50, 0.03);
   --text-primary: #0F172A;
   --text-secondary: #334155;
   --text-muted: #64748B;
-  --nav-glass: #FFFFFF;
-  --panel-glass: #FFFFFF;
-  --pill-glass: rgba(0, 0, 0, 0.04);
-  --pill-glass-hover: rgba(0, 0, 0, 0.07);
-  --pill-active: rgba(0, 0, 0, 0.12);
+  --nav-glass: rgba(255, 255, 255, 0.85);
+  --panel-glass: rgba(255, 255, 255, 0.95);
+  --pill-glass: rgba(0, 0, 0, 0.035);
+  --pill-glass-hover: rgba(0, 0, 0, 0.065);
+  --pill-active: rgba(0, 0, 0, 0.1);
   --accent-neutral: #18181B;
-  --accent-neutral-subtle: rgba(0, 0, 0, 0.05);
+  --accent-neutral-subtle: rgba(0, 0, 0, 0.04);
   --bg-glass-contrast: #FFFFFF;
-  --edge-color: rgba(0, 0, 0, 0.25);
+  --edge-color: rgba(0, 0, 0, 0.2);
   --edge-selected: #0F172A;
 }
 
@@ -76,24 +76,24 @@ html.font-size-lg {
 .theme-graphite {
   --bg-canvas: #16171B;
   --dots-color: #272831;
-  --card-glass: #1E2026;
+  --card-glass: rgba(30, 32, 38, 0.85);
   --surface-modal: #1E2026;
-  --border-modal: rgba(255, 255, 255, 0.1);
-  --card-border: rgba(255, 255, 255, 0.08);
+  --border-modal: rgba(255, 255, 255, 0.04);
+  --card-border: transparent;
   --card-specular: none;
-  --card-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.6);
+  --card-shadow: 0 24px 50px -12px rgba(0, 0, 0, 0.7), 0 1px 3px 0 rgba(255, 255, 255, 0.03);
   --text-primary: #F0F1F4;
   --text-secondary: #A3A6B4;
   --text-muted: #6D707E;
-  --nav-glass: #18191E;
-  --panel-glass: #1E2026;
-  --pill-glass: rgba(255, 255, 255, 0.06);
-  --pill-glass-hover: rgba(255, 255, 255, 0.1);
-  --pill-active: rgba(255, 255, 255, 0.16);
+  --nav-glass: rgba(24, 25, 30, 0.8);
+  --panel-glass: rgba(30, 32, 38, 0.92);
+  --pill-glass: rgba(255, 255, 255, 0.05);
+  --pill-glass-hover: rgba(255, 255, 255, 0.09);
+  --pill-active: rgba(255, 255, 255, 0.15);
   --accent-neutral: #E4E5EB;
-  --accent-neutral-subtle: rgba(255, 255, 255, 0.08);
+  --accent-neutral-subtle: rgba(255, 255, 255, 0.06);
   --bg-glass-contrast: #16171B;
-  --edge-color: rgba(163, 166, 180, 0.35);
+  --edge-color: rgba(163, 166, 180, 0.28);
   --edge-selected: #F0F1F4;
 }
 
@@ -101,24 +101,24 @@ html.font-size-lg {
 .theme-monochrome {
   --bg-canvas: #050505;
   --dots-color: #222222;
-  --card-glass: #121212;
+  --card-glass: rgba(18, 18, 18, 0.9);
   --surface-modal: #121212;
-  --border-modal: rgba(255, 255, 255, 0.14);
-  --card-border: rgba(255, 255, 255, 0.12);
+  --border-modal: rgba(255, 255, 255, 0.05);
+  --card-border: transparent;
   --card-specular: none;
-  --card-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.85);
+  --card-shadow: 0 24px 60px -12px rgba(0, 0, 0, 0.9), 0 1px 3px 0 rgba(255, 255, 255, 0.04);
   --text-primary: #FFFFFF;
   --text-secondary: #B5B5B5;
   --text-muted: #737373;
-  --nav-glass: #0A0A0A;
-  --panel-glass: #121212;
-  --pill-glass: rgba(255, 255, 255, 0.08);
-  --pill-glass-hover: rgba(255, 255, 255, 0.14);
-  --pill-active: rgba(255, 255, 255, 0.22);
+  --nav-glass: rgba(10, 10, 10, 0.8);
+  --panel-glass: rgba(18, 18, 18, 0.95);
+  --pill-glass: rgba(255, 255, 255, 0.06);
+  --pill-glass-hover: rgba(255, 255, 255, 0.11);
+  --pill-active: rgba(255, 255, 255, 0.18);
   --accent-neutral: #FFFFFF;
-  --accent-neutral-subtle: rgba(255, 255, 255, 0.12);
+  --accent-neutral-subtle: rgba(255, 255, 255, 0.08);
   --bg-glass-contrast: #0A0A0A;
-  --edge-color: rgba(255, 255, 255, 0.3);
+  --edge-color: rgba(255, 255, 255, 0.25);
   --edge-selected: #FFFFFF;
 }
 
@@ -126,24 +126,24 @@ html.font-size-lg {
 .theme-stone {
   --bg-canvas: #1A1918;
   --dots-color: #2C2B29;
-  --card-glass: #242220;
+  --card-glass: rgba(36, 34, 32, 0.85);
   --surface-modal: #242220;
-  --border-modal: rgba(255, 250, 240, 0.1);
-  --card-border: rgba(255, 250, 240, 0.08);
+  --border-modal: rgba(255, 250, 240, 0.04);
+  --card-border: transparent;
   --card-specular: none;
-  --card-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.6);
+  --card-shadow: 0 24px 50px -12px rgba(0, 0, 0, 0.7), 0 1px 3px 0 rgba(255, 255, 255, 0.03);
   --text-primary: #F4F1EC;
   --text-secondary: #B2ADA6;
   --text-muted: #7B7670;
-  --nav-glass: #1D1C1B;
-  --panel-glass: #242220;
-  --pill-glass: rgba(255, 255, 255, 0.05);
-  --pill-glass-hover: rgba(255, 255, 255, 0.09);
-  --pill-active: rgba(255, 255, 255, 0.15);
+  --nav-glass: rgba(29, 28, 27, 0.8);
+  --panel-glass: rgba(36, 34, 32, 0.92);
+  --pill-glass: rgba(255, 255, 255, 0.045);
+  --pill-glass-hover: rgba(255, 255, 255, 0.08);
+  --pill-active: rgba(255, 255, 255, 0.14);
   --accent-neutral: #F4F1EC;
-  --accent-neutral-subtle: rgba(255, 255, 255, 0.08);
+  --accent-neutral-subtle: rgba(255, 255, 255, 0.06);
   --bg-glass-contrast: #1A1918;
-  --edge-color: rgba(178, 173, 166, 0.35);
+  --edge-color: rgba(178, 173, 166, 0.28);
   --edge-selected: #F4F1EC;
 }
 
@@ -151,24 +151,24 @@ html.font-size-lg {
 .theme-slate {
   --bg-canvas: #0F1216;
   --dots-color: #20242D;
-  --card-glass: #181C23;
+  --card-glass: rgba(24, 28, 35, 0.85);
   --surface-modal: #181C23;
-  --border-modal: rgba(255, 255, 255, 0.1);
-  --card-border: rgba(255, 255, 255, 0.08);
+  --border-modal: rgba(255, 255, 255, 0.04);
+  --card-border: transparent;
   --card-specular: none;
-  --card-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.6);
+  --card-shadow: 0 24px 50px -12px rgba(0, 0, 0, 0.7), 0 1px 3px 0 rgba(255, 255, 255, 0.03);
   --text-primary: #EEF1F6;
   --text-secondary: #A2AAB7;
   --text-muted: #6B7484;
-  --nav-glass: #12151B;
-  --panel-glass: #181C23;
-  --pill-glass: rgba(255, 255, 255, 0.05);
-  --pill-glass-hover: rgba(255, 255, 255, 0.09);
-  --pill-active: rgba(255, 255, 255, 0.15);
+  --nav-glass: rgba(18, 21, 27, 0.8);
+  --panel-glass: rgba(24, 28, 35, 0.92);
+  --pill-glass: rgba(255, 255, 255, 0.045);
+  --pill-glass-hover: rgba(255, 255, 255, 0.08);
+  --pill-active: rgba(255, 255, 255, 0.14);
   --accent-neutral: #EEF1F6;
-  --accent-neutral-subtle: rgba(255, 255, 255, 0.08);
+  --accent-neutral-subtle: rgba(255, 255, 255, 0.06);
   --bg-glass-contrast: #0F1216;
-  --edge-color: rgba(162, 170, 183, 0.32);
+  --edge-color: rgba(162, 170, 183, 0.26);
   --edge-selected: #EEF1F6;
 }
 
@@ -176,24 +176,24 @@ html.font-size-lg {
 .theme-sand {
   --bg-canvas: #ECE7DF;
   --dots-color: #CEC7BC;
-  --card-glass: #F7F5F0;
+  --card-glass: rgba(247, 245, 240, 0.9);
   --surface-modal: #F7F5F0;
-  --border-modal: rgba(60, 50, 40, 0.08);
-  --card-border: rgba(60, 50, 40, 0.07);
+  --border-modal: rgba(60, 50, 40, 0.04);
+  --card-border: transparent;
   --card-specular: none;
-  --card-shadow: 0 12px 28px -10px rgba(60, 50, 40, 0.08), 0 2px 8px -2px rgba(60, 50, 40, 0.04);
+  --card-shadow: 0 20px 45px -12px rgba(60, 50, 40, 0.09), 0 2px 8px -2px rgba(60, 50, 40, 0.03);
   --text-primary: #23201D;
   --text-secondary: #4E4943;
   --text-muted: #7E7770;
-  --nav-glass: #F2EFE8;
-  --panel-glass: #F7F5F0;
-  --pill-glass: rgba(60, 50, 40, 0.05);
-  --pill-glass-hover: rgba(60, 50, 40, 0.09);
-  --pill-active: rgba(60, 50, 40, 0.14);
+  --nav-glass: rgba(242, 239, 232, 0.85);
+  --panel-glass: rgba(247, 245, 240, 0.95);
+  --pill-glass: rgba(60, 50, 40, 0.04);
+  --pill-glass-hover: rgba(60, 50, 40, 0.075);
+  --pill-active: rgba(60, 50, 40, 0.12);
   --accent-neutral: #23201D;
-  --accent-neutral-subtle: rgba(60, 50, 40, 0.06);
+  --accent-neutral-subtle: rgba(60, 50, 40, 0.05);
   --bg-glass-contrast: #F7F5F0;
-  --edge-color: rgba(78, 73, 67, 0.3);
+  --edge-color: rgba(78, 73, 67, 0.24);
   --edge-selected: #23201D;
 }
 
@@ -201,24 +201,24 @@ html.font-size-lg {
 .theme-mist {
   --bg-canvas: #E4E7EB;
   --dots-color: #C6CBD3;
-  --card-glass: #F2F5F8;
+  --card-glass: rgba(242, 245, 248, 0.9);
   --surface-modal: #F2F5F8;
-  --border-modal: rgba(15, 23, 42, 0.08);
-  --card-border: rgba(15, 23, 42, 0.07);
+  --border-modal: rgba(15, 23, 42, 0.04);
+  --card-border: transparent;
   --card-specular: none;
-  --card-shadow: 0 12px 28px -10px rgba(15, 23, 42, 0.07), 0 2px 8px -2px rgba(15, 23, 42, 0.04);
+  --card-shadow: 0 20px 45px -12px rgba(15, 23, 42, 0.08), 0 2px 8px -2px rgba(15, 23, 42, 0.03);
   --text-primary: #19202B;
   --text-secondary: #3E4756;
   --text-muted: #6E798B;
-  --nav-glass: #EBF0F4;
-  --panel-glass: #F2F5F8;
-  --pill-glass: rgba(0, 0, 0, 0.04);
-  --pill-glass-hover: rgba(0, 0, 0, 0.08);
-  --pill-active: rgba(0, 0, 0, 0.13);
+  --nav-glass: rgba(235, 240, 244, 0.85);
+  --panel-glass: rgba(242, 245, 248, 0.95);
+  --pill-glass: rgba(0, 0, 0, 0.035);
+  --pill-glass-hover: rgba(0, 0, 0, 0.07);
+  --pill-active: rgba(0, 0, 0, 0.11);
   --accent-neutral: #19202B;
-  --accent-neutral-subtle: rgba(0, 0, 0, 0.05);
+  --accent-neutral-subtle: rgba(0, 0, 0, 0.04);
   --bg-glass-contrast: #F2F5F8;
-  --edge-color: rgba(62, 71, 86, 0.28);
+  --edge-color: rgba(62, 71, 86, 0.22);
   --edge-selected: #19202B;
 }
 
@@ -236,13 +236,13 @@ html.font-size-lg {
     background-color: var(--bg-canvas);
     color: var(--text-primary);
     font-family: var(--font-sans);
-    transition: background-color 0.2s ease;
+    transition: background-color 0.25s ease;
   }
 
   /* Custom scrollbars */
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
   }
   ::-webkit-scrollbar-track {
     background: transparent;
@@ -256,69 +256,77 @@ html.font-size-lg {
   }
 }
 
-/* Minimalist Surface Utilities (Replaces old blurry Liquid Glass) */
+/* Frameless Minimalist Surface Utilities */
 .minimal-modal,
 .liquid-card {
   background-color: var(--surface-modal, #111319);
-  border: 1px solid var(--border-modal, rgba(255, 255, 255, 0.12));
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.65);
+  border: none !important;
+  box-shadow: 0 32px 72px -16px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
 }
 
 .liquid-glass {
   background: var(--card-glass);
   box-shadow: var(--card-shadow);
-  border: 1px solid var(--card-border, rgba(255, 255, 255, 0.08)) !important;
+  border: none !important;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
 }
 
 .liquid-glass-nav {
   background: var(--nav-glass);
-  box-shadow: 0 6px 20px -4px rgba(0, 0, 0, 0.35);
-  border: 1px solid var(--card-border, rgba(255, 255, 255, 0.08)) !important;
+  box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.45);
+  border: none !important;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
 }
 
 .liquid-glass-panel {
   background: var(--panel-glass);
-  box-shadow: -10px 0 30px -5px rgba(0, 0, 0, 0.4);
-  border-left: 1px solid var(--card-border, rgba(255, 255, 255, 0.08)) !important;
+  box-shadow: -20px 0 50px -10px rgba(0, 0, 0, 0.55);
+  border: none !important;
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
 }
 
 .liquid-pill {
   background: var(--pill-glass);
   color: var(--text-secondary);
-  border: 1px solid var(--card-border, rgba(255, 255, 255, 0.06));
-  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  border: none !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .liquid-pill:hover {
   background: var(--pill-glass-hover);
   color: var(--text-primary);
-  border-color: var(--border-modal, rgba(255, 255, 255, 0.15));
+  transform: translateY(-0.5px);
 }
 
 /* Liquid Pill Active */
 .liquid-pill-active {
   background: var(--pill-active) !important;
   color: var(--text-primary) !important;
-  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  border: none !important;
+  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.35) !important;
   font-weight: 600 !important;
 }
 
-
-/* Solid Opaque Edge Labels — No liquid glass effect so connection line underneath never strikes through text */
+/* Solid Opaque Edge Labels — Frameless Floating Badge */
 .edge-solid-pill {
   background-color: var(--bg-glass-contrast) !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
   color: var(--text-primary);
-  border: 1px solid var(--edge-color) !important;
-  box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.45);
+  border: none !important;
+  box-shadow: 0 6px 20px -2px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.08);
   opacity: 1 !important;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .edge-solid-pill:hover {
-  border-color: var(--text-primary) !important;
-  box-shadow: 0 6px 18px -2px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 8px 24px -2px rgba(0, 0, 0, 0.7), 0 0 0 1px var(--text-primary);
+  transform: scale(1.03);
 }
 
 .edge-solid-pill-selected {
@@ -326,8 +334,8 @@ html.font-size-lg {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
   color: var(--edge-selected) !important;
-  border-color: var(--edge-selected) !important;
-  box-shadow: 0 0 0 2px var(--edge-selected), 0 8px 22px rgba(0, 0, 0, 0.5) !important;
+  border: none !important;
+  box-shadow: 0 0 0 2px var(--edge-selected), 0 10px 28px rgba(0, 0, 0, 0.6) !important;
 }
 
 /* React Flow adjustments */

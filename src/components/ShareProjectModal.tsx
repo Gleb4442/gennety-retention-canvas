@@ -73,9 +73,9 @@ export const ShareProjectModal: React.FC = () => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-150">
-      <div className="w-full max-w-lg rounded-2xl minimal-modal flex flex-col shadow-2xl overflow-hidden">
+      <div className="w-full max-w-lg rounded-3xl minimal-modal flex flex-col shadow-2xl overflow-hidden">
         {/* Header */}
-        <div className="p-5 border-b border-black/10 dark:border-white/10 flex items-center justify-between">
+        <div className="p-5 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="p-2 rounded-xl liquid-pill text-blue-400">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -103,12 +103,12 @@ export const ShareProjectModal: React.FC = () => {
         {/* Sharing Options */}
         <div className="p-5 space-y-4">
           {/* Editor Link Card */}
-          <div className="p-4 rounded-xl border border-indigo-500/30 bg-indigo-500/5 space-y-3">
+          <div className="p-4 rounded-2xl bg-indigo-500/10 space-y-3">
             <div className="flex items-start justify-between">
               <div>
                 <div className="flex items-center gap-2">
                   <span className="font-semibold text-xs text-indigo-400">✏️ Ссылка для редактирования</span>
-                  <span className="px-1.5 py-0.5 rounded text-[9px] font-mono bg-indigo-500/20 text-indigo-300">Editor</span>
+                  <span className="px-1.5 py-0.5 rounded-lg text-[9px] font-mono bg-indigo-500/20 text-indigo-300">Editor</span>
                 </div>
                 <p className="text-[11px] opacity-75 mt-0.5">
                   Полный доступ: перемещение блоков, создание карточек, рисование, совместная работа в реальном времени.
@@ -130,12 +130,12 @@ export const ShareProjectModal: React.FC = () => {
           </div>
 
           {/* Viewer Link Card */}
-          <div className="p-4 rounded-xl border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 space-y-3">
+          <div className="p-4 rounded-2xl bg-black/[0.03] dark:bg-white/[0.04] space-y-3">
             <div className="flex items-start justify-between">
               <div>
                 <div className="flex items-center gap-2">
                   <span className="font-semibold text-xs text-emerald-400">👁️ Ссылка только для просмотра</span>
-                  <span className="px-1.5 py-0.5 rounded text-[9px] font-mono bg-emerald-500/20 text-emerald-300">Read-Only</span>
+                  <span className="px-1.5 py-0.5 rounded-lg text-[9px] font-mono bg-emerald-500/20 text-emerald-300">Read-Only</span>
                 </div>
                 <p className="text-[11px] opacity-75 mt-0.5">
                   Безопасный доступ для клиентов: можно смотреть, читать заметки и видеть живые курсоры, но правки заблокированы.
@@ -146,7 +146,7 @@ export const ShareProjectModal: React.FC = () => {
             <button
               onClick={() => handleCopyLink('viewer')}
               disabled={isLoading}
-              className="w-full py-2 px-3 rounded-xl liquid-pill font-medium text-xs opacity-90 hover:opacity-100 hover:bg-white/10 active:scale-98 transition-all flex items-center justify-center gap-2 border border-black/10 dark:border-white/10"
+              className="w-full py-2 px-3 rounded-xl liquid-pill font-medium text-xs opacity-90 hover:opacity-100 hover:bg-white/10 active:scale-98 transition-all flex items-center justify-center gap-2"
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
@@ -164,7 +164,7 @@ export const ShareProjectModal: React.FC = () => {
                 {shares.map((s) => (
                   <div
                     key={s.shareToken}
-                    className="p-2 rounded-lg bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 flex items-center justify-between text-[11px]"
+                    className="p-2.5 rounded-xl bg-black/[0.03] dark:bg-white/[0.04] flex items-center justify-between text-[11px]"
                   >
                     <div className="flex items-center gap-2 truncate pr-2">
                       <span className={`w-2 h-2 rounded-full ${s.role === 'viewer' ? 'bg-emerald-400' : 'bg-indigo-400'}`} />
@@ -187,7 +187,7 @@ export const ShareProjectModal: React.FC = () => {
         </div>
 
         {/* Footer info */}
-        <div className="p-4 border-t border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 text-xs opacity-60 flex items-center justify-between">
+        <div className="p-4 bg-black/[0.03] dark:bg-white/[0.03] text-xs opacity-60 flex items-center justify-between">
           <span>Гостям не требуется создавать пароль</span>
           <span>Горячая клавиша: ⌘⇧S</span>
         </div>

@@ -56,7 +56,7 @@ export const LivePresenceBar: React.FC = () => {
     <>
       <div className="flex items-center gap-1.5 px-2 py-1 rounded-xl liquid-pill text-xs select-none">
         {/* Active Online Indicator */}
-        <div className="flex items-center gap-1.5 pr-1 border-r border-black/10 dark:border-white/10">
+        <div className="flex items-center gap-1.5 pr-1.5">
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
             <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
@@ -113,8 +113,8 @@ export const LivePresenceBar: React.FC = () => {
       {/* User Profile Modal */}
       {isProfileModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="w-full max-w-sm rounded-2xl minimal-modal p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150">
-            <div className="flex items-center justify-between pb-2 border-b border-black/10 dark:border-white/10">
+          <div className="w-full max-w-sm rounded-3xl minimal-modal p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between pb-2">
               <div>
                 <h3 className="text-sm font-semibold tracking-tight">Ваш профиль в команде</h3>
                 <p className="text-[11px] opacity-60">Коллеги видят ваше имя и цвет на доске</p>
@@ -135,7 +135,7 @@ export const LivePresenceBar: React.FC = () => {
                   value={editingName}
                   onChange={(e) => setEditingName(e.target.value)}
                   placeholder="Ваше имя или должность..."
-                  className="w-full px-3 py-2 rounded-xl text-xs bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+                  className="w-full px-3 py-2 rounded-xl text-xs bg-black/[0.04] dark:bg-white/[0.06] border-0 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
                   autoFocus
                 />
               </div>

@@ -246,7 +246,7 @@ export const SidebarInspector: React.FC<SidebarInspectorProps> = ({ onFocusNode 
       />
 
       {/* Header */}
-      <div className="h-14 px-5 flex items-center justify-between border-b border-current/10">
+      <div className="h-14 px-5 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           <div className="w-6 h-6 rounded-lg liquid-pill flex items-center justify-center opacity-85">
             {isImageNode ? (
@@ -283,7 +283,7 @@ export const SidebarInspector: React.FC<SidebarInspectorProps> = ({ onFocusNode 
 
       {/* Read-Only Mode Banner */}
       {isViewerMode && (
-        <div className="px-5 py-2 bg-amber-500/10 border-b border-amber-500/20 text-amber-300 text-[11px] font-mono flex items-center gap-2">
+        <div className="mx-4 mt-2 px-4 py-2 bg-amber-500/10 rounded-2xl text-amber-300 text-[11px] font-mono flex items-center gap-2">
           <span>👁</span>
           <span>Режим просмотра: редактирование заблокировано</span>
         </div>
@@ -298,7 +298,7 @@ export const SidebarInspector: React.FC<SidebarInspectorProps> = ({ onFocusNode 
             <div className="space-y-4">
               {/* Photo Preview Banner */}
               <div 
-                className="relative w-full h-44 rounded-2xl overflow-hidden bg-black/30 border border-white/10 group/banner cursor-pointer shadow-inner"
+                className="relative w-full h-44 rounded-2xl overflow-hidden bg-black/30 group/banner cursor-pointer shadow-lg"
                 onClick={() => openLightbox(imgData.imageUrl, imgData.title || imgData.caption || 'Изображение')}
                 title="Кликните для полноэкранного просмотра"
               >
@@ -346,7 +346,7 @@ export const SidebarInspector: React.FC<SidebarInspectorProps> = ({ onFocusNode 
               </div>
 
               {/* Width Presets */}
-              <div className="space-y-1.5 pt-2 border-t border-current/10">
+              <div className="space-y-1.5 pt-2">
                 <div className="flex items-center justify-between">
                   <label className="text-[10px] font-mono opacity-60 uppercase tracking-wider">
                     Размер карточки
@@ -409,7 +409,7 @@ export const SidebarInspector: React.FC<SidebarInspectorProps> = ({ onFocusNode 
               </div>
 
               {/* Action Buttons */}
-              <div className="pt-4 border-t border-current/10 flex gap-2">
+              <div className="pt-3 flex gap-2">
                 <button
                   onClick={() => duplicateNode(selectedNode.id)}
                   className="flex-1 py-2 px-3 rounded-xl liquid-pill font-medium text-xs hover:liquid-pill-active transition-all"
@@ -547,7 +547,7 @@ export const SidebarInspector: React.FC<SidebarInspectorProps> = ({ onFocusNode 
               </div>
 
               {/* Action Buttons */}
-              <div className="pt-4 border-t border-current/10 flex gap-2">
+              <div className="pt-3 flex gap-2">
                 <button
                   onClick={() => duplicateNode(selectedNode.id)}
                   className="flex-1 py-2 px-3 rounded-xl liquid-pill font-medium text-xs hover:liquid-pill-active transition-all"
@@ -620,7 +620,7 @@ export const SidebarInspector: React.FC<SidebarInspectorProps> = ({ onFocusNode 
               </div>
 
               {/* Attached Photo Section */}
-              <div className="space-y-2 pt-2 border-t border-current/10">
+              <div className="space-y-2 pt-2">
                 <div className="flex items-center justify-between">
                   <label className="text-[10px] font-mono opacity-60 uppercase tracking-wider">
                     Фотография блока
@@ -637,7 +637,7 @@ export const SidebarInspector: React.FC<SidebarInspectorProps> = ({ onFocusNode 
 
                 {stratData.imageUrl ? (
                   <div 
-                    className="relative w-full h-36 rounded-xl overflow-hidden bg-black/25 border border-white/10 group/prev cursor-pointer shadow-inner"
+                    className="relative w-full h-36 rounded-2xl overflow-hidden bg-black/25 group/prev cursor-pointer shadow-lg"
                     onClick={() => openLightbox(stratData.imageUrl!, stratData.title)}
                     title="Кликните для полноэкранного просмотра"
                   >
@@ -699,7 +699,7 @@ export const SidebarInspector: React.FC<SidebarInspectorProps> = ({ onFocusNode 
               </div>
 
               {/* Key Metric & Outcome */}
-              <div className="space-y-3 pt-2 border-t border-current/10">
+              <div className="space-y-3 pt-2">
                 <div className="space-y-1">
                   <label className="text-[10px] font-mono opacity-70 uppercase tracking-wider">
                     Целевая метрика (Key Metric)
@@ -728,7 +728,7 @@ export const SidebarInspector: React.FC<SidebarInspectorProps> = ({ onFocusNode 
               </div>
 
               {/* Extended Notes */}
-              <div className="space-y-1.5 pt-2 border-t border-current/10">
+              <div className="space-y-1.5 pt-2">
                 <label className="text-[10px] font-mono opacity-60 uppercase tracking-wider">
                   Заметки и Контекст
                 </label>
@@ -742,7 +742,7 @@ export const SidebarInspector: React.FC<SidebarInspectorProps> = ({ onFocusNode 
               </div>
 
               {/* Dependencies */}
-              <div className="space-y-3 pt-2 border-t border-current/10">
+              <div className="space-y-3 pt-2">
                 <h4 className="font-mono text-[10px] opacity-60 uppercase tracking-wider">
                   Зависимости & Связи
                 </h4>
@@ -805,7 +805,7 @@ export const SidebarInspector: React.FC<SidebarInspectorProps> = ({ onFocusNode 
               </div>
 
               {/* Action Buttons */}
-              <div className="pt-4 border-t border-current/10 flex gap-2">
+              <div className="pt-3 flex gap-2">
                 <button
                   onClick={() => duplicateNode(selectedNode.id)}
                   className="flex-1 py-2 px-3 rounded-xl liquid-pill font-medium text-xs hover:liquid-pill-active transition-all"
@@ -839,7 +839,7 @@ export const SidebarInspector: React.FC<SidebarInspectorProps> = ({ onFocusNode 
             </div>
 
             {/* Edge Photo Attachment */}
-            <div className="space-y-2 pt-2 border-t border-current/10">
+            <div className="space-y-2 pt-2">
               <div className="flex items-center justify-between">
                 <label className="text-[10px] font-mono opacity-60 uppercase tracking-wider">
                   Фотография связи
@@ -856,7 +856,7 @@ export const SidebarInspector: React.FC<SidebarInspectorProps> = ({ onFocusNode 
 
               {selectedEdge.data?.imageUrl && (
                 <div 
-                  className="relative w-full h-32 rounded-xl overflow-hidden bg-black/25 border border-white/10 group/edgeprev cursor-pointer shadow-inner"
+                  className="relative w-full h-32 rounded-2xl overflow-hidden bg-black/25 group/edgeprev cursor-pointer shadow-lg"
                   onClick={() => openLightbox(selectedEdge.data!.imageUrl!, selectedEdge.data?.label || 'Связь')}
                   title="Кликните для полноэкранного просмотра"
                 >
@@ -905,7 +905,7 @@ export const SidebarInspector: React.FC<SidebarInspectorProps> = ({ onFocusNode 
             </div>
 
             {/* Edge Label Size Selector */}
-            <div className="space-y-1.5 pt-2 border-t border-current/10">
+            <div className="space-y-1.5 pt-2">
               <div className="flex items-center justify-between">
                 <label className="text-[10px] font-mono opacity-60 uppercase tracking-wider">
                   Размер заголовка связи
@@ -984,7 +984,7 @@ export const SidebarInspector: React.FC<SidebarInspectorProps> = ({ onFocusNode 
               </button>
             </div>
 
-            <div className="pt-4 border-t border-current/10">
+            <div className="pt-3">
               <button
                 onClick={() => deleteEdge(selectedEdge.id)}
                 className="w-full py-2 px-3 rounded-xl liquid-pill text-rose-400 hover:bg-rose-500/20 font-medium text-xs transition-all"

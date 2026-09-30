@@ -152,8 +152,8 @@ export const Navbar: React.FC<NavbarProps> = ({
       {/* Left Section: Brand Logo ("Canvas") + Project Pill */}
       <div className="flex items-center gap-1.5 flex-shrink-0">
         {/* Brand Block (Canvas only) */}
-        <div className="pointer-events-auto flex items-center gap-2 px-2.5 py-1.5 rounded-xl liquid-glass shadow-lg flex-shrink-0">
-          <div className="w-7 h-7 rounded-lg liquid-pill flex items-center justify-center p-1 text-inherit opacity-95 shadow-sm flex-shrink-0">
+        <div className="pointer-events-auto flex items-center gap-2 px-3 py-1.5 rounded-2xl liquid-glass shadow-xl flex-shrink-0">
+          <div className="w-7 h-7 rounded-xl liquid-pill flex items-center justify-center p-1 text-inherit opacity-95 shadow-sm flex-shrink-0">
             <ButterflyLogo theme={theme} className="w-full h-full" />
           </div>
           <span className="font-display font-bold text-sm tracking-wide text-inherit block leading-none pr-0.5">
@@ -164,7 +164,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Compact Project Folder Pill with Cloud Database Sync Indicator */}
         <button
           onClick={onOpenCabinet}
-          className="pointer-events-auto flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl liquid-glass shadow-lg text-xs font-mono transition-all hover:bg-black/5 dark:hover:bg-white/10 hover:scale-[1.01] active:scale-[0.99] text-inherit group flex-shrink-0"
+          className="pointer-events-auto flex items-center gap-2 px-3 py-1.5 rounded-2xl liquid-glass shadow-xl text-xs font-mono transition-all hover:bg-black/5 dark:hover:bg-white/10 hover:scale-[1.01] active:scale-[0.99] text-inherit group flex-shrink-0"
           title={`Проект: ${activeProject?.title || 'Retention'} | Статус БД: ${
             cloudSyncStatus === 'syncing'
               ? 'Сохранение в Supabase Postgres...'
@@ -198,10 +198,10 @@ export const Navbar: React.FC<NavbarProps> = ({
       </div>
 
       {/* Island 2 (Center): Compact Layout Mode Switcher (Icon-only with tooltips) */}
-      <div className="pointer-events-auto flex items-center p-1 rounded-xl liquid-glass shadow-lg gap-0.5 flex-shrink-0">
+      <div className="pointer-events-auto flex items-center p-1 rounded-2xl liquid-glass shadow-xl gap-0.5 flex-shrink-0">
         <button
           onClick={() => setLayoutMode('freeform')}
-          className={`p-1.5 rounded-lg text-xs transition-all ${
+          className={`p-1.5 rounded-xl text-xs transition-all ${
             layoutMode === 'freeform'
               ? 'liquid-pill-active'
               : 'opacity-65 hover:opacity-100 hover:bg-black/5 dark:hover:bg-white/5'
@@ -214,7 +214,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         <button
           onClick={() => setLayoutMode('pyramid')}
-          className={`p-1.5 rounded-lg text-xs transition-all ${
+          className={`p-1.5 rounded-xl text-xs transition-all ${
             layoutMode === 'pyramid'
               ? 'liquid-pill-active'
               : 'opacity-65 hover:opacity-100 hover:bg-black/5 dark:hover:bg-white/5'
@@ -227,7 +227,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         <button
           onClick={() => setLayoutMode('flywheel')}
-          className={`p-1.5 rounded-lg text-xs transition-all ${
+          className={`p-1.5 rounded-xl text-xs transition-all ${
             layoutMode === 'flywheel'
               ? 'liquid-pill-active'
               : 'opacity-65 hover:opacity-100 hover:bg-black/5 dark:hover:bg-white/5'
@@ -240,12 +240,12 @@ export const Navbar: React.FC<NavbarProps> = ({
       </div>
 
       {/* Island 3 (Right): Theme Switcher, Actions & Settings */}
-      <div className="pointer-events-auto flex items-center gap-1 p-1 rounded-xl liquid-glass shadow-lg flex-shrink-0">
+      <div className="pointer-events-auto flex items-center gap-1 p-1 rounded-2xl liquid-glass shadow-xl flex-shrink-0">
         {/* Theme Dropdown Toggle */}
         <div className="relative">
           <button
             onClick={() => setIsThemeMenuOpen(!isThemeMenuOpen)}
-            className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg liquid-pill text-xs font-mono transition-all"
+            className="flex items-center gap-1.5 px-2 py-1.5 rounded-xl liquid-pill text-xs font-mono transition-all"
             title="Переключить тему оформления"
           >
             <IconThemeSwitch className="w-3.5 h-3.5 opacity-80" />
@@ -278,7 +278,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 >
                   <div className="flex items-center gap-2.5">
                     <span 
-                      className="w-4 h-4 rounded-full border border-white/20 flex-shrink-0"
+                      className="w-4 h-4 rounded-full shadow-sm flex-shrink-0"
                       style={{ 
                         backgroundColor: t.id === 'dark' ? '#08090C' : t.id === 'stone' ? '#1C1B1A' : t.id === 'slate' ? '#111418' : t.id === 'graphite' ? '#18191D' : '#050505' 
                       }} 
@@ -295,7 +295,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               ))}
 
               {/* Light & Gentle Group */}
-              <div className="px-2.5 pt-2.5 pb-1 text-[9px] font-mono uppercase tracking-wider opacity-40 border-t border-current/10 mt-1">
+              <div className="px-2.5 pt-2.5 pb-1 text-[9px] font-mono uppercase tracking-wider opacity-40 mt-1">
                 Светлые & Мягкие для глаз
               </div>
               {themeOptions.filter((t) => t.isLight).map((t) => (
@@ -313,7 +313,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 >
                   <div className="flex items-center gap-2.5">
                     <span 
-                      className="w-4 h-4 rounded-full border border-black/20 flex-shrink-0"
+                      className="w-4 h-4 rounded-full shadow-sm flex-shrink-0"
                       style={{ 
                         backgroundColor: t.id === 'light' ? '#F3F5F8' : t.id === 'sand' ? '#ECE8E1' : '#E4E6EA' 
                       }} 
@@ -470,7 +470,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* MCP Bridge Button (Accent Color) */}
           <button
             onClick={() => setIsAiBridgeModalOpen(true)}
-            className="px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-mono font-bold text-xs tracking-wider shadow-sm transition-all active:scale-95 border border-indigo-400/30 flex-shrink-0"
+            className="px-2.5 py-1 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-mono font-bold text-xs tracking-wider shadow-md shadow-indigo-600/30 transition-all active:scale-95 flex-shrink-0"
             title="MCP & AI-Агент: системный промпт со всеми адресами, MCP-сервер и API (⌘J)"
           >
             MCP

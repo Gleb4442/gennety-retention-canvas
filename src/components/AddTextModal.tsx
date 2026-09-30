@@ -99,12 +99,12 @@ export const AddTextModal: React.FC<AddTextModalProps> = ({ isOpen, onClose }) =
       onClick={onClose}
     >
       <div
-        className="w-full max-w-lg minimal-modal rounded-3xl shadow-2xl overflow-hidden flex flex-col border border-white/10"
+        className="w-full max-w-lg minimal-modal rounded-3xl shadow-2xl overflow-hidden flex flex-col"
         onClick={(e) => e.stopPropagation()}
         onKeyDown={handleKeyDown}
       >
         {/* Header */}
-        <div className="px-6 py-4 flex items-center justify-between border-b border-current/10">
+        <div className="px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-xl liquid-pill flex items-center justify-center opacity-90 text-inherit">
               <IconText className="w-4 h-4" />
@@ -141,7 +141,7 @@ export const AddTextModal: React.FC<AddTextModalProps> = ({ isOpen, onClose }) =
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Например: Ключевой инсайт, Задача или Вопрос..."
-              className="w-full liquid-pill px-3.5 py-2 rounded-xl text-inherit placeholder-current placeholder-opacity-35 outline-none font-display font-medium text-xs border border-current/10"
+              className="w-full liquid-pill px-3.5 py-2 rounded-xl text-inherit placeholder-current placeholder-opacity-35 outline-none font-display font-medium text-xs"
             />
           </div>
 
@@ -157,7 +157,7 @@ export const AddTextModal: React.FC<AddTextModalProps> = ({ isOpen, onClose }) =
               value={text}
               onChange={(e) => setText(e.target.value)}
               placeholder="Вставьте или введите любой текст..."
-              className="w-full liquid-pill px-3.5 py-3 rounded-2xl text-inherit placeholder-current placeholder-opacity-35 outline-none font-sans text-xs leading-relaxed border border-current/10 resize-y"
+              className="w-full liquid-pill px-3.5 py-3 rounded-2xl text-inherit placeholder-current placeholder-opacity-35 outline-none font-sans text-xs leading-relaxed resize-y"
             />
           </div>
 
@@ -198,7 +198,7 @@ export const AddTextModal: React.FC<AddTextModalProps> = ({ isOpen, onClose }) =
               <select
                 value={selectedFontSize}
                 onChange={(e) => setSelectedFontSize(e.target.value as any)}
-                className="w-full liquid-pill px-3 py-1.5 rounded-xl text-inherit outline-none text-xs font-mono cursor-pointer border border-current/10"
+                className="w-full liquid-pill px-3 py-1.5 rounded-xl text-inherit outline-none text-xs font-mono cursor-pointer"
               >
                 {FONT_SIZE_OPTIONS.map((f) => (
                   <option key={f.id} value={f.id} className="bg-zinc-900 text-white">
@@ -210,7 +210,7 @@ export const AddTextModal: React.FC<AddTextModalProps> = ({ isOpen, onClose }) =
           </div>
 
           {/* Keep open toggle */}
-          <div className="flex items-center justify-between pt-2 border-t border-current/10">
+          <div className="flex items-center justify-between pt-2">
             <label className="flex items-center gap-2 text-xs opacity-75 cursor-pointer hover:opacity-100 select-none">
               <input
                 type="checkbox"

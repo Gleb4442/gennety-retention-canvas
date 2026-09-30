@@ -380,7 +380,7 @@ export const Canvas: React.FC<CanvasProps> = ({ onOpenSearchModal, onOpenAddModa
           zoomable
           pannable
           ariaLabel="Навигационная миникарта"
-          className="!bottom-[84px] !right-6 !rounded-2xl !overflow-hidden !border !border-black/10 dark:!border-white/10 !shadow-2xl backdrop-blur-md"
+          className="!bottom-[84px] !right-6 !rounded-3xl !overflow-hidden !border-0 !shadow-2xl backdrop-blur-xl"
         />
       </ReactFlow>
 
@@ -405,7 +405,7 @@ export const Canvas: React.FC<CanvasProps> = ({ onOpenSearchModal, onOpenAddModa
       {/* Floating Bottom-Right Action Dock (Add Card, Photo, Drawing) */}
       {!isViewerMode && (
         <div 
-          className="absolute bottom-6 right-6 z-30 flex items-center p-1.5 rounded-2xl liquid-glass shadow-2xl gap-1.5 select-none pointer-events-auto border border-black/10 dark:border-white/10"
+          className="absolute bottom-6 right-6 z-30 flex items-center p-1.5 rounded-3xl liquid-glass shadow-2xl gap-1.5 select-none pointer-events-auto"
           role="toolbar"
           aria-label="Панель добавления карточек и рисования"
         >
@@ -413,7 +413,7 @@ export const Canvas: React.FC<CanvasProps> = ({ onOpenSearchModal, onOpenAddModa
           {onOpenAddModal && (
             <button
               onClick={onOpenAddModal}
-              className="flex items-center gap-2 px-3.5 py-2 rounded-xl liquid-pill-active text-xs font-semibold transition-all hover:scale-[1.02] shadow-sm active:scale-95"
+              className="flex items-center gap-2 px-3.5 py-2 rounded-2xl liquid-pill-active text-xs font-semibold transition-all hover:scale-[1.02] shadow-sm active:scale-95"
               title="Добавить новую стратегическую карточку на холст"
             >
               <IconAdd className="w-3.5 h-3.5" />
@@ -424,7 +424,7 @@ export const Canvas: React.FC<CanvasProps> = ({ onOpenSearchModal, onOpenAddModa
           {/* Add Standalone Text Block Button */}
           <button
             onClick={() => setIsAddTextModalOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl liquid-pill text-xs font-medium transition-all hover:scale-[1.02] active:scale-95 opacity-85 hover:opacity-100"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-2xl liquid-pill text-xs font-medium transition-all hover:scale-[1.02] active:scale-95 opacity-85 hover:opacity-100"
             title="Добавить блок с текстом на холст (T)"
           >
             <IconText className="w-3.5 h-3.5" />
@@ -434,7 +434,7 @@ export const Canvas: React.FC<CanvasProps> = ({ onOpenSearchModal, onOpenAddModa
           {/* Add Standalone Photo Card */}
           <button
             onClick={() => imageFileInputRef.current?.click()}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl liquid-pill text-xs font-medium transition-all hover:scale-[1.02] active:scale-95 opacity-85 hover:opacity-100"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-2xl liquid-pill text-xs font-medium transition-all hover:scale-[1.02] active:scale-95 opacity-85 hover:opacity-100"
             title="Добавить фото на холст (также можно перетащить файл или нажать ⌘V)"
           >
             <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
@@ -443,7 +443,7 @@ export const Canvas: React.FC<CanvasProps> = ({ onOpenSearchModal, onOpenAddModa
             <span>Фото</span>
           </button>
 
-          <div className="w-[1px] h-4 bg-current/10 mx-0.5" />
+          <div className="w-px h-4 bg-current/10 mx-0.5 opacity-60" />
 
           {/* Marquee Area Selection Mode Button */}
           <button
@@ -454,9 +454,9 @@ export const Canvas: React.FC<CanvasProps> = ({ onOpenSearchModal, onOpenAddModa
                 setIsDrawingMode(false);
               }
             }}
-            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs transition-all active:scale-95 ${
+            className={`flex items-center gap-2 px-3.5 py-2 rounded-2xl text-xs transition-all active:scale-95 ${
               isSelectAreaMode
-                ? 'liquid-pill-active font-semibold shadow-sm ring-1 ring-white/20'
+                ? 'liquid-pill-active font-semibold shadow-sm'
                 : 'liquid-pill opacity-85 hover:opacity-100'
             }`}
             title={
@@ -490,9 +490,9 @@ export const Canvas: React.FC<CanvasProps> = ({ onOpenSearchModal, onOpenAddModa
                 setIsSelectAreaMode(false);
               }
             }}
-            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs transition-all active:scale-95 ${
+            className={`flex items-center gap-2 px-3.5 py-2 rounded-2xl text-xs transition-all active:scale-95 ${
               isDrawingMode
-                ? 'liquid-pill-active font-semibold shadow-sm ring-1 ring-white/20'
+                ? 'liquid-pill-active font-semibold shadow-sm'
                 : 'liquid-pill opacity-85 hover:opacity-100'
             }`}
             title={isDrawingMode ? "Выйти из режима рисования" : "Включить свободное рисование и ластик"}
@@ -510,7 +510,7 @@ export const Canvas: React.FC<CanvasProps> = ({ onOpenSearchModal, onOpenAddModa
 
       {/* Floating Multi-Node Selection Bar */}
       {!isViewerMode && selectedNodesCount > 1 && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3 px-4 py-2 rounded-2xl liquid-glass shadow-2xl border border-black/10 dark:border-white/10 text-xs font-mono select-none pointer-events-auto animate-in fade-in zoom-in-95 duration-150">
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3 px-4 py-2 rounded-2xl liquid-glass shadow-2xl text-xs font-mono select-none pointer-events-auto animate-in fade-in zoom-in-95 duration-150">
           <div className="flex items-center gap-2 font-semibold">
             <span className="w-2 h-2 rounded-full bg-current opacity-80 animate-pulse" />
             <span>Выделено узлов: {selectedNodesCount}</span>

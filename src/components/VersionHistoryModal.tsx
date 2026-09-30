@@ -59,9 +59,9 @@ export const VersionHistoryModal: React.FC = () => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-150">
-      <div className="w-full max-w-2xl max-h-[85vh] rounded-2xl minimal-modal flex flex-col shadow-2xl overflow-hidden">
+      <div className="w-full max-w-2xl max-h-[85vh] rounded-3xl minimal-modal flex flex-col shadow-2xl overflow-hidden">
         {/* Header */}
-        <div className="p-5 border-b border-black/10 dark:border-white/10 flex items-center justify-between">
+        <div className="p-5 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="p-2 rounded-xl liquid-pill text-indigo-400">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -84,14 +84,14 @@ export const VersionHistoryModal: React.FC = () => {
 
         {/* Create Manual Checkpoint Form */}
         {userRole !== 'viewer' && (
-          <div className="p-4 bg-black/5 dark:bg-white/5 border-b border-black/10 dark:border-white/10">
+          <div className="p-4 bg-black/5 dark:bg-white/5">
             <form onSubmit={handleCreateCheckpoint} className="flex gap-2">
               <input
                 type="text"
                 value={newVersionLabel}
                 onChange={(e) => setNewVersionLabel(e.target.value)}
                 placeholder="Название контрольной точки (например, 'Финал спринта #4')..."
-                className="flex-1 px-3 py-2 rounded-xl text-xs bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+                className="flex-1 px-3 py-2 rounded-xl text-xs bg-black/5 dark:bg-white/5 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
               />
               <button
                 type="submit"
@@ -124,11 +124,11 @@ export const VersionHistoryModal: React.FC = () => {
             versions.map((ver) => (
               <div
                 key={ver.id}
-                className="p-4 rounded-xl border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:border-indigo-500/40 transition-all"
+                className="p-4 rounded-2xl bg-black/5 dark:bg-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-black/10 dark:hover:bg-white/10 shadow-sm transition-all"
               >
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 rounded-md bg-indigo-500/20 text-indigo-400 font-mono font-bold text-xs border border-indigo-500/30">
+                    <span className="px-2 py-0.5 rounded-md bg-indigo-500/20 text-indigo-400 font-mono font-bold text-xs">
                       v{ver.versionNumber}
                     </span>
                     <h4 className="text-sm font-semibold tracking-tight">
@@ -184,7 +184,7 @@ export const VersionHistoryModal: React.FC = () => {
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 flex items-center justify-between text-xs opacity-70">
+        <div className="p-4 bg-black/[0.03] dark:bg-white/[0.03] flex items-center justify-between text-xs opacity-70">
           <span>Всего версий в базе: {versions.length}</span>
           <button
             onClick={() => fetchVersions()}

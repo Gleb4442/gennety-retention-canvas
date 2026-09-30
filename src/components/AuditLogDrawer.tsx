@@ -57,32 +57,32 @@ export const AuditLogDrawer: React.FC = () => {
   const getActionBadge = (action: AuditActionType) => {
     switch (action) {
       case 'node_create':
-        return { label: 'Узел создан', bg: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' };
+        return { label: 'Узел создан', bg: 'bg-emerald-500/20 text-emerald-300' };
       case 'node_update':
-        return { label: 'Узел изменён', bg: 'bg-amber-500/20 text-amber-300 border-amber-500/30' };
+        return { label: 'Узел изменён', bg: 'bg-amber-500/20 text-amber-300' };
       case 'node_delete':
-        return { label: 'Узел удалён', bg: 'bg-rose-500/20 text-rose-300 border-rose-500/30' };
+        return { label: 'Узел удалён', bg: 'bg-rose-500/20 text-rose-300' };
       case 'nodes_move':
-        return { label: 'Перемещение', bg: 'bg-blue-500/20 text-blue-300 border-blue-500/30' };
+        return { label: 'Перемещение', bg: 'bg-blue-500/20 text-blue-300' };
       case 'edge_create':
-        return { label: 'Связь создана', bg: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30' };
+        return { label: 'Связь создана', bg: 'bg-indigo-500/20 text-indigo-300' };
       case 'edge_delete':
-        return { label: 'Связь удалена', bg: 'bg-rose-500/20 text-rose-300 border-rose-500/30' };
+        return { label: 'Связь удалена', bg: 'bg-rose-500/20 text-rose-300' };
       case 'version_create':
-        return { label: 'Снимок версии', bg: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30' };
+        return { label: 'Снимок версии', bg: 'bg-indigo-500/20 text-indigo-300' };
       case 'version_restore':
-        return { label: 'Откат версии', bg: 'bg-purple-500/20 text-purple-300 border-purple-500/30' };
+        return { label: 'Откат версии', bg: 'bg-purple-500/20 text-purple-300' };
       case 'drawing_add':
       case 'drawings_clear':
-        return { label: 'Рисование', bg: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30' };
+        return { label: 'Рисование', bg: 'bg-cyan-500/20 text-cyan-300' };
       case 'layout_change':
-        return { label: 'Авто-лейаут', bg: 'bg-purple-500/20 text-purple-300 border-purple-500/30' };
+        return { label: 'Авто-лейаут', bg: 'bg-purple-500/20 text-purple-300' };
       case 'theme_change':
-        return { label: 'Смена темы', bg: 'bg-sky-500/20 text-sky-300 border-sky-500/30' };
+        return { label: 'Смена темы', bg: 'bg-sky-500/20 text-sky-300' };
       case 'project_rename':
-        return { label: 'Переименование', bg: 'bg-violet-500/20 text-violet-300 border-violet-500/30' };
+        return { label: 'Переименование', bg: 'bg-violet-500/20 text-violet-300' };
       default:
-        return { label: 'Действие', bg: 'bg-gray-500/20 text-gray-300 border-gray-500/30' };
+        return { label: 'Действие', bg: 'bg-gray-500/20 text-gray-300' };
     }
   };
 
@@ -96,9 +96,9 @@ export const AuditLogDrawer: React.FC = () => {
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end bg-black/40 backdrop-blur-xs transition-opacity animate-in fade-in duration-200">
-      <div className="w-full max-w-md h-full minimal-modal flex flex-col shadow-2xl border-l border-black/10 dark:border-white/10 animate-in slide-in-from-right duration-250">
+      <div className="w-full max-w-md h-full minimal-modal flex flex-col shadow-2xl animate-in slide-in-from-right duration-250">
         {/* Drawer Header */}
-        <div className="p-4 border-b border-black/10 dark:border-white/10 flex items-center justify-between">
+        <div className="p-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="p-2 rounded-xl liquid-pill text-indigo-400">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -141,7 +141,7 @@ export const AuditLogDrawer: React.FC = () => {
         </div>
 
         {/* Filter Pills */}
-        <div className="px-4 py-2 border-b border-black/10 dark:border-white/10 flex items-center gap-1.5 overflow-x-auto text-xs">
+        <div className="px-4 py-2 bg-black/[0.02] dark:bg-white/[0.02] flex items-center gap-1.5 overflow-x-auto text-xs">
           {[
             { id: 'all', label: 'Все' },
             { id: 'nodes', label: 'Карточки' },
@@ -183,8 +183,8 @@ export const AuditLogDrawer: React.FC = () => {
                 <div
                   key={log.id}
                   onClick={() => handleLogClick(log)}
-                  className={`p-3 rounded-xl border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 transition-all text-xs ${
-                    hasTarget ? 'cursor-pointer hover:border-indigo-500/50 hover:bg-indigo-500/5' : ''
+                  className={`p-3.5 rounded-2xl bg-black/[0.03] dark:bg-white/[0.04] transition-all text-xs ${
+                    hasTarget ? 'cursor-pointer hover:bg-indigo-500/10' : ''
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1.5">
@@ -206,7 +206,7 @@ export const AuditLogDrawer: React.FC = () => {
                   <p className="opacity-90 leading-snug mb-2 font-medium">{log.summary}</p>
 
                   <div className="flex items-center justify-between text-[10px]">
-                    <span className={`px-2 py-0.5 rounded-md border font-mono ${badge.bg}`}>
+                    <span className={`px-2 py-0.5 rounded-lg font-mono ${badge.bg}`}>
                       {badge.label}
                     </span>
 
@@ -218,7 +218,7 @@ export const AuditLogDrawer: React.FC = () => {
                   </div>
 
                   {log.diff && typeof log.diff === 'object' && Object.keys(log.diff).length > 0 && (
-                    <div className="mt-2 pt-2 border-t border-black/5 dark:border-white/5 text-[10px] opacity-70 font-mono space-y-0.5">
+                    <div className="mt-2.5 p-2 rounded-xl bg-black/[0.03] dark:bg-white/[0.03] text-[10px] opacity-70 font-mono space-y-0.5">
                       {Object.entries(log.diff).map(([key, val]) => (
                         <div key={key} className="truncate">
                           <span className="text-indigo-300">{key}:</span> {typeof val === 'string' ? `"${val}"` : JSON.stringify(val)}
@@ -233,7 +233,7 @@ export const AuditLogDrawer: React.FC = () => {
         </div>
 
         {/* Footer info */}
-        <div className="p-3 border-t border-black/10 dark:border-white/10 text-[11px] opacity-60 flex items-center justify-between font-mono">
+        <div className="p-3.5 bg-black/[0.03] dark:bg-white/[0.03] text-[11px] opacity-60 flex items-center justify-between font-mono">
           <span>Всего событий: {filteredLogs.length}</span>
           <span>Горячая клавиша: ⌘L</span>
         </div>
